@@ -40,6 +40,11 @@
     "path": "projects/games/dot-game/"
   },
   {
+    "title": "Encoding Toolkit",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/encoding-toolkit/"
+  },
+  {
     "title": "File Difference Visualizer",
     "category": "file-tools",
     "path": "projects/file-tools/file-difference-visualizer/"
