@@ -85,6 +85,11 @@
     "path": "projects/productivity/reading-progress-tracker/"
   },
   {
+    "title": "Regex Visualizer",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/regex-visualizer/"
+  },
+  {
     "title": "Sound Wave Visualizer",
     "category": "misc",
     "path": "projects/misc/sound-wave-visualizer/"
