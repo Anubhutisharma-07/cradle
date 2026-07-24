@@ -160,7 +160,7 @@ function renderProjects(projects) {
         children: "Open Project",
         rightIcon: "→",
         href: project.path,
-        target: "_blank",
+        target: "_self",
         rel: "noopener noreferrer",
       }),
       footerAlign: "left",
