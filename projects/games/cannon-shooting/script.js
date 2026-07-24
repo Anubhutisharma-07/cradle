@@ -2,8 +2,11 @@ let userCanX = 185;
 let userCanY = 0;
 let fireTime = 13000;
 let countdown = (fireTime / 1000) - 3;
-let hitAudio = new Audio('http://soundbible.com/mp3/Sniper_Rifle-Kibblesbob-2053709564.mp3');
-let fireAudio = new Audio('http://soundbible.com/mp3/Super%20Punch%20MMA-SoundBible.com-1869306362.mp3');
+let hitAudio = new Audio('https://soundbible.com/mp3/Sniper_Rifle-Kibblesbob-2053709564.mp3');
+let fireAudio = new Audio('https://soundbible.com/mp3/Super%20Punch%20MMA-SoundBible.com-1869306362.mp3');
+
+hitAudio.onerror = () => { /* audio unavailable */ };
+fireAudio.onerror = () => { /* audio unavailable */ };
 
 let stats = CannonStorage.loadStats();
 

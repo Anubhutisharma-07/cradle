@@ -97,29 +97,29 @@ function renderBoard() {
 }
 
 function initTheme() {
-  const savedTheme = localStorage.getItem('neuralforge_theme') || 'dark';
-  setTheme(savedTheme);
+    const savedTheme = localStorage.getItem('neuralforge_theme') || 'dark';
+    setTheme(savedTheme);
 }
 
 function setTheme(theme) {
-  const html = document.documentElement;
-  const themeBtn = document.getElementById('themeToggle');
-  
-  if (theme === 'light') {
-    html.classList.add('light-theme');
-    if (themeBtn) themeBtn.innerHTML = '<i class="fas fa-sun text-orange-400"></i>';
-    localStorage.setItem('neuralforge_theme', 'light');
-  } else {
-    html.classList.remove('light-theme');
-    if (themeBtn) themeBtn.innerHTML = '<i class="fas fa-moon text-yellow-400"></i>';
-    localStorage.setItem('neuralforge_theme', 'dark');
-  }
+    const html = document.documentElement;
+    const themeBtn = document.getElementById('themeToggle');
+
+    if (theme === 'light') {
+        html.classList.add('light-theme');
+        if (themeBtn) themeBtn.innerHTML = '<i class="fas fa-sun text-orange-400"></i>';
+        localStorage.setItem('neuralforge_theme', 'light');
+    } else {
+        html.classList.remove('light-theme');
+        if (themeBtn) themeBtn.innerHTML = '<i class="fas fa-moon text-yellow-400"></i>';
+        localStorage.setItem('neuralforge_theme', 'dark');
+    }
 }
 
 function toggleTheme() {
-  const html = document.documentElement;
-  const isLight = html.classList.contains('light-theme');
-  setTheme(isLight ? 'dark' : 'light');
+    const html = document.documentElement;
+    const isLight = html.classList.contains('light-theme');
+    setTheme(isLight ? 'dark' : 'light');
 }
 
 function clearHint() {
@@ -307,14 +307,18 @@ function resolveBoardStep(queue, onDone, explodedAny = false) {
 
     for (const { row, col } of queue) {
         const cell = state.board[row][col];
-        if (cell.dots >= getCapacity(row, col)) {
-            const owner = cell.owner;
+        const capacity = getCapacity(row, col);
+
+        while (state.board[row][col].dots >= capacity) {
+            const owner = state.board[row][col].owner;
+
             explode(row, col, owner);
             explodedAny = true;
 
             for (const [dr, dc] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) {
                 const nr = row + dr;
                 const nc = col + dc;
+
                 if (nr >= 0 && nr < boardSize && nc >= 0 && nc < boardSize) {
                     next.push({ row: nr, col: nc });
                 }
@@ -333,11 +337,22 @@ function resolveBoardStep(queue, onDone, explodedAny = false) {
     }
 }
 
+function hasPieces(player) {
+    return state.board.some(row =>
+        row.some(cell => cell.owner === player)
+    );
+}
+
 function explode(row, col, owner) {
-    state.board[row][col] = {
-        owner: null,
-        dots: 0
-    };
+    const cell = state.board[row][col];
+    const capacity = getCapacity(row, col);
+
+    cell.dots -= capacity;
+
+    if (cell.dots <= 0) {
+        cell.owner = null;
+        cell.dots = 0;
+    }
 
     state.analytics.totalExplosions++; // Analytics
 
@@ -620,3 +635,25 @@ if (hintBtnElement) {
 
 renderAnalytics();
 startGame();
+
+//Testing Explosion
+window.testExtreme = function () {
+    // Reset board
+    state.board = createBoard(boardSize);
+
+    // Center cell with many dots
+    const row = Math.floor(boardSize / 2);
+    const col = Math.floor(boardSize / 2);
+
+    state.board[row][col].owner = "red";
+    state.board[row][col].dots = 10;
+
+    console.log("Before:", state.board[row][col]);
+
+    render();
+
+    resolveBoardStep([{ row, col }], () => {
+        console.log("After:", state.board[row][col]);
+        render();
+    });
+};

@@ -1,4 +1,6 @@
-# Project Architecture
+# Interactive Periodic Table
+
+An interactive, responsive Periodic Table visualization tool built for exploring elements, chemical properties, electron configurations, state changes across temperature ranges, and visual category highlighting.
 
 ---
 
@@ -17,7 +19,28 @@ Interactive Periodic Table is a client-side web application for exploring elemen
 
 ---
 
-## Folder Structure
+## Features
+
+- **Search Elements**: Instant search filtering by element name, chemical symbol, atomic number, or element category.
+- **Detailed Properties**: Click any element to view comprehensive property metadata including atomic mass, electron configuration, electronegativity, melting/boiling points, density, discovery year, and summary.
+- **Visual Category Highlighting**: Interactive category filter pills highlighting Alkali Metals, Alkaline Earth Metals, Transition Metals, Metalloids, Nonmetals, Halogens, Noble Gases, Lanthanides, and Actinides.
+- **Bohr Model Visualizer**: Interactive canvas rendering electron shells and electron distribution for each element.
+- **Temperature Slider**: Dynamic state of matter visualization (Solid, Liquid, Gas, Synthetic) calculated in real-time as temperature changes from 0 K (-273°C) up to 6000 K (5727°C).
+- **View Modes**: Switch between Standard view, Electronegativity Heatmap, and Atomic Mass Gradient views.
+
+---
+
+## How to Run Locally
+
+1. Open `index.html` directly in any web browser, or serve via local web server:
+   ```bash
+   python -m http.server 8000
+   ```
+2. Navigate to `http://localhost:8000/projects/misc/periodic-table/` in your browser.
+
+---
+
+## Project & Folder Structure
 
 ```text
 projects/misc/periodic-table/
@@ -25,20 +48,20 @@ projects/misc/periodic-table/
 ├── style.css       # Visual styles, CSS Grid periodic layout, theme tokens, category colors
 ├── elements.js     # Comprehensive dataset of all 118 chemical elements
 ├── script.js       # Table grid rendering, filter handlers, modal interaction, canvas Bohr model
-├── README.md       # Project overview and usage guidelines
-└── ARCHITECTURE.md # Project architecture documentation
+├── thumbnail.svg   # Project thumbnail image
+└── README.md       # Consolidated project documentation and technical architecture
 ```
 
 ---
 
-## System / Project Architecture Overview
+## System & Project Architecture
 
 The application is structured into three main layers:
 1. **Data Layer (`elements.js`)**: Static array of element objects containing physical constants, atomic numbers, electron shell configurations, and summaries.
 2. **Presentation Layer (`index.html`, `style.css`)**: Responsive 18-column grid layout with CSS custom properties for category color coding and glassmorphism styling.
 3. **Logic Layer (`script.js`)**: Handles filtering, search indexing, temperature state evaluation, view mode switching, and HTML5 Canvas drawing.
 
-```
+```text
 User Action (Search / Slider / Filter / Tile Click)
                       ↓
           Event Listeners (script.js)
@@ -63,7 +86,7 @@ User Action (Search / Slider / Filter / Tile Click)
 
 ## Data Flow / Execution Flow
 
-```
+```text
 User opens index.html
         ↓
 Browser loads style.css → elements.js → script.js
@@ -78,16 +101,6 @@ Filter logic evaluates matching elements & updates tile dimming / state indicato
         ↓
 User clicks an element tile → Modal opens → HTML5 Canvas draws Bohr model for element shells
 ```
-
----
-
-## Key Features
-
-- **18-Column Grid Layout**: Accurately positions elements 1-118 into periods 1-7 and separate Lanthanide/Actinide rows.
-- **Instant Multi-attribute Search**: Filters by element name, symbol, atomic number, and category keyword.
-- **Dynamic Temperature Engine**: Real-time evaluation of element phase (Solid, Liquid, Gas, Synthetic) across 0K–6000K range.
-- **View Heatmaps**: Electronegativity heatmap and Atomic Mass gradient visualization modes.
-- **HTML5 Canvas Bohr Model**: Generates concentric electron orbit diagrams with animated shell placement.
 
 ---
 
@@ -129,17 +142,17 @@ None. Uses native browser APIs exclusively.
 
 ---
 
+## Known Limitations
+
+- F-block elements (Lanthanides and Actinides) are rendered below the main grid to maintain desktop grid legibility.
+
+---
+
 ## Future Improvements
 
 - Add 3D crystal structure viewer using Three.js.
 - Add element isotope breakdown and radioisotope decay chain viewer.
 - Add compound builder / reaction calculator.
-
----
-
-## Known Limitations
-
-- F-block elements (Lanthanides and Actinides) are rendered below the main grid to maintain desktop grid legibility.
 
 ---
 

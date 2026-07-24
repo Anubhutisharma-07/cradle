@@ -35,9 +35,6 @@ Closes #
 - [ ] 🧪 Tests
 - [ ] ⚙️ CI/tooling
 
-## Screenshots (if UI changes)
-<!-- Add before/after screenshots here -->
-
 ## Checklist
 - [ ] I am a ECSOC26 contributor
 - [ ] I have read [CONTRIBUTING.md](../CONTRIBUTING.md)
@@ -49,4 +46,5 @@ Closes #
 <!-- List any new dependencies added. If none, leave blank. -->
 
 # Screenshots / Video (if applicable)
+<!-- Add before/after screenshots here -->
 <!-- Include UI screenshots or GIFs to demonstrate the changes. -->

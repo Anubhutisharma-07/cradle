@@ -58,6 +58,14 @@ http://localhost:8000
 4. For Individual projects
    - Open their `index.html` directly on browser 
 
+## ⌨️ Keyboard Shortcuts
+
+The Cradle landing page supports intuitive keyboard navigation:
+- `<kbd>/</kbd>` or `<kbd>Ctrl</kbd>+<kbd>K</kbd>` / `<kbd>Cmd</kbd>+<kbd>K</kbd>` — Focus the project search bar
+- `<kbd>Esc</kbd>` — Clear active search query and reset category filters / close modal dialogs
+- `<kbd>T</kbd>` — Toggle light / dark color theme
+- `<kbd>?</kbd>` — Open / close the keyboard shortcuts help dialog
+
 ## 🗂️ Architecture Documentation
 
 Every project in Cradle includes an `ARCHITECTURE.md` file that explains its folder structure, components, data flow, and design decisions. If you are adding a new project, use the standardized template at the repository root:

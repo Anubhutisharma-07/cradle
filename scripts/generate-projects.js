@@ -93,6 +93,19 @@ const CATEGORY_STYLES = {
       <path d="M 0,150 L 1200,450 M 0,250 L 1200,550 M 0,50 L 1200,350" />
       <circle cx="600" cy="337" r="150" stroke-dasharray="8 8" />
     </g>`
+  },
+  editor: {
+    bgStart: "#080b16",
+    bgEnd: "#312e81",
+    accent: "#818cf8",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5h16M4 9h16M4 13h10M4 17h7" />
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 18l5-5 1 1-5 5-2 .5.5-1.5z" />`,
+    pattern: `<g opacity="0.11" fill="none" stroke="#818cf8" stroke-width="2">
+      <path d="M 120 160 H 760 M 120 230 H 640 M 120 300 H 820 M 120 370 H 560" />
+      <rect x="90" y="110" width="720" height="330" rx="18" />
+      <path d="M 900 120 L 1040 260 L 820 480 L 680 500 L 720 360 Z" />
+      <path d="M 850 170 L 990 310" />
+    </g>`
   }
 };
 
