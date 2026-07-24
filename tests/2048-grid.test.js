@@ -2,22 +2,9 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { createInitialState, moveGameState, canMove } = require('../projects/games/2048-game/logic');
 const { saveBestScore, getBestScore } = require('../projects/games/2048-game/storage');
+const { setupLocalStorageMock } = require('./helpers/localstorage-mock');
 
-global.localStorage = {
-    store: {},
-    getItem(key) {
-        return this.store[key] || null;
-    },
-    setItem(key, value) {
-        this.store[key] = String(value);
-    },
-    removeItem(key) {
-        delete this.store[key];
-    },
-    clear() {
-        this.store = {};
-    }
-};
+setupLocalStorageMock();
 
 test('creates custom grid sizes correctly', () => {
     const state3x3 = createInitialState(3, () => 0.1);

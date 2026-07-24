@@ -2,14 +2,9 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { wrapText, getDefaultMemeOptions } = require('../projects/misc/meme-generator/memeEngine');
 const { getSavedMemes, saveMemePreset, deleteMemePreset } = require('../projects/misc/meme-generator/memeStorage');
+const { setupLocalStorageMock } = require('./helpers/localstorage-mock');
 
-global.localStorage = {
-    store: {},
-    getItem(key) { return this.store[key] || null; },
-    setItem(key, value) { this.store[key] = String(value); },
-    removeItem(key) { delete this.store[key]; },
-    clear() { this.store = {}; }
-};
+setupLocalStorageMock();
 
 test('getDefaultMemeOptions provides valid default values', () => {
     const opts = getDefaultMemeOptions();
