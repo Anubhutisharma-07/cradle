@@ -11,6 +11,7 @@
  *     image:    'https://...jpg',   // optional hero image src
  *     icon:     '🎮',               // optional icon (string / HTML)
  *     badge:    'New',              // optional badge label
+ *     isNew:    true,                // optional "New" ribbon badge
  *     children: '<p>Body content</p>',
  *     footer:   '<button>Open</button>',
  *     clickable: true,              // adds hover-lift + cursor pointer
@@ -47,6 +48,7 @@
         border-radius: var(--cradle-radius-lg, 20px);
         box-shadow: var(--cradle-shadow, 0 10px 30px rgba(0,0,0,0.35));
         overflow: hidden;
+        position: relative;
         display: flex;
         flex-direction: column;
         transition:
@@ -73,6 +75,22 @@
         transform: translateY(-2px);
       }
 
+      .cradle-card__new-ribbon {
+        position: absolute;
+        top: var(--cradle-space-3, 12px);
+        right: var(--cradle-space-3, 12px);
+        padding: 3px 10px;
+        border-radius: var(--cradle-radius-pill, 999px);
+        background: var(--cradle-warning-bg, rgba(245,158,11,0.15));
+        color: var(--cradle-warning, #f59e0b);
+        border: 1px solid var(--cradle-warning, #f59e0b);
+        font-size: var(--cradle-font-size-xs, 0.75rem);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        z-index: 1;
+      }
+
       /* ── Hero image ─────────────────────────────────── */
       .cradle-card__image {
         width: 100%;
@@ -88,7 +106,7 @@
         align-items: flex-start;
         gap: var(--cradle-space-3, 12px);
         padding: var(--cradle-space-5, 20px) var(--cradle-space-5, 20px) 0;
-        flex-shrink: 0;
+        flex:1;
       }
 
       .cradle-card__icon {
@@ -101,6 +119,9 @@
       .cradle-card__header-text {
         flex: 1;
         min-width: 0;
+        display:flex;
+        flex-direction:column;
+        height:100%
       }
 
       .cradle-card__title-row {
@@ -134,10 +155,13 @@
       }
 
       .cradle-card__subtitle {
-        margin: 4px 0 0;
+        margin: auto 0 0;
+        padding-top: var(--cradle-space-2, 8px);
         font-size: var(--cradle-font-size-sm, 0.875rem);
         color: var(--cradle-text-secondary, #cbd5e1);
         line-height: 1.5;
+        overflow-wrap: break-word;
+        word-break: break-word;
       }
 
       /* ── Content ─────────────────────────────────────── */
@@ -154,6 +178,9 @@
         padding-top: var(--cradle-space-3, 12px);
       }
 
+       .cradle-card__header + .cradle-card__footer {
+        padding-top: var(--cradle-space-4, 16px);
+      }
       /* ── Footer ─────────────────────────────────────── */
       .cradle-card__footer {
         display: flex;
@@ -269,15 +296,16 @@
       injectStyles();
 
       const {
-        title     = null,
-        subtitle  = null,
-        image     = null,
-        icon      = null,
-        badge     = null,
-        children  = null,
-        footer    = null,
+        title = null,
+        subtitle = null,
+        image = null,
+        icon = null,
+        badge = null,
+        isNew = false,
+        children = null,
+        footer = null,
         clickable = false,
-        onClick   = null,
+        onClick = null,
         className = '',
         ariaLabel = null,
       } = options;
@@ -302,6 +330,13 @@
             }
           });
         }
+      }
+
+      if (isNew) {
+        const ribbon = document.createElement('span');
+        ribbon.className = 'cradle-card__new-ribbon';
+        ribbon.textContent = 'New';
+        card.appendChild(ribbon);
       }
 
       /* Hero image */
@@ -344,9 +379,9 @@
     },
 
     /* Expose sub-builders for direct composition */
-    Header:  buildHeader,
+    Header: buildHeader,
     Content: buildContent,
-    Footer:  buildFooter,
+    Footer: buildFooter,
 
     /**
      * Upgrade elements that have [data-cradle-card] attribute.
@@ -374,10 +409,10 @@
         /* Inject header from data attributes */
         if (el.dataset.title) {
           const header = buildHeader({
-            title:    el.dataset.title,
+            title: el.dataset.title,
             subtitle: el.dataset.subtitle || null,
-            icon:     el.dataset.icon     || null,
-            badge:    el.dataset.badge    || null,
+            icon: el.dataset.icon || null,
+            badge: el.dataset.badge || null,
           });
           el.insertBefore(header, el.firstChild);
         }

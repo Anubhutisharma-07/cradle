@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { execSync } = require("child_process");
 
 const PROJECTS_DIR = path.join(__dirname, "..", "projects");
 const OUTPUT_FILE = path.join(
@@ -83,6 +84,29 @@ const CATEGORY_STYLES = {
       <line x1="600" y1="37" x2="600" y2="637" stroke="#c084fc" stroke-width="1" opacity="0.3" />
       <line x1="300" y1="337" x2="900" y2="337" stroke="#c084fc" stroke-width="1" opacity="0.3" />
     </g>`
+  },
+  "file-tools": {
+    bgStart: "#060913",
+    bgEnd: "#1e1b4b",
+    accent: "#38bdf8",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />`,
+    pattern: `<g opacity="0.1" fill="none" stroke="#38bdf8" stroke-width="2">
+      <path d="M 0,150 L 1200,450 M 0,250 L 1200,550 M 0,50 L 1200,350" />
+      <circle cx="600" cy="337" r="150" stroke-dasharray="8 8" />
+    </g>`
+  },
+  editor: {
+    bgStart: "#080b16",
+    bgEnd: "#312e81",
+    accent: "#818cf8",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5h16M4 9h16M4 13h10M4 17h7" />
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 18l5-5 1 1-5 5-2 .5.5-1.5z" />`,
+    pattern: `<g opacity="0.11" fill="none" stroke="#818cf8" stroke-width="2">
+      <path d="M 120 160 H 760 M 120 230 H 640 M 120 300 H 820 M 120 370 H 560" />
+      <rect x="90" y="110" width="720" height="330" rx="18" />
+      <path d="M 900 120 L 1040 260 L 820 480 L 680 500 L 720 360 Z" />
+      <path d="M 850 170 L 990 310" />
+    </g>`
   }
 };
 
@@ -140,7 +164,7 @@ function escapeXml(unsafe) {
 
 function generateSvgThumbnail(title, categoryName, projectAbsPath) {
   const style = CATEGORY_STYLES[categoryName] || defaultStyle;
-  
+
   // Word wrap for title
   const lines = wrapText(title, 20);
   let textY = 280;
@@ -218,6 +242,20 @@ function generateSvgThumbnail(title, categoryName, projectAbsPath) {
   fs.writeFileSync(path.join(projectAbsPath, "thumbnail.svg"), svgContent);
 }
 
+function getDateAdded(projectAbsPath) {
+  try {
+    const out = execSync(
+      `git log --diff-filter=A --follow --format=%aI -- "${projectAbsPath}"`,
+      { cwd: path.join(__dirname, ".."), encoding: "utf-8" }
+    ).trim();
+    const firstCommitDate = out.split("\n").filter(Boolean).pop();
+    if (firstCommitDate) return firstCommitDate;
+  } catch (e) {
+    // git not available or no history — fall through
+  }
+  return fs.statSync(projectAbsPath).birthtime.toISOString();
+}
+
 function generateProjects() {
   const projects = [];
 
@@ -241,15 +279,17 @@ function generateProjects() {
 
     for (const project of projectFolders) {
       const projectTitle = titleCase(project.name);
-      
+
+      const projectAbsPath = path.join(categoryPath, project.name);
+
       projects.push({
         title: projectTitle,
         category: categoryName,
-        path: `projects/${categoryName}/${project.name}/`
+        path: `projects/${categoryName}/${project.name}/`,
+        dateAdded: getDateAdded(projectAbsPath)
       });
 
       // Generate thumbnail SVG in the project folder
-      const projectAbsPath = path.join(categoryPath, project.name);
       generateSvgThumbnail(projectTitle, categoryName, projectAbsPath);
     }
   }

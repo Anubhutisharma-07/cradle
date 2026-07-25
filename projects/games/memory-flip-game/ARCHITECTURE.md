@@ -13,7 +13,7 @@ memory-flip-game/
 ├── index.html   # Page shell: navbar, home screen, game screen, result screen
 ├── utils.js     # Score management utilities (localStorage)
 ├── script.js    # All game logic and screen management
-└── styles.css   # CSS flip animation, tile styling, layout
+└── style.css   # CSS flip animation, tile styling, layout
 ```
 
 ---
