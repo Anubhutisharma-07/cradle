@@ -4,20 +4,9 @@ const {
   getHighScore,
   saveHighScore,
 } = require("../projects/games/memory-flip-game/utils");
+const { setupLocalStorageMock } = require("./helpers/localstorage-mock");
 
-// Mock localStorage for Node test environment
-global.localStorage = {
-  store: {},
-  getItem(key) {
-    return this.store[key] || null;
-  },
-  setItem(key, value) {
-    this.store[key] = String(value);
-  },
-  clear() {
-    this.store = {};
-  },
-};
+setupLocalStorageMock();
 
 test("high score management saves and retrieves correct scores", () => {
   localStorage.clear();
