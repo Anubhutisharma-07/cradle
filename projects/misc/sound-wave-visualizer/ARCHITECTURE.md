@@ -57,10 +57,13 @@ python3 -m http.server 8000
 
 ```
 sound-wave-visualizer/
-├── index.html      # App shell, canvas elements, control bar, recordings list
-├── style.css       # Dark-theme styling, responsive grid, recording rows
-├── script.js       # Web Audio API, canvas rendering, MediaRecorder integration
-└── README.md       # Complete documentation & architecture guide
+├── index.html            # App shell, canvas elements, controls, recordings list
+├── style.css             # Full dark-theme styling and responsive layout
+├── visualizerEngine.js   # Canvas frequency spectrum calculations and peak detection
+├── audioPresetsEngine.js # Synth audio presets and frequency calculations
+├── script.js             # All logic: audio graph, canvas rendering, recording, playback
+├── README.md             # User-facing documentation
+└── ARCHITECTURE.md       # This file
 ```
 
 ### Component Breakdown
