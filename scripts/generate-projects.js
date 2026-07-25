@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { execSync } = require("child_process");
 
 const PROJECTS_DIR = path.join(__dirname, "..", "projects");
 const OUTPUT_FILE = path.join(
@@ -163,7 +164,7 @@ function escapeXml(unsafe) {
 
 function generateSvgThumbnail(title, categoryName, projectAbsPath) {
   const style = CATEGORY_STYLES[categoryName] || defaultStyle;
-  
+
   // Word wrap for title
   const lines = wrapText(title, 20);
   let textY = 280;
@@ -241,6 +242,20 @@ function generateSvgThumbnail(title, categoryName, projectAbsPath) {
   fs.writeFileSync(path.join(projectAbsPath, "thumbnail.svg"), svgContent);
 }
 
+function getDateAdded(projectAbsPath) {
+  try {
+    const out = execSync(
+      `git log --diff-filter=A --follow --format=%aI -- "${projectAbsPath}"`,
+      { cwd: path.join(__dirname, ".."), encoding: "utf-8" }
+    ).trim();
+    const firstCommitDate = out.split("\n").filter(Boolean).pop();
+    if (firstCommitDate) return firstCommitDate;
+  } catch (e) {
+    // git not available or no history — fall through
+  }
+  return fs.statSync(projectAbsPath).birthtime.toISOString();
+}
+
 function generateProjects() {
   const projects = [];
 
@@ -264,15 +279,17 @@ function generateProjects() {
 
     for (const project of projectFolders) {
       const projectTitle = titleCase(project.name);
-      
+
+      const projectAbsPath = path.join(categoryPath, project.name);
+
       projects.push({
         title: projectTitle,
         category: categoryName,
-        path: `projects/${categoryName}/${project.name}/`
+        path: `projects/${categoryName}/${project.name}/`,
+        dateAdded: getDateAdded(projectAbsPath)
       });
 
       // Generate thumbnail SVG in the project folder
-      const projectAbsPath = path.join(categoryPath, project.name);
       generateSvgThumbnail(projectTitle, categoryName, projectAbsPath);
     }
   }

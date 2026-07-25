@@ -17,7 +17,7 @@ if (window.Worker) {
 
 function openDB() {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open("CradleDB", 1);
+    const request = indexedDB.open("Cradfunction renderProjects(projects)leDB", 1);
 
     request.onerror = () => reject(request.error);
 
@@ -138,6 +138,12 @@ function renderCategories() {
   });
 }
 
+function isNewProject(dateAdded) {
+  if (!dateAdded) return false;
+  const diffDays = (Date.now() - new Date(dateAdded)) / 86400000;
+  return diffDays <= 7;
+}
+
 function renderProjects(projects) {
   projectCount.textContent = `${projects.length} projects`;
 
@@ -153,6 +159,7 @@ function renderProjects(projects) {
       title: project.title,
       subtitle: project.path,
       badge: project.category,
+      isNew: isNewProject(project.dateAdded),
       image: `${project.path}thumbnail.svg`,
       footer: CradleButton.create({
         variant: "outline",
