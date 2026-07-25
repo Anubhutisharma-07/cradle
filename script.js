@@ -18,7 +18,7 @@ if (window.Worker) {
 function openDB() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(
-      "Cradfunction renderProjects(projects)leDB",
+      "CradleDB",
       1
     );
 
