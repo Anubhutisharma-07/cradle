@@ -13,10 +13,9 @@
     flex-direction: column;
     overflow: hidden;
   }
-  
   .game-container {
     flex: 1;
-    background: url("https://bhckids.org/wp-content/uploads/2015/04/background.jpg") no-repeat;
+    background: linear-gradient(to bottom, #74b9ff, #a29bfe) no-repeat;
     background-size: cover;
     background-position: center center;
     display: flex;

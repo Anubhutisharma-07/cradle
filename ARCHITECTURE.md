@@ -161,6 +161,7 @@ renderProjects() re-renders the grid with the filtered list
 - Zero-build static site: no bundler, framework, or transpilation needed to run or contribute
 - Project registry auto-generated from the folder tree (`scripts/generate-projects.js`)
 - Client-side search and category filtering, offloaded to a Web Worker when available
+- Responsive keyboard shortcuts (`/` search focus, `Esc` clear/close, `T` theme toggle, `?` helper modal)
 - IndexedDB caching of the project list for instant repeat loads, with background refresh
 - Light/dark theme with `localStorage` persistence and an inline pre-paint script to avoid a flash of the wrong theme
 - Shared, dependency-free UI component library (`src/components/ui`) usable by the landing page and, optionally, individual projects
@@ -193,6 +194,7 @@ renderProjects() re-renders the grid with the filtered list
 - `renderProjects()` - builds the project card grid
 - `applyFilters()` - dispatches filtering to the Web Worker or falls back to synchronous filtering
 - `updateClearButtonVisibility()` / `clearFilters()` - manage and reset the "Clear Filters" control
+- `toggleShortcutsModal()` / Global keydown event listener - handles accessibility keyboard navigation (`/`, `Esc`, `T`, `?`)
 
 ### `scripts/generate-projects.js`
 - `titleCase(str)` - converts a folder name (e.g. `ai-circuit-builder`) into a display title, with acronym correction (`Ai` → `AI`, `Cpu` → `CPU`)
@@ -232,11 +234,8 @@ None at runtime. The site uses only native browser APIs (DOM, `fetch`, IndexedDB
 | Space Grotesk (font) | — | Google Fonts CDN | Landing page typography |
 | live-server | — | npm, dev-only (`npm run dev`) | Local static file serving during development |
 
----
-
 ## Future Improvements
 
-- Wire up `npm test` to actually run the `tests/` suite (currently a placeholder script)
 - Add a CI check that fails if `data/projects.json` is out of date with the `projects/` folder tree
 - Add automated verification that every project folder contains both `README.md` and `ARCHITECTURE.md`
 - Derive category display labels from a shared enum instead of formatting folder names directly
@@ -246,7 +245,6 @@ None at runtime. The site uses only native browser APIs (DOM, `fetch`, IndexedDB
 ## Known Limitations
 
 - `data/projects.json` can drift from the actual `projects/` folder tree if `npm run generate` is not re-run after adding/removing a project
-- `package.json`'s `test` script is a placeholder (`echo "Error: no test specified" && exit 1`); the real tests must be run directly with Node's test runner
 - Category display names are derived mechanically from folder names (e.g. `dev-tools` → "DEV TOOLS"), which can look inconsistent for multi-word categories
 - `resolveBase()` in `src/components/ui/index.js` relies on path heuristics (looking for a `projects/` segment) to locate itself; unusual hosting setups could break it
 
@@ -262,9 +260,9 @@ None at runtime. The site uses only native browser APIs (DOM, `fetch`, IndexedDB
   ```bash
   python3 -m http.server 8000
   ```
-- Run the root-level test suite directly with Node (no test framework dependency required):
+- Run the root-level test suite:
   ```bash
-  node --test tests/
+  npm test
   ```
 - When adding a new project, follow `CONTRIBUTING.md` and copy `ARCHITECTURE_TEMPLATE.md` into the new project's own folder as its `ARCHITECTURE.md`.
 

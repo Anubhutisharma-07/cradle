@@ -1,5 +1,7 @@
 # Cradle ⟵⁠(⁠o⁠_⁠O⁠)
 
+[![Tests](https://github.com/Facelessism/cradle/actions/workflows/test.yml/badge.svg)](https://github.com/Facelessism/cradle/actions/workflows/test.yml)
+
 A personal collection of small ideas, experiments, and geeky projects I'm exploring and building.
 
 ## What this repository contains
@@ -55,6 +57,14 @@ http://localhost:8000
 ```
 4. For Individual projects
    - Open their `index.html` directly on browser 
+
+## ⌨️ Keyboard Shortcuts
+
+The Cradle landing page supports intuitive keyboard navigation:
+- `<kbd>/</kbd>` or `<kbd>Ctrl</kbd>+<kbd>K</kbd>` / `<kbd>Cmd</kbd>+<kbd>K</kbd>` — Focus the project search bar
+- `<kbd>Esc</kbd>` — Clear active search query and reset category filters / close modal dialogs
+- `<kbd>T</kbd>` — Toggle light / dark color theme
+- `<kbd>?</kbd>` — Open / close the keyboard shortcuts help dialog
 
 ## 🗂️ Architecture Documentation
 
