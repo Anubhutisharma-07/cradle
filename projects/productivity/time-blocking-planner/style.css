@@ -10,6 +10,12 @@
   --danger-color: #ef4444;
 
   --hour-height: 60px; /* 1 hour = 60px height */
+  --collision-glow: rgba(239, 68, 68, 0.8);
+}
+
+.block-collision-warning {
+  border: 2px dashed var(--danger-color) !important;
+  box-shadow: 0 0 12px var(--collision-glow) !important;
 }
 
 * {

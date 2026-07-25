@@ -21,11 +21,13 @@ Time Blocking Planner is a client-side productivity web application designed to 
 
 ```text
 projects/productivity/time-blocking-planner/
-├── index.html      # Entry point, layout grid, control bar, activity palette, modal structure
-├── style.css       # Visual styles, 24-hour timeline height tokens, block positioning, handles
-├── script.js       # Core logic, mouse drag & resize handling, storage persistence, iCal generator
-├── README.md       # Project overview and usage guidelines
-└── ARCHITECTURE.md # Project architecture documentation
+├── index.html        # Entry point, layout grid, control bar, activity palette, modal structure
+├── style.css         # Visual styles, 24-hour timeline height tokens, block positioning, handles
+├── plannerEngine.js  # Collision detection, category stats breakdown, and iCal generator
+├── plannerStorage.js # Local storage provider and JSON import/export sanitizer
+├── script.js         # Core logic, mouse drag & resize handling, storage persistence
+├── README.md         # Project overview and usage guidelines
+└── ARCHITECTURE.md   # Project architecture documentation
 ```
 
 ---

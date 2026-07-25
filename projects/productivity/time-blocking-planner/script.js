@@ -563,43 +563,11 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("No time blocks to export!");
       return;
     }
-    const cleanDate = currentDate.replace(/-/g, "");
+    const icsContent = typeof PlannerEngine !== "undefined"
+      ? PlannerEngine.generateICalendar(blocks, currentDate)
+      : "";
 
-    let icsContent = [
-      "BEGIN:VCALENDAR",
-      "VERSION:2.0",
-      "PRODID:-//Cradle//Time Blocking Planner//EN",
-      "CALSCALE:GREGORIAN",
-    ];
-
-    blocks.forEach(b => {
-      const startH = String(Math.floor(b.startMinutes / 60)).padStart(2, "0");
-      const startM = String(b.startMinutes % 60).padStart(2, "0");
-      const endH = String(Math.floor(b.endMinutes / 60)).padStart(2, "0");
-      const endM = String(b.endMinutes % 60).padStart(2, "0");
-
-      const dtStart = `${cleanDate}T${startH}${startM}00`;
-      const dtEnd = `${cleanDate}T${endH}${endM}00`;
-
-      icsContent.push(
-        "BEGIN:VEVENT",
-        `UID:${b.id}@cradle.local`,
-        `DTSTAMP:${cleanDate}T000000Z`,
-        `DTSTART:${dtStart}`,
-        `DTEND:${dtEnd}`,
-        `SUMMARY:${b.title}`,
-        `DESCRIPTION:${b.notes ? b.notes.replace(/\n/g, " ") : CATEGORY_NAMES[b.category]}`,
-        "END:VEVENT"
-      );
-    });
-
-    icsContent.push("END:VCALENDAR");
-
-    downloadFile(
-      icsContent.join("\r\n"),
-      `schedule_${currentDate}.ics`,
-      "text/calendar"
-    );
+    downloadFile(icsContent, `schedule_${currentDate}.ics`, "text/calendar");
   });
 
   // Export JSON
