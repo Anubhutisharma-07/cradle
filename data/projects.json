@@ -45,6 +45,11 @@
     "path": "projects/dev-tools/cpu-emulator/"
   },
   {
+    "title": "Css Shape Designer",
+    "category": "editor",
+    "path": "projects/editor/css-shape-designer/"
+  },
+  {
     "title": "Dot Game",
     "category": "games",
     "path": "projects/games/dot-game/"
