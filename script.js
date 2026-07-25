@@ -26,7 +26,7 @@ function openDB() {
 
     request.onsuccess = () => resolve(request.result);
 
-    request.onupgradeneeded = event => {
+    request.onupgradeneeded = (event) => {
       const db = event.target.result;
 
       if (!db.objectStoreNames.contains("projectsStore")) {
