@@ -9,29 +9,31 @@ function escapeHTML(str) {
 
 // Theme Management
 function initTheme() {
-  const savedTheme = localStorage.getItem('neuralforge_theme') || 'dark';
+  const savedTheme = localStorage.getItem("neuralforge_theme") || "dark";
   setTheme(savedTheme);
 }
 
 function setTheme(theme) {
   const html = document.documentElement;
-  const themeBtn = document.getElementById('themeToggle');
-  
-  if (theme === 'light') {
-    html.classList.add('light-theme');
-    if (themeBtn) themeBtn.innerHTML = '<i class="fas fa-sun text-orange-400"></i>';
-    localStorage.setItem('neuralforge_theme', 'light');
+  const themeBtn = document.getElementById("themeToggle");
+
+  if (theme === "light") {
+    html.classList.add("light-theme");
+    if (themeBtn)
+      themeBtn.innerHTML = '<i class="fas fa-sun text-orange-400"></i>';
+    localStorage.setItem("neuralforge_theme", "light");
   } else {
-    html.classList.remove('light-theme');
-    if (themeBtn) themeBtn.innerHTML = '<i class="fas fa-moon text-yellow-400"></i>';
-    localStorage.setItem('neuralforge_theme', 'dark');
+    html.classList.remove("light-theme");
+    if (themeBtn)
+      themeBtn.innerHTML = '<i class="fas fa-moon text-yellow-400"></i>';
+    localStorage.setItem("neuralforge_theme", "dark");
   }
 }
 
 function toggleTheme() {
   const html = document.documentElement;
-  const isLight = html.classList.contains('light-theme');
-  setTheme(isLight ? 'dark' : 'light');
+  const isLight = html.classList.contains("light-theme");
+  setTheme(isLight ? "dark" : "light");
 }
 
 // Architectural Variable State Tracker
@@ -46,12 +48,12 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function selectArch(btn) {
-  document.querySelectorAll('.arch-btn').forEach(b => {
-    b.classList.remove('bg-blue-600', 'text-white', 'border-blue-500');
-    b.classList.add('bg-gray-800', 'border-gray-700/50');
+  document.querySelectorAll(".arch-btn").forEach(b => {
+    b.classList.remove("bg-blue-600", "text-white", "border-blue-500");
+    b.classList.add("bg-gray-800", "border-gray-700/50");
   });
-  btn.classList.remove('bg-gray-800', 'border-gray-700/50');
-  btn.classList.add('bg-blue-600', 'text-white', 'border-blue-500');
+  btn.classList.remove("bg-gray-800", "border-gray-700/50");
+  btn.classList.add("bg-blue-600", "text-white", "border-blue-500");
   selectedArch = btn.dataset.arch;
 }
 
@@ -61,10 +63,10 @@ function selectArch(btn) {
  */
 function calculatePPA(goal, nodeValue, cores, freq) {
   const n = parseFloat(nodeValue); // e.g., 3, 5, 7, 10
-  
+
   // Base Transistor parameters reference normalized to a single generic processing block
   // Vdd operating voltage voltage scaling profile per node selection rules
-  let vdd = 0.75; 
+  let vdd = 0.75;
   if (n === 10) vdd = 0.95;
   else if (n === 7) vdd = 0.85;
   else if (n === 5) vdd = 0.75;
@@ -73,12 +75,13 @@ function calculatePPA(goal, nodeValue, cores, freq) {
   // Standard architectural adjustments
   let baseCapacitanceFactor = 0.045; // Farads proxy per core scalar
   let activityFactor = 0.25; // Alpha parameter tracking active gate toggles
-  
-  if (goal === "performance" || goal === "ai") activityFactor = 0.40;
+
+  if (goal === "performance" || goal === "ai") activityFactor = 0.4;
   if (goal === "power") activityFactor = 0.12;
 
   // 1. Dynamic Switching Power Formula: P = Alpha * C * V^2 * f
-  let dynamicPowerPerCore = activityFactor * baseCapacitanceFactor * Math.pow(vdd, 2) * freq;
+  let dynamicPowerPerCore =
+    activityFactor * baseCapacitanceFactor * Math.pow(vdd, 2) * freq;
   let dynamicPowerTotal = dynamicPowerPerCore * cores;
 
   // 2. Leakage (Static) Power calculation with respect to thermal/process factors
@@ -86,7 +89,7 @@ function calculatePPA(goal, nodeValue, cores, freq) {
   // Older process nodes leak more absolute current; smaller sub-5nm nodes suffer channel leakage phenomena
   let leakageFactor = (12 - n) * 0.45;
   let staticPowerTotal = baseLeakagePerCore * leakageFactor * cores;
-  
+
   if (goal === "power") staticPowerTotal *= 0.5; // Power gated configuration profile
 
   let totalPower = dynamicPowerTotal + staticPowerTotal;
@@ -98,9 +101,9 @@ function calculatePPA(goal, nodeValue, cores, freq) {
   if (selectedArch === "asic") areaFactorPerCore = 0.65;
 
   // Scaling Factor approximation formula relative to 10nm baseline floor
-  let scalingFactorNode = Math.pow((n / 10), 2);
+  let scalingFactorNode = Math.pow(n / 10, 2);
   let coreAreaTotal = cores * areaFactorPerCore * scalingFactorNode;
-  
+
   // Un-core/Peripheral baseline infrastructure addition (Memory Controllers, Crossbar Bus, NOC Area)
   let uncoreArea = 22.5 * scalingFactorNode;
   let totalArea = coreAreaTotal + uncoreArea;
@@ -109,7 +112,7 @@ function calculatePPA(goal, nodeValue, cores, freq) {
   let topsPerGHzPerCore = 0.5;
   if (selectedArch === "npu") topsPerGHzPerCore = 2.5; // Highly optimized MAC matrix array dense configuration
   if (selectedArch === "gpu") topsPerGHzPerCore = 1.2;
-  
+
   let totalTops = cores * freq * topsPerGHzPerCore;
   if (goal === "power") totalTops *= 0.85; // Under-volted pipeline logic tracking adjustments
 
@@ -125,26 +128,26 @@ function calculatePPA(goal, nodeValue, cores, freq) {
     coreArea: coreAreaTotal.toFixed(2),
     tops: totalTops.toFixed(1),
     efficiency: topsPerWatt.toFixed(2),
-    vdd: vdd
+    vdd: vdd,
   };
 }
 
 function generateDesign() {
   const name = escapeHTML(
-    document.getElementById('projectName').value.trim() || 'Unnamed_Design'
+    document.getElementById("projectName").value.trim() || "Unnamed_Design"
   );
 
-  const goal = document.getElementById('goal').value;
-  const node = document.getElementById('node').value;
-  const cores = parseInt(document.getElementById('cores').value);
-  const freq = parseFloat(document.getElementById('frequency').value);
+  const goal = document.getElementById("goal").value;
+  const node = document.getElementById("node").value;
+  const cores = parseInt(document.getElementById("cores").value);
+  const freq = parseFloat(document.getElementById("frequency").value);
 
   const ppa = calculatePPA(goal, node, cores, freq);
 
   let title = "";
   let description = "";
 
-  switch(goal) {
+  switch (goal) {
     case "performance":
       title = "High-Performance Compute Accelerator";
       description = `Max-throughput microarchitecture implementation targeting extreme workloads on an advanced ${node}nm layout stack.`;
@@ -167,7 +170,7 @@ function generateDesign() {
   }
 
   activeDesignData = {
-    id: 'proj_' + Date.now(),
+    id: "proj_" + Date.now(),
     name: name,
     title: title,
     description: description,
@@ -176,7 +179,7 @@ function generateDesign() {
     cores: cores,
     frequency: freq,
     architecture: selectedArch.toUpperCase(),
-    metrics: ppa
+    metrics: ppa,
   };
 
   renderDesignOutput();
@@ -191,9 +194,9 @@ function renderDesignOutput() {
 
   // Normalized scoring profiles for GUI progress bar representations
   let perfScore = Math.min(100, Math.round(m.tops / 4));
-  let powerScore = Math.min(100, Math.round(100 - (m.power * 1.5)));
+  let powerScore = Math.min(100, Math.round(100 - m.power * 1.5));
   if (powerScore < 5) powerScore = 12; // visual lower bounds constraint
-  let areaScore = Math.min(100, Math.round(100 - (m.area / 3)));
+  let areaScore = Math.min(100, Math.round(100 - m.area / 3));
   if (areaScore < 5) areaScore = 19;
 
   const html = `
@@ -281,64 +284,70 @@ function renderDesignOutput() {
     </div>
   `;
 
-  document.getElementById('welcome').style.display = 'none';
+  document.getElementById("welcome").style.display = "none";
 
-  const outNode = document.getElementById('designResults');
+  const outNode = document.getElementById("designResults");
   outNode.replaceChildren();
 
   const wrapper = document.createElement("div");
   wrapper.innerHTML = html; // static template only
   outNode.appendChild(wrapper);
 
-  outNode.classList.remove('hidden');
+  outNode.classList.remove("hidden");
 }
 
 /**
  * Procedural Dynamic Circuit / Silicon Floorplan Modeler
  */
 function drawCircuitDiagram(cores, architecture) {
-  const canvas = document.getElementById('circuitCanvas');
+  const canvas = document.getElementById("circuitCanvas");
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  
+  const ctx = canvas.getContext("2d");
+
   // Clean canvas area
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
+
   // Set structural context parameters
   const w = canvas.width;
   const h = canvas.height;
-  
+
   // Draw Background Grid
-  ctx.strokeStyle = '#111827';
+  ctx.strokeStyle = "#111827";
   ctx.lineWidth = 1;
   const gridSize = 20;
-  for(let x=0; x<w; x+=gridSize) {
-    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+  for (let x = 0; x < w; x += gridSize) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, h);
+    ctx.stroke();
   }
-  for(let y=0; y<h; y+=gridSize) {
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+  for (let y = 0; y < h; y += gridSize) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(w, y);
+    ctx.stroke();
   }
 
   // Draw Shared L3 Cache / NOC Bus Ring Border Box
-  ctx.strokeStyle = '#1f2937';
+  ctx.strokeStyle = "#1f2937";
   ctx.lineWidth = 2;
-  ctx.fillStyle = '#030712';
+  ctx.fillStyle = "#030712";
   ctx.fillRect(40, 30, w - 80, h - 60);
   ctx.strokeRect(40, 30, w - 80, h - 60);
 
   // Core drawing optimization boundary
   // Max out visible representations inside bounds nicely grid mapped
-  let drawCores = Math.min(cores, 32); 
+  let drawCores = Math.min(cores, 32);
   let cols = 8;
   let rows = Math.ceil(drawCores / cols);
-  
+
   let paddingX = 15;
   let paddingY = 12;
   let startX = 60;
   let startY = 45;
   let availableWidth = w - 120 - (cols - 1) * paddingX;
   let availableHeight = h - 110 - (rows - 1) * paddingY;
-  
+
   let coreW = Math.max(30, availableWidth / cols);
   let coreH = Math.max(22, availableHeight / rows);
 
@@ -350,54 +359,64 @@ function drawCircuitDiagram(cores, architecture) {
     let cy = startY + r * (coreH + paddingY);
 
     // Accent variations per structural specification selections
-    let coreColor = '#2563eb'; // NPU Royal Blue
-    if (architecture === "cpu") coreColor = '#3b82f6';
-    if (architecture === "gpu") coreColor = '#9333ea';
-    if (architecture === "asic") coreColor = '#db2777';
+    let coreColor = "#2563eb"; // NPU Royal Blue
+    if (architecture === "cpu") coreColor = "#3b82f6";
+    if (architecture === "gpu") coreColor = "#9333ea";
+    if (architecture === "asic") coreColor = "#db2777";
 
     // Core body render
-    ctx.fillStyle = 'rgba(17, 24, 39, 0.85)';
+    ctx.fillStyle = "rgba(17, 24, 39, 0.85)";
     ctx.strokeStyle = coreColor;
     ctx.lineWidth = 1.5;
     ctx.fillRect(cx, cy, coreW, coreH);
     ctx.strokeRect(cx, cy, coreW, coreH);
 
     // Internal execution line visualization
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
     ctx.beginPath();
-    ctx.moveTo(cx + coreW*0.3, cy); ctx.lineTo(cx + coreW*0.3, cy + coreH);
-    ctx.moveTo(cx + coreW*0.6, cy); ctx.lineTo(cx + coreW*0.6, cy + coreH);
+    ctx.moveTo(cx + coreW * 0.3, cy);
+    ctx.lineTo(cx + coreW * 0.3, cy + coreH);
+    ctx.moveTo(cx + coreW * 0.6, cy);
+    ctx.lineTo(cx + coreW * 0.6, cy + coreH);
     ctx.stroke();
 
     // Signal Core label
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-    ctx.font = '8px monospace';
+    ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+    ctx.font = "8px monospace";
     ctx.fillText(`C${i}`, cx + 4, cy + 12);
   }
 
   // Draw Shared L3 System Cache Block Strip at the Bottom base
-  ctx.fillStyle = 'rgba(31, 41, 55, 0.5)';
-  ctx.strokeStyle = '#eab308';
+  ctx.fillStyle = "rgba(31, 41, 55, 0.5)";
+  ctx.strokeStyle = "#eab308";
   ctx.lineWidth = 1.5;
   ctx.fillRect(60, h - 55, w - 120, 16);
   ctx.strokeRect(60, h - 55, w - 120, 16);
-  
-  ctx.fillStyle = '#eab308';
-  ctx.font = '9px monospace';
-  ctx.fillText("UNIFIED INTERCONNECT BUS & SHARED HIGH-SPEED L3 CACHE SYSTEM", 140, h - 44);
+
+  ctx.fillStyle = "#eab308";
+  ctx.font = "9px monospace";
+  ctx.fillText(
+    "UNIFIED INTERCONNECT BUS & SHARED HIGH-SPEED L3 CACHE SYSTEM",
+    140,
+    h - 44
+  );
 
   // Trace Ring Bus Peripheral Channels (Data Routing Overlay Paths)
-  ctx.strokeStyle = 'rgba(6, 182, 212, 0.3)';
+  ctx.strokeStyle = "rgba(6, 182, 212, 0.3)";
   ctx.lineWidth = 1;
   ctx.beginPath();
   // Outer peripheral line tracks
   ctx.strokeRect(48, 36, w - 96, h - 72);
   ctx.stroke();
 
-  if(cores > 32) {
-    ctx.fillStyle = 'rgba(168, 85, 247, 0.9)';
-    ctx.font = '10px sans-serif';
-    ctx.fillText(`+ ${cores - 32} Additional Core Modules Clusterized Off-Screen Layer`, 130, h - 68);
+  if (cores > 32) {
+    ctx.fillStyle = "rgba(168, 85, 247, 0.9)";
+    ctx.font = "10px sans-serif";
+    ctx.fillText(
+      `+ ${cores - 32} Additional Core Modules Clusterized Off-Screen Layer`,
+      130,
+      h - 68
+    );
   }
 }
 
@@ -405,12 +424,12 @@ function drawCircuitDiagram(cores, architecture) {
  * Storage Vault & Structural Comparison Manager Routines
  */
 function getStoredProjects() {
-  const data = localStorage.getItem('neuralforge_projects');
+  const data = localStorage.getItem("neuralforge_projects");
   return data ? JSON.parse(data) : [];
 }
 
 function getComparisonList() {
-  const data = localStorage.getItem('neuralforge_comparison');
+  const data = localStorage.getItem("neuralforge_comparison");
   return data ? JSON.parse(data) : [];
 }
 
@@ -422,19 +441,19 @@ function saveActiveProject() {
   // Avoid duplicating names inside the storage array
   projects = projects.filter(p => p.name !== activeDesignData.name);
   projects.unshift(activeDesignData);
-  localStorage.setItem('neuralforge_projects', JSON.stringify(projects));
+  localStorage.setItem("neuralforge_projects", JSON.stringify(projects));
 
   // Auto-append tracking dataset variant to visual Comparison workspace list array
   let compareList = getComparisonList();
   compareList = compareList.filter(c => c.name !== activeDesignData.name);
   compareList.push(activeDesignData);
-  localStorage.setItem('neuralforge_comparison', JSON.stringify(compareList));
+  localStorage.setItem("neuralforge_comparison", JSON.stringify(compareList));
 
   // Trigger UI Flash Confirmation Sync Updates
   renderSavedProjectsList();
   renderComparisonTable();
 
-  const status = document.getElementById('storageStatus');
+  const status = document.getElementById("storageStatus");
   status.innerText = "Project Saved Successfully!";
   status.className = "text-xs text-purple-400 font-mono animate-bounce";
   setTimeout(() => {
@@ -444,10 +463,10 @@ function saveActiveProject() {
 }
 
 function deleteProject(id, event) {
-  if(event) event.stopPropagation();
+  if (event) event.stopPropagation();
   let projects = getStoredProjects();
   projects = projects.filter(p => p.id !== id);
-  localStorage.setItem('neuralforge_projects', JSON.stringify(projects));
+  localStorage.setItem("neuralforge_projects", JSON.stringify(projects));
   renderSavedProjectsList();
 }
 
@@ -456,30 +475,36 @@ function loadSavedProject(id) {
   const found = projects.find(p => p.id === id);
   if (found) {
     // Rehydrate control UI states parameter configurations
-    document.getElementById('projectName').value = found.name;
-    document.getElementById('goal').value = found.goal;
-    document.getElementById('node').value = found.node;
-    document.getElementById('cores').value = found.cores;
-    document.getElementById('coreValue').innerText = found.cores + " Cores";
-    if(found.frequency) {
-        document.getElementById('frequency').value = found.frequency;
-        document.getElementById('freqValue').innerText = found.frequency.toFixed(2) + " GHz";
+    document.getElementById("projectName").value = found.name;
+    document.getElementById("goal").value = found.goal;
+    document.getElementById("node").value = found.node;
+    document.getElementById("cores").value = found.cores;
+    document.getElementById("coreValue").innerText = found.cores + " Cores";
+    if (found.frequency) {
+      document.getElementById("frequency").value = found.frequency;
+      document.getElementById("freqValue").innerText =
+        found.frequency.toFixed(2) + " GHz";
     }
 
     // Restore chosen architecture selection styles
-    const targetBtn = document.querySelector(`[data-arch="${found.architecture.toLowerCase()}"]`);
-    if(targetBtn) selectArch(targetBtn);
+    const targetBtn = document.querySelector(
+      `[data-arch="${found.architecture.toLowerCase()}"]`
+    );
+    if (targetBtn) selectArch(targetBtn);
 
     activeDesignData = found;
     renderDesignOutput();
-    setTimeout(() => drawCircuitDiagram(found.cores, found.architecture.toLowerCase()), 50);
+    setTimeout(
+      () => drawCircuitDiagram(found.cores, found.architecture.toLowerCase()),
+      50
+    );
   }
 }
 
 function renderSavedProjectsList() {
   const projects = getStoredProjects();
-  const container = document.getElementById('savedProjectsList');
-  document.getElementById('savedCount').innerText = projects.length;
+  const container = document.getElementById("savedProjectsList");
+  document.getElementById("savedCount").innerText = projects.length;
 
   if (projects.length === 0) {
     container.innerHTML = `<p class="text-gray-500 italic text-center py-4">No chips saved in vault yet.</p>`;
@@ -500,23 +525,21 @@ function renderSavedProjectsList() {
     left.className = "truncate mr-2";
 
     const title = document.createElement("div");
-    title.className =
-      "font-mono font-bold text-gray-200 text-xs truncate";
+    title.className = "font-mono font-bold text-gray-200 text-xs truncate";
     title.textContent = p.name;
 
     const meta = document.createElement("div");
-    meta.className =
-      "text-[10px] text-gray-400 truncate";
-    meta.textContent =
-      `${p.architecture} • ${p.node}nm • ${p.cores} Cores`;
+    meta.className = "text-[10px] text-gray-400 truncate";
+    meta.textContent = `${p.architecture} • ${p.node}nm • ${p.cores} Cores`;
 
     left.appendChild(title);
     left.appendChild(meta);
 
     const deleteBtn = document.createElement("button");
-    deleteBtn.className = "text-gray-500 hover:text-red-400 p-1 rounded opacity-0 group-hover:opacity-100 transition duration-150";
+    deleteBtn.className =
+      "text-gray-500 hover:text-red-400 p-1 rounded opacity-0 group-hover:opacity-100 transition duration-150";
     deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
-    deleteBtn.onclick = (event) => deleteProject(p.id, event);
+    deleteBtn.onclick = event => deleteProject(p.id, event);
 
     card.appendChild(left);
     card.appendChild(deleteBtn);
@@ -527,7 +550,7 @@ function renderSavedProjectsList() {
 
 function renderComparisonTable() {
   const list = getComparisonList();
-  const tbody = document.getElementById('comparisonBody');
+  const tbody = document.getElementById("comparisonBody");
 
   if (list.length === 0) {
     tbody.innerHTML = `
@@ -555,7 +578,9 @@ function renderComparisonTable() {
 
     row.children[0].textContent = c.name;
     row.children[1].textContent = `${c.node}nm`;
-    row.children[2].textContent = c.frequency ? `${c.frequency.toFixed(2)} GHz` : "2.50 GHz";
+    row.children[2].textContent = c.frequency
+      ? `${c.frequency.toFixed(2)} GHz`
+      : "2.50 GHz";
     row.children[3].textContent = `${c.metrics.power} W`;
     row.children[4].textContent = `${c.metrics.area} mm²`;
     row.children[5].textContent = `${c.metrics.tops} TOPS`;
@@ -566,16 +591,21 @@ function renderComparisonTable() {
 }
 
 function clearComparison() {
-  localStorage.setItem('neuralforge_comparison', JSON.stringify([]));
+  localStorage.setItem("neuralforge_comparison", JSON.stringify([]));
   renderComparisonTable();
 }
 
 function exportDesignToJSON() {
   if (!activeDesignData) return;
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(activeDesignData, null, 2));
-  const downloadAnchor = document.createElement('a');
+  const dataStr =
+    "data:text/json;charset=utf-8," +
+    encodeURIComponent(JSON.stringify(activeDesignData, null, 2));
+  const downloadAnchor = document.createElement("a");
   downloadAnchor.setAttribute("href", dataStr);
-  downloadAnchor.setAttribute("download", `${activeDesignData.name}_neuralforge_manifest.json`);
+  downloadAnchor.setAttribute(
+    "download",
+    `${activeDesignData.name}_neuralforge_manifest.json`
+  );
   document.body.appendChild(downloadAnchor);
   downloadAnchor.click();
   downloadAnchor.remove();

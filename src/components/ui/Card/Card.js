@@ -32,13 +32,13 @@
  */
 
 (function (global) {
-  'use strict';
+  "use strict";
 
-  const STYLE_ID = 'cradle-card-styles';
+  const STYLE_ID = "cradle-card-styles";
 
   function injectStyles() {
     if (document.getElementById(STYLE_ID)) return;
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.id = STYLE_ID;
     style.textContent = `
       /* ── Base Card ────────────────────────────────────── */
@@ -213,32 +213,32 @@
 
   /** Build a CardHeader element */
   function buildHeader({ title, subtitle, icon, badge } = {}) {
-    const header = document.createElement('div');
-    header.className = 'cradle-card__header';
+    const header = document.createElement("div");
+    header.className = "cradle-card__header";
 
     if (icon) {
-      const iconEl = document.createElement('div');
-      iconEl.className = 'cradle-card__icon';
-      iconEl.setAttribute('aria-hidden', 'true');
+      const iconEl = document.createElement("div");
+      iconEl.className = "cradle-card__icon";
+      iconEl.setAttribute("aria-hidden", "true");
       iconEl.innerHTML = icon;
       header.appendChild(iconEl);
     }
 
-    const textWrapper = document.createElement('div');
-    textWrapper.className = 'cradle-card__header-text';
+    const textWrapper = document.createElement("div");
+    textWrapper.className = "cradle-card__header-text";
 
     if (title) {
-      const titleRow = document.createElement('div');
-      titleRow.className = 'cradle-card__title-row';
+      const titleRow = document.createElement("div");
+      titleRow.className = "cradle-card__title-row";
 
-      const h = document.createElement('h3');
-      h.className = 'cradle-card__title';
+      const h = document.createElement("h3");
+      h.className = "cradle-card__title";
       h.textContent = title;
       titleRow.appendChild(h);
 
       if (badge) {
-        const b = document.createElement('span');
-        b.className = 'cradle-card__badge';
+        const b = document.createElement("span");
+        b.className = "cradle-card__badge";
         b.textContent = badge;
         titleRow.appendChild(b);
       }
@@ -247,8 +247,8 @@
     }
 
     if (subtitle) {
-      const sub = document.createElement('p');
-      sub.className = 'cradle-card__subtitle';
+      const sub = document.createElement("p");
+      sub.className = "cradle-card__subtitle";
       sub.textContent = subtitle;
       textWrapper.appendChild(sub);
     }
@@ -259,9 +259,9 @@
 
   /** Build a CardContent element */
   function buildContent({ children } = {}) {
-    const content = document.createElement('div');
-    content.className = 'cradle-card__content';
-    if (typeof children === 'string') {
+    const content = document.createElement("div");
+    content.className = "cradle-card__content";
+    if (typeof children === "string") {
       content.innerHTML = children;
     } else if (children instanceof Element) {
       content.appendChild(children);
@@ -270,10 +270,10 @@
   }
 
   /** Build a CardFooter element */
-  function buildFooter({ children, align = 'left' } = {}) {
-    const footer = document.createElement('div');
+  function buildFooter({ children, align = "left" } = {}) {
+    const footer = document.createElement("div");
     footer.className = `cradle-card__footer cradle-card__footer--${align}`;
-    if (typeof children === 'string') {
+    if (typeof children === "string") {
       footer.innerHTML = children;
     } else if (children instanceof Element) {
       footer.appendChild(children);
@@ -306,25 +306,27 @@
         footer = null,
         clickable = false,
         onClick = null,
-        className = '',
+        className = "",
         ariaLabel = null,
       } = options;
 
-      const card = document.createElement('article');
+      const card = document.createElement("article");
       card.className = [
-        'cradle-card',
-        clickable ? 'cradle-card--clickable' : '',
+        "cradle-card",
+        clickable ? "cradle-card--clickable" : "",
         className,
-      ].filter(Boolean).join(' ');
+      ]
+        .filter(Boolean)
+        .join(" ");
 
-      if (ariaLabel) card.setAttribute('aria-label', ariaLabel);
+      if (ariaLabel) card.setAttribute("aria-label", ariaLabel);
       if (clickable) {
-        card.setAttribute('role', 'button');
-        card.setAttribute('tabindex', '0');
+        card.setAttribute("role", "button");
+        card.setAttribute("tabindex", "0");
         if (onClick) {
-          card.addEventListener('click', onClick);
-          card.addEventListener('keydown', e => {
-            if (e.key === 'Enter' || e.key === ' ') {
+          card.addEventListener("click", onClick);
+          card.addEventListener("keydown", e => {
+            if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();
               onClick(e);
             }
@@ -333,19 +335,19 @@
       }
 
       if (isNew) {
-        const ribbon = document.createElement('span');
-        ribbon.className = 'cradle-card__new-ribbon';
-        ribbon.textContent = 'New';
+        const ribbon = document.createElement("span");
+        ribbon.className = "cradle-card__new-ribbon";
+        ribbon.textContent = "New";
         card.appendChild(ribbon);
       }
 
       /* Hero image */
       if (image) {
-        const img = document.createElement('img');
-        img.className = 'cradle-card__image';
+        const img = document.createElement("img");
+        img.className = "cradle-card__image";
         img.src = image;
-        img.alt = title || '';
-        img.loading = 'lazy';
+        img.alt = title || "";
+        img.loading = "lazy";
         card.appendChild(img);
       }
 
@@ -359,8 +361,8 @@
         const contentEl = buildContent({ children });
         /* If no header, add subtitle inside content as a fallback */
         if (!title && subtitle) {
-          const sub = document.createElement('p');
-          sub.className = 'cradle-card__subtitle';
+          const sub = document.createElement("p");
+          sub.className = "cradle-card__subtitle";
           sub.textContent = subtitle;
           contentEl.insertBefore(sub, contentEl.firstChild);
         }
@@ -369,10 +371,12 @@
 
       /* Footer */
       if (footer) {
-        card.appendChild(buildFooter({
-          children: footer,
-          align: options.footerAlign || 'left',
-        }));
+        card.appendChild(
+          buildFooter({
+            children: footer,
+            align: options.footerAlign || "left",
+          })
+        );
       }
 
       return card;
@@ -388,20 +392,20 @@
      */
     upgradeAll() {
       injectStyles();
-      document.querySelectorAll('[data-cradle-card]').forEach(el => {
-        el.classList.add('cradle-card');
-        if (el.dataset.clickable === 'true') {
-          el.classList.add('cradle-card--clickable');
-          el.setAttribute('tabindex', '0');
+      document.querySelectorAll("[data-cradle-card]").forEach(el => {
+        el.classList.add("cradle-card");
+        if (el.dataset.clickable === "true") {
+          el.classList.add("cradle-card--clickable");
+          el.setAttribute("tabindex", "0");
         }
 
         /* Wrap existing content in card__content if not already structured */
         const hasStructure = el.querySelector(
-          '.cradle-card__header, .cradle-card__content, .cradle-card__footer'
+          ".cradle-card__header, .cradle-card__content, .cradle-card__footer"
         );
         if (!hasStructure && el.innerHTML.trim()) {
-          const wrapper = document.createElement('div');
-          wrapper.className = 'cradle-card__content';
+          const wrapper = document.createElement("div");
+          wrapper.className = "cradle-card__content";
           while (el.firstChild) wrapper.appendChild(el.firstChild);
           el.appendChild(wrapper);
         }
@@ -420,12 +424,13 @@
     },
   };
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => CradleCard.upgradeAll());
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () =>
+      CradleCard.upgradeAll()
+    );
   } else {
     CradleCard.upgradeAll();
   }
 
   global.CradleCard = CradleCard;
-
 })(window);

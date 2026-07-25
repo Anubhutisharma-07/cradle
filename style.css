@@ -55,12 +55,8 @@ body {
   font-family: Inter, system-ui, Arial, sans-serif;
 
   background:
-    radial-gradient(circle at top,
-      rgba(37, 99, 235, 0.1),
-      transparent 45%),
-    linear-gradient(180deg,
-      var(--bg) 0%,
-      var(--bg-secondary) 100%);
+    radial-gradient(circle at top, rgba(37, 99, 235, 0.1), transparent 45%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-secondary) 100%);
 
   color: var(--text);
   line-height: 1.6;
@@ -87,11 +83,7 @@ footer {
   font-size: clamp(4.8rem, 6vw, 5rem);
   font-weight: 800;
 
-  background:
-    linear-gradient(to right,
-      #ffffff,
-      #cbd5e1,
-      #93c5fd);
+  background: linear-gradient(to right, #ffffff, #cbd5e1, #93c5fd);
 
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -99,11 +91,7 @@ footer {
 }
 
 html.light-theme .hero h1 {
-  background:
-    linear-gradient(to right,
-      #0f172a,
-      #334155,
-      #2563eb);
+  background: linear-gradient(to right, #0f172a, #334155, #2563eb);
 
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -181,8 +169,7 @@ html.light-theme .hero h1 {
 #search:focus {
   border-color: var(--accent-hover);
 
-  box-shadow:
-    0 0 0 4px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
 }
 
 .search-kbd-hint {
@@ -240,9 +227,7 @@ main {
 .projects-grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(auto-fill,
-      minmax(290px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
 
   gap: 1.25rem;
 }
@@ -257,8 +242,7 @@ footer {
 
   text-align: center;
 
-  border-top:
-    1px solid rgba(55, 65, 81, 0.3);
+  border-top: 1px solid rgba(55, 65, 81, 0.3);
 
   color: var(--muted);
 }
@@ -337,7 +321,9 @@ footer {
   border: 1px solid var(--border);
   border-radius: 50%;
 
-  box-shadow: 0 10px 15px -3px var(--shadow), 0 4px 6px -4px var(--shadow);
+  box-shadow:
+    0 10px 15px -3px var(--shadow),
+    0 4px 6px -4px var(--shadow);
   cursor: pointer;
 
   opacity: 0;
@@ -457,7 +443,9 @@ footer {
   cursor: pointer;
   padding: 0.25rem 0.5rem;
   border-radius: 6px;
-  transition: color 0.2s, background-color 0.2s;
+  transition:
+    color 0.2s,
+    background-color 0.2s;
 }
 
 .shortcuts-close-btn:hover {

@@ -1,254 +1,326 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Matrix Operations Playground</title>
-  <meta name="description" content="Perform matrix operations with interactive, step-by-step visualizations." />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Matrix Operations Playground</title>
+    <meta
+      name="description"
+      content="Perform matrix operations with interactive, step-by-step visualizations."
+    />
 
-  <!-- Fonts & Icons -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
 
-  <!-- Shared UI System Tokens -->
-  <link rel="stylesheet" href="../../../src/components/ui/tokens.css" />
-  <!-- Project Custom Stylesheet -->
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
+    <!-- Shared UI System Tokens -->
+    <link rel="stylesheet" href="../../../src/components/ui/tokens.css" />
+    <!-- Project Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- ===================== HEADER ===================== -->
+    <header class="app-header">
+      <div class="header-inner">
+        <div class="brand">
+          <span class="brand-icon"><i class="fa-solid fa-calculator"></i></span>
+          <div class="brand-text">
+            <h1>Matrix Lab</h1>
+            <p>Interactive Matrix Playground</p>
+          </div>
+        </div>
 
-  <!-- ===================== HEADER ===================== -->
-  <header class="app-header">
-    <div class="header-inner">
-      <div class="brand">
-        <span class="brand-icon"><i class="fa-solid fa-calculator"></i></span>
-        <div class="brand-text">
-          <h1>Matrix Lab</h1>
-          <p>Interactive Matrix Playground</p>
+        <div class="header-actions">
+          <!-- Theme Toggle -->
+          <button
+            type="button"
+            id="theme-toggle"
+            class="theme-toggle"
+            aria-label="Toggle dark mode"
+            aria-pressed="false"
+            title="Toggle dark mode"
+          >
+            <i class="fa-solid fa-moon" id="theme-icon"></i>
+          </button>
         </div>
       </div>
+    </header>
 
-      <div class="header-actions">
-        <!-- Theme Toggle -->
-        <button
-          type="button"
-          id="theme-toggle"
-          class="theme-toggle"
-          aria-label="Toggle dark mode"
-          aria-pressed="false"
-          title="Toggle dark mode"
-        >
-          <i class="fa-solid fa-moon" id="theme-icon"></i>
-        </button>
-      </div>
-    </div>
-  </header>
+    <!-- ===================== MAIN APP ===================== -->
+    <main class="app-container">
+      <!-- ----------- CONTROLS PANEL ----------- -->
+      <aside class="panel controls-panel" aria-label="Playground Controls">
+        <!-- Operation Selection -->
+        <section class="card">
+          <h2 class="card-title">
+            <i class="fa-solid fa-gears"></i> Operation
+          </h2>
+          <div class="op-grid">
+            <button
+              type="button"
+              class="op-btn active"
+              data-op="add"
+              title="Matrix Addition"
+            >
+              <i class="fa-solid fa-plus"></i> Add
+            </button>
+            <button
+              type="button"
+              class="op-btn"
+              data-op="multiply"
+              title="Matrix Multiplication"
+            >
+              <i class="fa-solid fa-times"></i> Multiply
+            </button>
+            <button
+              type="button"
+              class="op-btn"
+              data-op="determinant"
+              title="Matrix Determinant"
+            >
+              <i class="fa-solid fa-compress"></i> Det
+            </button>
+            <button
+              type="button"
+              class="op-btn"
+              data-op="inverse"
+              title="Matrix Inverse"
+            >
+              <i class="fa-solid fa-retweet"></i> Inverse
+            </button>
+            <button
+              type="button"
+              class="op-btn"
+              data-op="transpose"
+              title="Matrix Transpose"
+            >
+              <i class="fa-solid fa-arrows-spin"></i> Transpose
+            </button>
+          </div>
+        </section>
 
-  <!-- ===================== MAIN APP ===================== -->
-  <main class="app-container">
+        <!-- Matrix A Dimensions -->
+        <section class="card">
+          <h2 class="card-title">
+            <i class="fa-solid fa-ruler"></i> Dimensions
+          </h2>
 
-    <!-- ----------- CONTROLS PANEL ----------- -->
-    <aside class="panel controls-panel" aria-label="Playground Controls">
-      
-      <!-- Operation Selection -->
-      <section class="card">
-        <h2 class="card-title"><i class="fa-solid fa-gears"></i> Operation</h2>
-        <div class="op-grid">
-          <button type="button" class="op-btn active" data-op="add" title="Matrix Addition">
-            <i class="fa-solid fa-plus"></i> Add
-          </button>
-          <button type="button" class="op-btn" data-op="multiply" title="Matrix Multiplication">
-            <i class="fa-solid fa-times"></i> Multiply
-          </button>
-          <button type="button" class="op-btn" data-op="determinant" title="Matrix Determinant">
-            <i class="fa-solid fa-compress"></i> Det
-          </button>
-          <button type="button" class="op-btn" data-op="inverse" title="Matrix Inverse">
-            <i class="fa-solid fa-retweet"></i> Inverse
-          </button>
-          <button type="button" class="op-btn" data-op="transpose" title="Matrix Transpose">
-            <i class="fa-solid fa-arrows-spin"></i> Transpose
-          </button>
-        </div>
-      </section>
-
-      <!-- Matrix A Dimensions -->
-      <section class="card">
-        <h2 class="card-title"><i class="fa-solid fa-ruler"></i> Dimensions</h2>
-        
-        <div id="dim-container-a">
-          <label class="dim-label">Matrix A</label>
-          <div class="form-row">
-            <div class="form-group half">
-              <label for="rows-a">Rows</label>
-              <select id="rows-a" class="select-input">
-                <option value="2">2</option>
-                <option value="3" selected>3</option>
-                <option value="4">4</option>
-              </select>
+          <div id="dim-container-a">
+            <label class="dim-label">Matrix A</label>
+            <div class="form-row">
+              <div class="form-group half">
+                <label for="rows-a">Rows</label>
+                <select id="rows-a" class="select-input">
+                  <option value="2">2</option>
+                  <option value="3" selected>3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
+              <div class="form-group half">
+                <label for="cols-a">Cols</label>
+                <select id="cols-a" class="select-input">
+                  <option value="2">2</option>
+                  <option value="3" selected>3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
             </div>
-            <div class="form-group half">
-              <label for="cols-a">Cols</label>
-              <select id="cols-a" class="select-input">
-                <option value="2">2</option>
-                <option value="3" selected>3</option>
-                <option value="4">4</option>
-              </select>
+          </div>
+
+          <div id="dim-container-b" class="dim-box">
+            <label class="dim-label">Matrix B</label>
+            <div class="form-row">
+              <div class="form-group half">
+                <label for="rows-b">Rows</label>
+                <select id="rows-b" class="select-input" disabled>
+                  <!-- Linked dynamically to cols-a for multiplication, or rows-a for addition -->
+                  <option value="2">2</option>
+                  <option value="3" selected>3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
+              <div class="form-group half">
+                <label for="cols-b">Cols</label>
+                <select id="cols-b" class="select-input">
+                  <option value="2">2</option>
+                  <option value="3" selected>3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Matrix Preset Actions -->
+        <section class="card preset-card">
+          <h2 class="card-title">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Presets & Actions
+          </h2>
+          <div class="btn-grid">
+            <button type="button" id="btn-random" class="btn btn-secondary">
+              <i class="fa-solid fa-dice"></i> Fill Random
+            </button>
+            <button type="button" id="btn-identity" class="btn btn-outline">
+              <i class="fa-solid fa-signature"></i> Identity
+            </button>
+            <button type="button" id="btn-clear" class="btn btn-outline">
+              <i class="fa-solid fa-trash-can"></i> Clear All
+            </button>
+          </div>
+        </section>
+
+        <!-- Step-by-Step Visualization Player Controls -->
+        <section class="card player-card">
+          <h2 class="card-title">
+            <i class="fa-solid fa-circle-play"></i> Visual Stepper
+          </h2>
+
+          <div class="player-toolbar">
+            <button
+              type="button"
+              id="btn-prev"
+              class="btn btn-icon"
+              title="Previous Step"
+              disabled
+            >
+              <i class="fa-solid fa-step-backward"></i>
+            </button>
+            <button
+              type="button"
+              id="btn-play"
+              class="btn btn-icon btn-accent"
+              title="Play Animation"
+            >
+              <i class="fa-solid fa-play" id="play-icon"></i>
+            </button>
+            <button
+              type="button"
+              id="btn-next"
+              class="btn btn-icon"
+              title="Next Step"
+              disabled
+            >
+              <i class="fa-solid fa-step-forward"></i>
+            </button>
+            <button
+              type="button"
+              id="btn-reset-play"
+              class="btn btn-icon"
+              title="Restart"
+            >
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+          </div>
+
+          <div class="speed-control">
+            <div class="speed-label-row">
+              <label for="speed-slider">Speed</label>
+              <span id="speed-display" class="value-badge">1.0s / step</span>
+            </div>
+            <input
+              type="range"
+              id="speed-slider"
+              min="300"
+              max="2500"
+              step="100"
+              value="1000"
+              aria-label="Animation Speed"
+            />
+          </div>
+
+          <div class="step-progress-row">
+            <span class="step-progress-text" id="step-counter">Step 0 / 0</span>
+            <div class="step-progress-bar-container">
+              <div class="step-progress-bar" id="step-progress-fill"></div>
+            </div>
+          </div>
+        </section>
+      </aside>
+
+      <!-- ----------- WORKSPACE PANEL ----------- -->
+      <section class="panel workspace-panel" aria-label="Matrix Workspace">
+        <!-- Input Grid Layout -->
+        <div class="workspace-grid">
+          <!-- Matrix A Input Card -->
+          <div class="card matrix-card" id="card-matrix-a">
+            <h3 class="matrix-title">Matrix A</h3>
+            <div class="matrix-bracket-container">
+              <div class="matrix-bracket left"></div>
+              <div id="grid-a" class="matrix-grid"></div>
+              <div class="matrix-bracket right"></div>
+            </div>
+          </div>
+
+          <!-- Math Operator Display (+ / * / Det etc.) -->
+          <div class="operator-display" id="math-operator">
+            <i class="fa-solid fa-plus"></i>
+          </div>
+
+          <!-- Matrix B Input Card -->
+          <div class="card matrix-card" id="card-matrix-b">
+            <h3 class="matrix-title">Matrix B</h3>
+            <div class="matrix-bracket-container">
+              <div class="matrix-bracket left"></div>
+              <div id="grid-b" class="matrix-grid"></div>
+              <div class="matrix-bracket right"></div>
             </div>
           </div>
         </div>
 
-        <div id="dim-container-b" class="dim-box">
-          <label class="dim-label">Matrix B</label>
-          <div class="form-row">
-            <div class="form-group half">
-              <label for="rows-b">Rows</label>
-              <select id="rows-b" class="select-input" disabled>
-                <!-- Linked dynamically to cols-a for multiplication, or rows-a for addition -->
-                <option value="2">2</option>
-                <option value="3" selected>3</option>
-                <option value="4">4</option>
-              </select>
+        <!-- Live Visualization Status / Scratchpad -->
+        <div class="card visualization-card">
+          <h3 class="card-title text-accent">
+            <i class="fa-solid fa-chalkboard"></i> Calculation Details
+          </h3>
+
+          <div class="vis-details-content">
+            <!-- Text Explanation -->
+            <div id="explanation-text" class="explanation-box">
+              Adjust values and click "Play" or "Next Step" to visualize the
+              operation step-by-step.
             </div>
-            <div class="form-group half">
-              <label for="cols-b">Cols</label>
-              <select id="cols-b" class="select-input">
-                <option value="2">2</option>
-                <option value="3" selected>3</option>
-                <option value="4">4</option>
-              </select>
+
+            <!-- Formula / Math expression scratchpad -->
+            <div id="math-scratchpad" class="math-scratchpad font-mono">
+              <!-- Dynamically rendered visual equation, e.g. A[0][0]*B[0][0] + A[0][1]*B[1][0] -->
+              Waiting to start...
             </div>
           </div>
         </div>
-      </section>
 
-      <!-- Matrix Preset Actions -->
-      <section class="card preset-card">
-        <h2 class="card-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Presets & Actions</h2>
-        <div class="btn-grid">
-          <button type="button" id="btn-random" class="btn btn-secondary">
-            <i class="fa-solid fa-dice"></i> Fill Random
-          </button>
-          <button type="button" id="btn-identity" class="btn btn-outline">
-            <i class="fa-solid fa-signature"></i> Identity
-          </button>
-          <button type="button" id="btn-clear" class="btn btn-outline">
-            <i class="fa-solid fa-trash-can"></i> Clear All
-          </button>
-        </div>
-      </section>
-
-      <!-- Step-by-Step Visualization Player Controls -->
-      <section class="card player-card">
-        <h2 class="card-title"><i class="fa-solid fa-circle-play"></i> Visual Stepper</h2>
-        
-        <div class="player-toolbar">
-          <button type="button" id="btn-prev" class="btn btn-icon" title="Previous Step" disabled>
-            <i class="fa-solid fa-step-backward"></i>
-          </button>
-          <button type="button" id="btn-play" class="btn btn-icon btn-accent" title="Play Animation">
-            <i class="fa-solid fa-play" id="play-icon"></i>
-          </button>
-          <button type="button" id="btn-next" class="btn btn-icon" title="Next Step" disabled>
-            <i class="fa-solid fa-step-forward"></i>
-          </button>
-          <button type="button" id="btn-reset-play" class="btn btn-icon" title="Restart">
-            <i class="fa-solid fa-rotate-left"></i>
-          </button>
-        </div>
-
-        <div class="speed-control">
-          <div class="speed-label-row">
-            <label for="speed-slider">Speed</label>
-            <span id="speed-display" class="value-badge">1.0s / step</span>
-          </div>
-          <input type="range" id="speed-slider" min="300" max="2500" step="100" value="1000" aria-label="Animation Speed" />
-        </div>
-
-        <div class="step-progress-row">
-          <span class="step-progress-text" id="step-counter">Step 0 / 0</span>
-          <div class="step-progress-bar-container">
-            <div class="step-progress-bar" id="step-progress-fill"></div>
-          </div>
-        </div>
-      </section>
-
-    </aside>
-
-    <!-- ----------- WORKSPACE PANEL ----------- -->
-    <section class="panel workspace-panel" aria-label="Matrix Workspace">
-      
-      <!-- Input Grid Layout -->
-      <div class="workspace-grid">
-        
-        <!-- Matrix A Input Card -->
-        <div class="card matrix-card" id="card-matrix-a">
-          <h3 class="matrix-title">Matrix A</h3>
+        <!-- Result Card -->
+        <div class="card matrix-card result-card" id="card-matrix-result">
+          <h3 class="matrix-title text-accent">Result Matrix C</h3>
           <div class="matrix-bracket-container">
             <div class="matrix-bracket left"></div>
-            <div id="grid-a" class="matrix-grid"></div>
+            <div id="grid-result" class="matrix-grid result-grid"></div>
             <div class="matrix-bracket right"></div>
           </div>
         </div>
+      </section>
+    </main>
 
-        <!-- Math Operator Display (+ / * / Det etc.) -->
-        <div class="operator-display" id="math-operator">
-          <i class="fa-solid fa-plus"></i>
-        </div>
+    <footer class="app-footer">
+      <p>Built with 💖 in Cradle Math Showcase</p>
+    </footer>
 
-        <!-- Matrix B Input Card -->
-        <div class="card matrix-card" id="card-matrix-b">
-          <h3 class="matrix-title">Matrix B</h3>
-          <div class="matrix-bracket-container">
-            <div class="matrix-bracket left"></div>
-            <div id="grid-b" class="matrix-grid"></div>
-            <div class="matrix-bracket right"></div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Live Visualization Status / Scratchpad -->
-      <div class="card visualization-card">
-        <h3 class="card-title text-accent"><i class="fa-solid fa-chalkboard"></i> Calculation Details</h3>
-        
-        <div class="vis-details-content">
-          <!-- Text Explanation -->
-          <div id="explanation-text" class="explanation-box">
-            Adjust values and click "Play" or "Next Step" to visualize the operation step-by-step.
-          </div>
-
-          <!-- Formula / Math expression scratchpad -->
-          <div id="math-scratchpad" class="math-scratchpad font-mono">
-            <!-- Dynamically rendered visual equation, e.g. A[0][0]*B[0][0] + A[0][1]*B[1][0] -->
-            Waiting to start...
-          </div>
-        </div>
-      </div>
-
-      <!-- Result Card -->
-      <div class="card matrix-card result-card" id="card-matrix-result">
-        <h3 class="matrix-title text-accent">Result Matrix C</h3>
-        <div class="matrix-bracket-container">
-          <div class="matrix-bracket left"></div>
-          <div id="grid-result" class="matrix-grid result-grid"></div>
-          <div class="matrix-bracket right"></div>
-        </div>
-      </div>
-
-    </section>
-
-  </main>
-
-  <footer class="app-footer">
-    <p>Built with 💖 in Cradle Math Showcase</p>
-  </footer>
-
-  <!-- Shared BackToHome UI Component -->
-  <script src="../../../src/components/ui/BackToHome/BackToHome.js" defer></script>
-  <!-- Application Core logic -->
-  <script src="script.js"></script>
-</body>
+    <!-- Shared BackToHome UI Component -->
+    <script
+      src="../../../src/components/ui/BackToHome/BackToHome.js"
+      defer
+    ></script>
+    <!-- Application Core logic -->
+    <script src="script.js"></script>
+  </body>
 </html>

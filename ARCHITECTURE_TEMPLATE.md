@@ -88,8 +88,10 @@ Example (with Mermaid):
 ```mermaid
 graph TD
     A[index.html] --> B[script.js]
+
     B --> C[localStorage]
     B --> D[DOM Updates]
+
 ```
 -->
 
@@ -126,32 +128,40 @@ the moment they interact with it. Use a simple arrow diagram.
 
 Example:
 ```
+
 User opens index.html
-        ↓
+↓
 Browser loads style.css → script.js
-        ↓
+↓
 Initialization runs — state is set up
-        ↓
+↓
 Event listeners are attached
-        ↓
+↓
 User interacts (click / keypress)
-        ↓
+↓
 Event handler fires
-        ↓
+↓
 State updates
-        ↓
+↓
 DOM re-renders
+
 ```
 -->
 
 ```
+
 User opens index.html
-        ↓
+↓
 <!-- describe next step -->
+
         ↓
+
 <!-- describe next step -->
+
         ↓
+
 <!-- describe next step -->
+
 ```
 
 ---
@@ -351,3 +361,4 @@ Example:
 
 - <!-- Reference 1 -->
 - <!-- Reference 2 -->
+```

@@ -43,12 +43,12 @@ User searches, filters, edits, pins, completes, exports, or imports notes
 
 ## Component Breakdown
 
-| File | Responsibility |
-|---|---|
-| `index.html` | Provides the app shell, capture form, filters, insight panels, board container, and note template. |
-| `script.js` | Manages notes, auto grouping, generated tags, persistence, rendering, export/import, and user actions. |
-| `style.css` | Defines colors, responsive grids, cards, forms, note states, and mobile behavior. |
-| `README.md` | Documents how to run and use the mini project. |
+| File         | Responsibility                                                                                         |
+| ------------ | ------------------------------------------------------------------------------------------------------ |
+| `index.html` | Provides the app shell, capture form, filters, insight panels, board container, and note template.     |
+| `script.js`  | Manages notes, auto grouping, generated tags, persistence, rendering, export/import, and user actions. |
+| `style.css`  | Defines colors, responsive grids, cards, forms, note states, and mobile behavior.                      |
+| `README.md`  | Documents how to run and use the mini project.                                                         |
 
 ## Data Model
 
@@ -87,14 +87,14 @@ cradle:brain-dump-collector
 
 ## Technologies Used
 
-| Technology | Purpose |
-|---|---|
-| HTML5 | Page structure, form controls, and card template. |
-| CSS3 | Responsive dashboard layout, card styling, states, and mobile behavior. |
+| Technology         | Purpose                                                                      |
+| ------------------ | ---------------------------------------------------------------------------- |
+| HTML5              | Page structure, form controls, and card template.                            |
+| CSS3               | Responsive dashboard layout, card styling, states, and mobile behavior.      |
 | Vanilla JavaScript | State management, keyword grouping, filtering, DOM rendering, export/import. |
-| localStorage API | Persists notes between browser sessions. |
-| FileReader API | Imports JSON note backups. |
-| Blob URL API | Generates downloadable JSON exports. |
+| localStorage API   | Persists notes between browser sessions.                                     |
+| FileReader API     | Imports JSON note backups.                                                   |
+| Blob URL API       | Generates downloadable JSON exports.                                         |
 
 ## File Responsibilities
 

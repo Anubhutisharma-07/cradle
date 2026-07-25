@@ -3,6 +3,7 @@
 ## Overview
 
 The File Difference Visualizer is a tool that allows developers to compare two text inputs or files and visually highlight additions, removals, and modifications. It supports:
+
 - Side-by-side comparison mode with synchronized scrolling.
 - Unified diff mode.
 - Line-by-line highlighting with color indicators (green for additions, red for deletions, and yellow/blue for modifications).

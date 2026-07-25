@@ -57,6 +57,7 @@ projects/misc/periodic-table/
 ## System & Project Architecture
 
 The application is structured into three main layers:
+
 1. **Data Layer (`elements.js`)**: Static array of element objects containing physical constants, atomic numbers, electron shell configurations, and summaries.
 2. **Presentation Layer (`index.html`, `style.css`)**: Responsive 18-column grid layout with CSS custom properties for category color coding and glassmorphism styling.
 3. **Logic Layer (`script.js`)**: Handles filtering, search indexing, temperature state evaluation, view mode switching, and HTML5 Canvas drawing.
@@ -75,12 +76,12 @@ User Action (Search / Slider / Filter / Tile Click)
 
 ## Component Breakdown
 
-| File | Responsibility |
-|---|---|
-| `index.html` | Page markup, search input, view mode buttons, temperature slider, table container, detail modal |
-| `style.css` | 18-column CSS grid layout, category color variables, element tile micro-animations, modal styles |
-| `elements.js` | Full dataset of 118 elements with atomic properties, melting/boiling points, and shell arrays |
-| `script.js` | Grid rendering logic, state-of-matter calculator, search & category filters, canvas Bohr model renderer |
+| File          | Responsibility                                                                                          |
+| ------------- | ------------------------------------------------------------------------------------------------------- |
+| `index.html`  | Page markup, search input, view mode buttons, temperature slider, table container, detail modal         |
+| `style.css`   | 18-column CSS grid layout, category color variables, element tile micro-animations, modal styles        |
+| `elements.js` | Full dataset of 118 elements with atomic properties, melting/boiling points, and shell arrays           |
+| `script.js`   | Grid rendering logic, state-of-matter calculator, search & category filters, canvas Bohr model renderer |
 
 ---
 
@@ -106,21 +107,23 @@ User clicks an element tile → Modal opens → HTML5 Canvas draws Bohr model fo
 
 ## Technologies Used
 
-| Technology | Purpose |
-|---|---|
-| HTML5 | Semantic layout, range slider, modal structures, and `<canvas>` element |
-| CSS3 | 18-column CSS Grid, Flexbox, custom property design tokens |
-| Vanilla JavaScript | Dynamic DOM manipulation, array filtering, canvas rendering |
+| Technology         | Purpose                                                                 |
+| ------------------ | ----------------------------------------------------------------------- |
+| HTML5              | Semantic layout, range slider, modal structures, and `<canvas>` element |
+| CSS3               | 18-column CSS Grid, Flexbox, custom property design tokens              |
+| Vanilla JavaScript | Dynamic DOM manipulation, array filtering, canvas rendering             |
 
 ---
 
 ## File Responsibilities
 
 ### `elements.js`
+
 - Exports `ELEMENTS` array containing 118 element records.
 - Exports `CATEGORY_NAMES` mapping category keys to human-readable strings.
 
 ### `script.js`
+
 - `renderTable()`: Generates tile elements and positions them into grid cells.
 - `getElementState(elem, tempK)`: Determines element state at given Kelvin temperature.
 - `applyFilters()`: Toggles `.dimmed` and `.highlighted` CSS classes based on active search and category filters.

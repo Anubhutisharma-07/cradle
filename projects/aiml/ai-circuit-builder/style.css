@@ -8,13 +8,13 @@
   --accent-blue: #3b82f6;
 }
 
-
-
 body {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .bar {
@@ -91,17 +91,16 @@ html.light-theme body {
   color: #1f2937;
 }
 
-
 /* Light theme (default) */
 body {
-    color: #ffffff;
-    background: #ffffff;
+  color: #ffffff;
+  background: #ffffff;
 }
 
 /* Dark theme */
 body.dark {
-    color: #f8fafc;
-    background: #0f172a;
+  color: #f8fafc;
+  background: #0f172a;
 }
 
 html.light-theme .bg-gray-950 {

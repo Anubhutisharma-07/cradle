@@ -42,12 +42,12 @@ The related browser API updates and the UI refreshes
 
 ## Component Breakdown
 
-| File | Responsibility |
-|---|---|
-| `index.html` | Provides the app shell, summary counters, tabs, forms, and result tables. |
-| `script.js` | Reads storage APIs, performs CRUD actions, filters/searches data, and exports JSON. |
-| `style.css` | Defines the responsive dashboard layout, form controls, tables, tabs, and states. |
-| `README.md` | Explains how to run and use the mini project. |
+| File         | Responsibility                                                                      |
+| ------------ | ----------------------------------------------------------------------------------- |
+| `index.html` | Provides the app shell, summary counters, tabs, forms, and result tables.           |
+| `script.js`  | Reads storage APIs, performs CRUD actions, filters/searches data, and exports JSON. |
+| `style.css`  | Defines the responsive dashboard layout, form controls, tables, tabs, and states.   |
+| `README.md`  | Explains how to run and use the mini project.                                       |
 
 ## Key Features
 
@@ -61,15 +61,15 @@ The related browser API updates and the UI refreshes
 
 ## Technologies Used
 
-| Technology | Purpose |
-|---|---|
-| HTML5 | Page structure, forms, tables, and accessible labels. |
-| CSS3 | Responsive layout, dark dashboard styling, tabs, and table presentation. |
-| Vanilla JavaScript | DOM updates, event handling, browser storage API integration, JSON export. |
-| Web Storage API | LocalStorage and SessionStorage CRUD operations. |
-| Cookie API | Reading, creating, updating, and clearing frontend-visible cookies. |
-| IndexedDB API | Database listing, object-store reads, record writes, deletes, and demo data. |
-| Blob URL API | Generates downloadable JSON export files in the browser. |
+| Technology         | Purpose                                                                      |
+| ------------------ | ---------------------------------------------------------------------------- |
+| HTML5              | Page structure, forms, tables, and accessible labels.                        |
+| CSS3               | Responsive layout, dark dashboard styling, tabs, and table presentation.     |
+| Vanilla JavaScript | DOM updates, event handling, browser storage API integration, JSON export.   |
+| Web Storage API    | LocalStorage and SessionStorage CRUD operations.                             |
+| Cookie API         | Reading, creating, updating, and clearing frontend-visible cookies.          |
+| IndexedDB API      | Database listing, object-store reads, record writes, deletes, and demo data. |
+| Blob URL API       | Generates downloadable JSON export files in the browser.                     |
 
 ## File Responsibilities
 

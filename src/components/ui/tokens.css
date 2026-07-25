@@ -14,99 +14,100 @@
 /* ── Dark theme (default) ─────────────────────────────── */
 :root {
   /* Backgrounds */
-  --cradle-bg:           #05070d;
+  --cradle-bg: #05070d;
   --cradle-bg-secondary: #0b1220;
-  --cradle-surface:      #111827;
-  --cradle-surface-2:    #172033;
+  --cradle-surface: #111827;
+  --cradle-surface-2: #172033;
 
   /* Borders */
-  --cradle-border:       #374151;
+  --cradle-border: #374151;
   --cradle-border-hover: #4b5563;
 
   /* Text */
-  --cradle-text:         #f3f4f6;
+  --cradle-text: #f3f4f6;
   --cradle-text-secondary: #cbd5e1;
-  --cradle-muted:        #9ca3af;
+  --cradle-muted: #9ca3af;
 
   /* Accent — blue */
-  --cradle-accent:       #1e3a8a;
+  --cradle-accent: #1e3a8a;
   --cradle-accent-hover: #2563eb;
   --cradle-accent-light: rgba(37, 99, 235, 0.15);
 
   /* Semantic colours */
-  --cradle-success:      #16a34a;
-  --cradle-success-bg:   rgba(22, 163, 74, 0.12);
-  --cradle-danger:       #dc2626;
-  --cradle-danger-bg:    rgba(220, 38, 38, 0.12);
-  --cradle-warning:      #f59e0b;
-  --cradle-warning-bg:   rgba(245, 158, 11, 0.12);
+  --cradle-success: #16a34a;
+  --cradle-success-bg: rgba(22, 163, 74, 0.12);
+  --cradle-danger: #dc2626;
+  --cradle-danger-bg: rgba(220, 38, 38, 0.12);
+  --cradle-warning: #f59e0b;
+  --cradle-warning-bg: rgba(245, 158, 11, 0.12);
 
   /* Highlight (used by some projects) */
-  --cradle-highlight:    #93c5fd;
+  --cradle-highlight: #93c5fd;
 
   /* Shadows */
-  --cradle-shadow-sm:    0 4px 12px rgba(0, 0, 0, 0.2);
-  --cradle-shadow:       0 10px 30px rgba(0, 0, 0, 0.35);
-  --cradle-shadow-lg:    0 24px 60px rgba(0, 0, 0, 0.45);
+  --cradle-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --cradle-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --cradle-shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.45);
 
   /* Shape */
-  --cradle-radius-sm:    8px;
-  --cradle-radius:       14px;
-  --cradle-radius-lg:    20px;
-  --cradle-radius-pill:  999px;
+  --cradle-radius-sm: 8px;
+  --cradle-radius: 14px;
+  --cradle-radius-lg: 20px;
+  --cradle-radius-pill: 999px;
 
   /* Typography */
-  --cradle-font-body:    'Space Grotesk', Inter, system-ui, -apple-system, sans-serif;
-  --cradle-font-size-xs: 0.75rem;   /* 12px */
-  --cradle-font-size-sm: 0.875rem;  /* 14px */
-  --cradle-font-size-md: 1rem;      /* 16px */
-  --cradle-font-size-lg: 1.125rem;  /* 18px */
+  --cradle-font-body:
+    "Space Grotesk", Inter, system-ui, -apple-system, sans-serif;
+  --cradle-font-size-xs: 0.75rem; /* 12px */
+  --cradle-font-size-sm: 0.875rem; /* 14px */
+  --cradle-font-size-md: 1rem; /* 16px */
+  --cradle-font-size-lg: 1.125rem; /* 18px */
 
   /* Spacing scale */
-  --cradle-space-1:  4px;
-  --cradle-space-2:  8px;
-  --cradle-space-3:  12px;
-  --cradle-space-4:  16px;
-  --cradle-space-5:  20px;
-  --cradle-space-6:  24px;
+  --cradle-space-1: 4px;
+  --cradle-space-2: 8px;
+  --cradle-space-3: 12px;
+  --cradle-space-4: 16px;
+  --cradle-space-5: 20px;
+  --cradle-space-6: 24px;
 
   /* Motion */
-  --cradle-transition:      0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  --cradle-transition: 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   --cradle-transition-fast: 0.15s cubic-bezier(0.22, 1, 0.36, 1);
 
   /* Z-index layers */
-  --cradle-z-navbar:   1000;
+  --cradle-z-navbar: 1000;
   --cradle-z-dropdown: 1010;
-  --cradle-z-modal:    1020;
-  --cradle-z-toast:    1030;
-  --cradle-z-overlay:  99999;
+  --cradle-z-modal: 1020;
+  --cradle-z-toast: 1030;
+  --cradle-z-overlay: 99999;
 }
 
 /* ── Light theme override ─────────────────────────────── */
 html.light-theme {
-  --cradle-bg:           #f5f7fb;
+  --cradle-bg: #f5f7fb;
   --cradle-bg-secondary: #ffffff;
-  --cradle-surface:      #ffffff;
-  --cradle-surface-2:    #f1f5f9;
+  --cradle-surface: #ffffff;
+  --cradle-surface-2: #f1f5f9;
 
-  --cradle-border:       #e5e7eb;
+  --cradle-border: #e5e7eb;
   --cradle-border-hover: #d1d5db;
 
-  --cradle-text:         #0f172a;
+  --cradle-text: #0f172a;
   --cradle-text-secondary: #334155;
-  --cradle-muted:        #64748b;
+  --cradle-muted: #64748b;
 
-  --cradle-accent:       #2563eb;
+  --cradle-accent: #2563eb;
   --cradle-accent-hover: #1d4ed8;
   --cradle-accent-light: rgba(37, 99, 235, 0.1);
 
-  --cradle-success:      #16a34a;
-  --cradle-danger:       #dc2626;
-  --cradle-warning:      #f59e0b;
+  --cradle-success: #16a34a;
+  --cradle-danger: #dc2626;
+  --cradle-warning: #f59e0b;
 
-  --cradle-highlight:    #2563eb;
+  --cradle-highlight: #2563eb;
 
-  --cradle-shadow-sm:    0 4px 12px rgba(0, 0, 0, 0.06);
-  --cradle-shadow:       0 10px 30px rgba(0, 0, 0, 0.08);
-  --cradle-shadow-lg:    0 24px 60px rgba(0, 0, 0, 0.12);
+  --cradle-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --cradle-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --cradle-shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.12);
 }

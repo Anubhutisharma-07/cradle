@@ -53,11 +53,11 @@ To achieve precise cursor tracking, `script.js` listens to `mousedown`/`touchsta
 
 ## Component Breakdown
 
-| File | Responsibility |
-|---|---|
-| `index.html` | Page structure, settings sidebar (radii, colors, gradients, image input), visual canvas target area, and generated code tabs. |
-| `script.js` | Anchor coordinates, blob borders math, circle centers/radii calculations, touch/drag handlers, presets, clipboard copy, and toast popups. |
-| `style.css` | Glassmorphism card backgrounds, coordinate checkerboards, anchor drag cursors, tab active indicators, and slide-up toast animations. |
+| File         | Responsibility                                                                                                                            |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `index.html` | Page structure, settings sidebar (radii, colors, gradients, image input), visual canvas target area, and generated code tabs.             |
+| `script.js`  | Anchor coordinates, blob borders math, circle centers/radii calculations, touch/drag handlers, presets, clipboard copy, and toast popups. |
+| `style.css`  | Glassmorphism card backgrounds, coordinate checkerboards, anchor drag cursors, tab active indicators, and slide-up toast animations.      |
 
 ---
 
@@ -97,9 +97,9 @@ Compiles clean CSS text code outputs to exporter textareas
 
 ## Technologies Used
 
-| Technology | Purpose |
-|---|---|
-| HTML5 | Semantic structure, input select/range options. |
-| CSS3 | Grid layouts, drop-shadow filters, slider track selectors, and toast animations. |
-| Vanilla JavaScript (ES6) | Coordinate clamping, drag-and-drop math, clipboard copy, and point insertion. |
-| Font Awesome 6.5.1 | Icon vector graphics. |
+| Technology               | Purpose                                                                          |
+| ------------------------ | -------------------------------------------------------------------------------- |
+| HTML5                    | Semantic structure, input select/range options.                                  |
+| CSS3                     | Grid layouts, drop-shadow filters, slider track selectors, and toast animations. |
+| Vanilla JavaScript (ES6) | Coordinate clamping, drag-and-drop math, clipboard copy, and point insertion.    |
+| Font Awesome 6.5.1       | Icon vector graphics.                                                            |

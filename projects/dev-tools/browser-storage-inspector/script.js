@@ -35,15 +35,15 @@ const elements = {
 document.addEventListener("DOMContentLoaded", initializeInspector);
 
 function initializeInspector() {
-  document.querySelectorAll(".tab").forEach((tab) => {
+  document.querySelectorAll(".tab").forEach(tab => {
     tab.addEventListener("click", () => showPanel(tab.dataset.panel));
   });
 
-  document.querySelectorAll("[data-form]").forEach((form) => {
+  document.querySelectorAll("[data-form]").forEach(form => {
     form.addEventListener("submit", handleFormSubmit);
   });
 
-  document.querySelectorAll("[data-clear]").forEach((button) => {
+  document.querySelectorAll("[data-clear]").forEach(button => {
     button.addEventListener("click", () => clearStorage(button.dataset.clear));
   });
 
@@ -88,12 +88,19 @@ function readWebStorage(storage) {
 
 function readCookies() {
   storageState.cookies = document.cookie
-    ? document.cookie.split(";").map((cookie) => {
-        const separatorIndex = cookie.indexOf("=");
-        const name = decodeURIComponent(cookie.slice(0, separatorIndex).trim());
-        const value = decodeURIComponent(cookie.slice(separatorIndex + 1).trim());
-        return { key: name, value };
-      }).sort(sortByKey)
+    ? document.cookie
+        .split(";")
+        .map(cookie => {
+          const separatorIndex = cookie.indexOf("=");
+          const name = decodeURIComponent(
+            cookie.slice(0, separatorIndex).trim()
+          );
+          const value = decodeURIComponent(
+            cookie.slice(separatorIndex + 1).trim()
+          );
+          return { key: name, value };
+        })
+        .sort(sortByKey)
     : [];
 }
 
@@ -107,14 +114,16 @@ async function refreshIndexedDB() {
   if (typeof indexedDB.databases !== "function") {
     storageState.indexed = [];
     populateDatabaseSelect();
-    setStatus("This browser does not expose IndexedDB database listing. Try Seed Demo Data.");
+    setStatus(
+      "This browser does not expose IndexedDB database listing. Try Seed Demo Data."
+    );
     return;
   }
 
   const databases = await indexedDB.databases();
   storageState.databases = databases
-    .filter((database) => database.name)
-    .map((database) => ({
+    .filter(database => database.name)
+    .map(database => ({
       name: database.name,
       version: database.version || 1,
       stores: [],
@@ -130,7 +139,7 @@ async function refreshIndexedDB() {
 
       for (const storeName of database.stores) {
         const records = await readObjectStore(db, storeName);
-        records.forEach((record) => {
+        records.forEach(record => {
           storageState.indexed.push({
             database: database.name,
             store: storeName,
@@ -158,7 +167,8 @@ async function refreshIndexedDB() {
 function openDatabase(name) {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(name);
-    request.onerror = () => reject(request.error || new Error("Could not open database."));
+    request.onerror = () =>
+      reject(request.error || new Error("Could not open database."));
     request.onsuccess = () => resolve(request.result);
   });
 }
@@ -170,7 +180,8 @@ function readObjectStore(db, storeName) {
     const request = store.openCursor();
     const records = [];
 
-    request.onerror = () => reject(request.error || new Error("Could not read object store."));
+    request.onerror = () =>
+      reject(request.error || new Error("Could not read object store."));
     request.onsuccess = () => {
       const cursor = request.result;
       if (!cursor) {
@@ -188,7 +199,7 @@ function readObjectStore(db, storeName) {
 }
 
 function populateDatabaseSelect() {
-  const options = storageState.databases.map((database) => {
+  const options = storageState.databases.map(database => {
     return `<option value="${escapeHtml(database.name)}">${escapeHtml(database.name)}</option>`;
   });
 
@@ -204,11 +215,18 @@ function populateDatabaseSelect() {
 }
 
 function populateStoreSelect() {
-  const database = storageState.databases.find((item) => item.name === elements.dbSelect.value);
+  const database = storageState.databases.find(
+    item => item.name === elements.dbSelect.value
+  );
   const stores = database ? database.stores : [];
 
   elements.storeSelect.innerHTML = stores.length
-    ? stores.map((store) => `<option value="${escapeHtml(store)}">${escapeHtml(store)}</option>`).join("")
+    ? stores
+        .map(
+          store =>
+            `<option value="${escapeHtml(store)}">${escapeHtml(store)}</option>`
+        )
+        .join("")
     : '<option value="">No object stores found</option>';
 
   if (storageState.selectedStore) {
@@ -218,14 +236,19 @@ function populateStoreSelect() {
 
 function preserveIndexedSelection() {
   const previousDb = storageState.selectedDb || elements.dbSelect.value;
-  const previousStore = storageState.selectedStore || elements.storeSelect.value;
+  const previousStore =
+    storageState.selectedStore || elements.storeSelect.value;
   const firstDb = storageState.databases[0];
 
-  storageState.selectedDb = storageState.databases.some((db) => db.name === previousDb)
+  storageState.selectedDb = storageState.databases.some(
+    db => db.name === previousDb
+  )
     ? previousDb
     : firstDb?.name || "";
 
-  const selectedDatabase = storageState.databases.find((db) => db.name === storageState.selectedDb);
+  const selectedDatabase = storageState.databases.find(
+    db => db.name === storageState.selectedDb
+  );
   storageState.selectedStore = selectedDatabase?.stores.includes(previousStore)
     ? previousStore
     : selectedDatabase?.stores[0] || "";
@@ -310,9 +333,11 @@ async function saveIndexedRecord(key, value) {
           ? store.put(parsedValue)
           : store.put(parsedValue, parsedKey);
 
-      request.onerror = () => reject(request.error || new Error("Could not save IndexedDB record."));
+      request.onerror = () =>
+        reject(request.error || new Error("Could not save IndexedDB record."));
       transaction.oncomplete = () => resolve();
-      transaction.onerror = () => reject(transaction.error || new Error("IndexedDB transaction failed."));
+      transaction.onerror = () =>
+        reject(transaction.error || new Error("IndexedDB transaction failed."));
     });
     db.close();
     return true;
@@ -342,7 +367,7 @@ async function clearStorage(type) {
   }
 
   if (type === "cookies") {
-    storageState.cookies.forEach((cookie) => deleteCookie(cookie.key));
+    storageState.cookies.forEach(cookie => deleteCookie(cookie.key));
     readCookies();
   }
 
@@ -386,9 +411,11 @@ async function deleteIndexedRecord(dbName, storeName, key) {
     const store = transaction.objectStore(storeName);
     const request = store.delete(key);
 
-    request.onerror = () => reject(request.error || new Error("Could not delete IndexedDB record."));
+    request.onerror = () =>
+      reject(request.error || new Error("Could not delete IndexedDB record."));
     transaction.oncomplete = () => resolve();
-    transaction.onerror = () => reject(transaction.error || new Error("IndexedDB transaction failed."));
+    transaction.onerror = () =>
+      reject(transaction.error || new Error("IndexedDB transaction failed."));
   });
   db.close();
 }
@@ -402,9 +429,11 @@ async function deleteSelectedDatabase() {
 
   await new Promise((resolve, reject) => {
     const request = indexedDB.deleteDatabase(dbName);
-    request.onerror = () => reject(request.error || new Error("Could not delete database."));
+    request.onerror = () =>
+      reject(request.error || new Error("Could not delete database."));
     request.onsuccess = () => resolve();
-    request.onblocked = () => setStatus("Close other tabs using this database, then try again.");
+    request.onblocked = () =>
+      setStatus("Close other tabs using this database, then try again.");
   });
 
   storageState.selectedDb = "";
@@ -444,11 +473,15 @@ function renderKeyValueRows(type, entries) {
   elements.rows[type].innerHTML = "";
 
   if (!entries.length) {
-    renderEmptyRow(elements.rows[type], 3, `No ${labelFor(type)} entries found.`);
+    renderEmptyRow(
+      elements.rows[type],
+      3,
+      `No ${labelFor(type)} entries found.`
+    );
     return;
   }
 
-  entries.forEach((entry) => {
+  entries.forEach(entry => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td class="key-cell">${escapeHtml(entry.key)}</td>
@@ -465,12 +498,16 @@ function renderKeyValueRows(type, entries) {
     row.querySelector('[data-action="edit"]').addEventListener("click", () => {
       editEntry(type, entry.key, entry.value);
     });
-    row.querySelector('[data-action="export"]').addEventListener("click", () => {
-      downloadJson(`${type}-${entry.key}.json`, entry);
-    });
-    row.querySelector('[data-action="delete"]').addEventListener("click", () => {
-      deleteEntry(type, entry.key);
-    });
+    row
+      .querySelector('[data-action="export"]')
+      .addEventListener("click", () => {
+        downloadJson(`${type}-${entry.key}.json`, entry);
+      });
+    row
+      .querySelector('[data-action="delete"]')
+      .addEventListener("click", () => {
+        deleteEntry(type, entry.key);
+      });
 
     elements.rows[type].appendChild(row);
   });
@@ -481,7 +518,7 @@ function renderIndexedRows(entries) {
 
   const selectedDb = elements.dbSelect.value;
   const selectedStore = elements.storeSelect.value;
-  const scopedEntries = entries.filter((entry) => {
+  const scopedEntries = entries.filter(entry => {
     if (!selectedDb || !selectedStore) return true;
     return entry.database === selectedDb && entry.store === selectedStore;
   });
@@ -491,7 +528,7 @@ function renderIndexedRows(entries) {
     return;
   }
 
-  scopedEntries.forEach((entry) => {
+  scopedEntries.forEach(entry => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td class="key-cell">${escapeHtml(entry.database)} / ${escapeHtml(entry.store)}</td>
@@ -509,15 +546,22 @@ function renderIndexedRows(entries) {
     row.querySelector('[data-action="edit"]').addEventListener("click", () => {
       editEntry("indexed", stringifyValue(entry.key), entry.value);
     });
-    row.querySelector('[data-action="export"]').addEventListener("click", () => {
-      downloadJson(`indexeddb-${entry.database}-${entry.store}-${stringifyValue(entry.key)}.json`, entry);
-    });
-    row.querySelector('[data-action="delete"]').addEventListener("click", () => {
-      deleteEntry("indexed", entry.key, {
-        database: entry.database,
-        store: entry.store,
+    row
+      .querySelector('[data-action="export"]')
+      .addEventListener("click", () => {
+        downloadJson(
+          `indexeddb-${entry.database}-${entry.store}-${stringifyValue(entry.key)}.json`,
+          entry
+        );
       });
-    });
+    row
+      .querySelector('[data-action="delete"]')
+      .addEventListener("click", () => {
+        deleteEntry("indexed", entry.key, {
+          database: entry.database,
+          store: entry.store,
+        });
+      });
 
     elements.rows.indexed.appendChild(row);
   });
@@ -531,14 +575,14 @@ function renderEmptyRow(target, colSpan, message) {
 
 function filterEntries(entries, query) {
   if (!query) return entries;
-  return entries.filter((entry) => {
+  return entries.filter(entry => {
     return `${entry.key} ${entry.value}`.toLowerCase().includes(query);
   });
 }
 
 function filterIndexedEntries(entries, query) {
   if (!query) return entries;
-  return entries.filter((entry) => {
+  return entries.filter(entry => {
     return `${entry.database} ${entry.store} ${stringifyValue(entry.key)} ${stringifyValue(entry.value)}`
       .toLowerCase()
       .includes(query);
@@ -547,10 +591,17 @@ function filterIndexedEntries(entries, query) {
 
 async function seedDemoData() {
   localStorage.setItem("cradle:theme", "dark");
-  localStorage.setItem("cradle:user", JSON.stringify({ name: "Demo User", role: "tester" }, null, 2));
+  localStorage.setItem(
+    "cradle:user",
+    JSON.stringify({ name: "Demo User", role: "tester" }, null, 2)
+  );
   sessionStorage.setItem("cradle:active-tab", "storage-inspector");
-  sessionStorage.setItem("cradle:draft", "Remember to export the storage snapshot.");
-  document.cookie = "cradle_demo_cookie=visible_cookie_value; path=/; max-age=86400; SameSite=Lax";
+  sessionStorage.setItem(
+    "cradle:draft",
+    "Remember to export the storage snapshot."
+  );
+  document.cookie =
+    "cradle_demo_cookie=visible_cookie_value; path=/; max-age=86400; SameSite=Lax";
 
   await seedIndexedDB();
   await refreshAll();
@@ -571,14 +622,21 @@ function seedIndexedDB() {
       }
     };
 
-    request.onerror = () => reject(request.error || new Error("Could not seed IndexedDB."));
+    request.onerror = () =>
+      reject(request.error || new Error("Could not seed IndexedDB."));
     request.onsuccess = () => {
       const db = request.result;
       const transaction = db.transaction(["profiles", "events"], "readwrite");
 
-      transaction.objectStore("profiles").put({ name: "Ada", role: "admin" }, "user-1");
-      transaction.objectStore("profiles").put({ name: "Linus", role: "developer" }, "user-2");
-      transaction.objectStore("events").add({ type: "login", createdAt: new Date().toISOString() });
+      transaction
+        .objectStore("profiles")
+        .put({ name: "Ada", role: "admin" }, "user-1");
+      transaction
+        .objectStore("profiles")
+        .put({ name: "Linus", role: "developer" }, "user-2");
+      transaction
+        .objectStore("events")
+        .add({ type: "login", createdAt: new Date().toISOString() });
 
       transaction.oncomplete = () => {
         db.close();
@@ -619,10 +677,10 @@ function downloadJson(filename, data) {
 }
 
 function showPanel(panelId) {
-  document.querySelectorAll(".tab").forEach((tab) => {
+  document.querySelectorAll(".tab").forEach(tab => {
     tab.classList.toggle("active", tab.dataset.panel === panelId);
   });
-  document.querySelectorAll(".panel").forEach((panel) => {
+  document.querySelectorAll(".panel").forEach(panel => {
     panel.classList.toggle("active", panel.id === panelId);
   });
 }
