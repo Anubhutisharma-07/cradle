@@ -238,6 +238,93 @@ if (backToTopBtn) {
   });
 }
 
+// Keyboard Shortcuts Modal Toggle
+const shortcutsBtn = document.getElementById("shortcuts-btn");
+const shortcutsModal = document.getElementById("shortcuts-modal");
+const closeShortcutsBtn = document.getElementById("close-shortcuts");
+const shortcutsOverlay = document.getElementById("shortcuts-overlay");
+
+function openShortcutsModal() {
+  if (shortcutsModal) {
+    shortcutsModal.classList.add("visible");
+    shortcutsModal.setAttribute("aria-hidden", "false");
+  }
+}
+
+function closeShortcutsModal() {
+  if (shortcutsModal) {
+    shortcutsModal.classList.remove("visible");
+    shortcutsModal.setAttribute("aria-hidden", "true");
+  }
+}
+
+if (shortcutsBtn) {
+  shortcutsBtn.addEventListener("click", openShortcutsModal);
+}
+if (closeShortcutsBtn) {
+  closeShortcutsBtn.addEventListener("click", closeShortcutsModal);
+}
+if (shortcutsOverlay) {
+  shortcutsOverlay.addEventListener("click", closeShortcutsModal);
+}
+
+// Keyboard Shortcuts Listeners
+document.addEventListener("keydown", (e) => {
+  const activeEl = document.activeElement;
+  const isInputActive = activeEl && (
+    activeEl.tagName === "INPUT" ||
+    activeEl.tagName === "TEXTAREA" ||
+    activeEl.isContentEditable
+  );
+
+  // Focus Search Bar
+  if ((e.ctrlKey && e.key.toLowerCase() === "k") || (e.key === "/" && !isInputActive)) {
+    e.preventDefault();
+    if (searchInput) {
+      searchInput.focus();
+      searchInput.select();
+    }
+  }
+
+  // Close Modal or Clear search
+  if (e.key === "Escape") {
+    if (shortcutsModal && shortcutsModal.classList.contains("visible")) {
+      closeShortcutsModal();
+    } else {
+      clearFilters();
+    }
+  }
+
+  // Toggle Theme
+  if (e.key.toLowerCase() === "t" && !isInputActive) {
+    e.preventDefault();
+    if (typeof window.toggleTheme === "function") {
+      window.toggleTheme();
+    } else {
+      const isLight = document.documentElement.classList.contains("light-theme");
+      if (isLight) {
+        document.documentElement.classList.remove("light-theme");
+        localStorage.setItem("theme", "dark");
+      } else {
+        document.documentElement.classList.add("light-theme");
+        localStorage.setItem("theme", "light");
+      }
+    }
+  }
+
+  // Toggle Shortcuts Panel
+  if (e.key === "?" && !isInputActive) {
+    e.preventDefault();
+    if (shortcutsModal) {
+      if (shortcutsModal.classList.contains("visible")) {
+        closeShortcutsModal();
+      } else {
+        openShortcutsModal();
+      }
+    }
+  }
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   loadProjects();
 });

@@ -106,6 +106,18 @@ const CATEGORY_STYLES = {
       <path d="M 900 120 L 1040 260 L 820 480 L 680 500 L 720 360 Z" />
       <path d="M 850 170 L 990 310" />
     </g>`
+  },
+  math: {
+    bgStart: "#090d16",
+    bgEnd: "#1e1b4b",
+    accent: "#6366f1",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h2m6-16h2a2 2 0 012 2v12a2 2 0 01-2 2h-2M9 9h6M9 12h6M9 15h6" />`,
+    pattern: `<g opacity="0.12" fill="none" stroke="#6366f1" stroke-width="1.5">
+      <path d="M 0,337 L 1200,337 M 600,0 L 600,675" stroke-width="3" />
+      <path d="M 0,100 L 1200,100 M 0,200 L 1200,200 M 0,300 L 1200,300 M 0,400 L 1200,400 M 0,500 L 1200,500 M 0,600 L 1200,600" stroke-dasharray="6 6" />
+      <path d="M 150,0 L 150,675 M 300,0 L 300,675 M 450,0 L 450,675 M 750,0 L 750,675 M 900,0 L 900,675 M 1050,0 L 1050,675" stroke-dasharray="6 6" />
+      <path d="M 100,500 Q 300,100 600,337 T 1100,175" stroke-width="2.5" />
+    </g>`
   }
 };
 
