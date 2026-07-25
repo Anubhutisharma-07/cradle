@@ -161,7 +161,7 @@ html.light-theme .hero h1 {
 
 #search {
   width: 100%;
-  padding: 1rem 1.25rem 1rem 3rem;
+  padding: 1rem 3.5rem 1rem 3rem;
 
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -183,6 +183,27 @@ html.light-theme .hero h1 {
 
   box-shadow:
     0 0 0 4px rgba(37, 99, 235, 0.15);
+}
+
+.search-kbd-hint {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.search-kbd-hint kbd {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 
 main {

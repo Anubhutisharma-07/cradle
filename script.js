@@ -17,7 +17,7 @@ if (window.Worker) {
 
 function openDB() {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open("Cradfunction renderProjects(projects)leDB", 1);
+    const request = indexedDB.open("CradleDB", 1);
 
     request.onerror = () => reject(request.error);
 
@@ -245,76 +245,98 @@ if (backToTopBtn) {
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadProjects();
-});
-
-// Keyboard Shortcuts Modal Logic
+// Keyboard Shortcuts Modal Toggle
+const shortcutsBtn = document.getElementById("shortcuts-btn");
 const shortcutsModal = document.getElementById("shortcuts-modal");
-const shortcutsToggleBtn = document.querySelector('[aria-label="Keyboard Shortcuts"]');
 const closeShortcutsBtn = document.getElementById("close-shortcuts");
 const shortcutsOverlay = document.getElementById("shortcuts-overlay");
-const themeToggleBtn = document.getElementById("theme-toggle");
 
 function openShortcutsModal() {
   if (shortcutsModal) {
+    shortcutsModal.classList.add("visible");
     shortcutsModal.setAttribute("aria-hidden", "false");
   }
 }
 
 function closeShortcutsModal() {
   if (shortcutsModal) {
+    shortcutsModal.classList.remove("visible");
     shortcutsModal.setAttribute("aria-hidden", "true");
   }
 }
 
-function toggleShortcutsModal() {
-  if (shortcutsModal) {
-    const isHidden = shortcutsModal.getAttribute("aria-hidden") === "true";
-    if (isHidden) {
-      openShortcutsModal();
-    } else {
-      closeShortcutsModal();
-    }
-  }
+if (shortcutsBtn) {
+  shortcutsBtn.addEventListener("click", openShortcutsModal);
 }
-
-if (shortcutsToggleBtn) {
-  shortcutsToggleBtn.addEventListener("click", openShortcutsModal);
-}
-
 if (closeShortcutsBtn) {
   closeShortcutsBtn.addEventListener("click", closeShortcutsModal);
 }
-
 if (shortcutsOverlay) {
   shortcutsOverlay.addEventListener("click", closeShortcutsModal);
 }
 
-// Global Keyboard Shortcuts
+// Keyboard Shortcuts Listeners
 document.addEventListener("keydown", (e) => {
-  // Esc: Close modal or clear search
+  const activeEl = document.activeElement;
+  const isInputActive = activeEl && (
+    activeEl.tagName === "INPUT" ||
+    activeEl.tagName === "TEXTAREA" ||
+    activeEl.isContentEditable
+  );
+
+  // Focus Search Bar
+  if ((e.ctrlKey && e.key.toLowerCase() === "k") || (e.key === "/" && !isInputActive)) {
+    e.preventDefault();
+    if (searchInput) {
+      searchInput.focus();
+      searchInput.select();
+    }
+  }
+
+  // Close Modal or Clear search
   if (e.key === "Escape") {
-    if (shortcutsModal && shortcutsModal.getAttribute("aria-hidden") === "false") {
+    if (shortcutsModal && (shortcutsModal.classList.contains("visible") || shortcutsModal.getAttribute("aria-hidden") === "false")) {
       closeShortcutsModal();
-    } else if (document.activeElement === searchInput) {
+    } else {
       clearFilters();
     }
-    return;
   }
 
-  // Ignore keyboard shortcuts if focus is inside input elements
-  if (["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) {
-    return;
+  // Toggle Theme
+  if (e.key.toLowerCase() === "t" && !isInputActive) {
+    e.preventDefault();
+    const themeToggleEl = document.getElementById("themeToggle");
+    if (themeToggleEl) {
+      themeToggleEl.click();
+    } else if (typeof window.toggleTheme === "function") {
+      window.toggleTheme();
+    } else {
+      const isLight = document.documentElement.classList.contains("light-theme");
+      if (isLight) {
+        document.documentElement.classList.remove("light-theme");
+        localStorage.setItem("theme", "dark");
+      } else {
+        document.documentElement.classList.add("light-theme");
+        localStorage.setItem("theme", "light");
+      }
+    }
   }
 
-  if (e.key === "/" || (e.ctrlKey && e.key.toLowerCase() === "k")) {
+  // Toggle Shortcuts Panel
+  if (e.key === "?" && !isInputActive) {
     e.preventDefault();
-    if (searchInput) searchInput.focus();
-  } else if (e.key === "?") {
-    e.preventDefault();
-    toggleShortcutsModal();
-  } else if (e.key.toLowerCase() === "t") {
-    if (themeToggleBtn) themeToggleBtn.click();
+    if (shortcutsModal) {
+      const isVisible = shortcutsModal.classList.contains("visible") || shortcutsModal.getAttribute("aria-hidden") === "false";
+      if (isVisible) {
+        closeShortcutsModal();
+      } else {
+        openShortcutsModal();
+      }
+    }
   }
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadProjects();
+});
+
