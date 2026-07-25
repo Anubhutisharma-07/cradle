@@ -17,6 +17,11 @@
     "path": "projects/productivity/advanced-qr-code-generator/"
   },
   {
+    "title": "Advanced Qr Code Generator",
+    "category": "productivity",
+    "path": "projects/productivity/advanced-qr-code-generator/"
+  },
+  {
     "title": "AI Circuit Builder",
     "category": "aiml",
     "path": "projects/aiml/ai-circuit-builder/",
@@ -33,6 +38,11 @@
     "category": "productivity",
     "path": "projects/productivity/brain-dump-collector/",
     "dateAdded": "2026-07-23T22:27:35+05:30"
+  },
+  {
+    "title": "Brain Dump Collector",
+    "category": "productivity",
+    "path": "projects/productivity/brain-dump-collector/"
   },
   {
     "title": "Brain Dump Collector",
@@ -79,6 +89,16 @@
     "category": "file-tools",
     "path": "projects/file-tools/file-difference-visualizer/",
     "dateAdded": "2026-07-24T02:10:21+05:30"
+  },
+  {
+    "title": "File Difference Visualizer",
+    "category": "file-tools",
+    "path": "projects/file-tools/file-difference-visualizer/"
+  },
+  {
+    "title": "Encoding Toolkit",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/encoding-toolkit/"
   },
   {
     "title": "File Difference Visualizer",
