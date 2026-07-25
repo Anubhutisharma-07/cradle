@@ -7,7 +7,7 @@
   --theme-accent: #6366f1;
   --theme-accent-hover: #4f46e5;
   --theme-accent-light: rgba(99, 102, 241, 0.15);
-  
+
   --cell-size: 56px;
   --bracket-width: 12px;
 }
@@ -22,7 +22,9 @@ body {
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
-  transition: background-color var(--cradle-transition), color var(--cradle-transition);
+  transition:
+    background-color var(--cradle-transition),
+    color var(--cradle-transition);
 }
 
 /* ===================== HEADER ===================== */
@@ -70,7 +72,11 @@ body {
   font-size: 1.25rem;
   font-weight: 800;
   letter-spacing: -0.5px;
-  background: linear-gradient(to right, var(--cradle-text), var(--theme-accent));
+  background: linear-gradient(
+    to right,
+    var(--cradle-text),
+    var(--theme-accent)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -129,7 +135,9 @@ body {
   padding: var(--cradle-space-5);
   margin-bottom: var(--cradle-space-5);
   box-shadow: var(--cradle-shadow-sm);
-  transition: border-color var(--cradle-transition), box-shadow var(--cradle-transition);
+  transition:
+    border-color var(--cradle-transition),
+    box-shadow var(--cradle-transition);
 }
 
 .card:hover {
@@ -531,13 +539,15 @@ input[type="range"]::-webkit-slider-thumb:hover {
   color: var(--cradle-text);
   border-radius: var(--cradle-radius-sm);
   text-align: center;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   font-size: 1rem;
   font-weight: 600;
   outline: none;
   padding: 0;
   box-sizing: border-box;
-  transition: all var(--cradle-transition-fast), opacity var(--cradle-transition);
+  transition:
+    all var(--cradle-transition-fast),
+    opacity var(--cradle-transition);
 }
 
 .matrix-cell:hover:not(:disabled) {
@@ -556,7 +566,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   -webkit-appearance: none;
   margin: 0;
 }
-.matrix-cell[type=number] {
+.matrix-cell[type="number"] {
   -moz-appearance: textfield;
 }
 
@@ -593,9 +603,15 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 @keyframes pulseHighlight {
-  0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
-  70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+  }
 }
 
 /* Result Card */

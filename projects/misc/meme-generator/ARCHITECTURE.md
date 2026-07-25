@@ -1,6 +1,7 @@
 # Meme Generator Studio Architecture Documentation
 
 ## Overview
+
 The Meme Generator Studio is an interactive HTML5 Canvas meme creation tool. It features custom text overlay rendering, real-time typography styling, custom file uploads, random meme API ingestion, preset saving via LocalStorage, and image export capabilities.
 
 ## Architecture & Data Flow
@@ -28,6 +29,7 @@ The Meme Generator Studio is an interactive HTML5 Canvas meme creation tool. It 
 ```
 
 ## Modular Components
+
 - `memeEngine.js`: Text wrapping math and HTML5 2D canvas drawing logic.
 - `memeStorage.js`: Storage manager for keeping history of up to 10 meme presets in `localStorage`.
 - `script.js`: DOM binding layer, event listeners, and API fetcher.

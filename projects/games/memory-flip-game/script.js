@@ -3,10 +3,38 @@
 // ---------------------------------------------------------
 
 const SYMBOLS = [
-  "🍀","🍄","🍁","🌵","🌸","🌙","⭐","☀️",
-  "⚡","❄️","🔥","🌊","🍉","🍋","🍒","🍇",
-  "🦊","🐼","🐢","🐙","🦋","🐝","🐳","🦄",
-  "🎈","🎲","🎯","🎧","🧩","🔑","💎","🚀"
+  "🍀",
+  "🍄",
+  "🍁",
+  "🌵",
+  "🌸",
+  "🌙",
+  "⭐",
+  "☀️",
+  "⚡",
+  "❄️",
+  "🔥",
+  "🌊",
+  "🍉",
+  "🍋",
+  "🍒",
+  "🍇",
+  "🦊",
+  "🐼",
+  "🐢",
+  "🐙",
+  "🦋",
+  "🐝",
+  "🐳",
+  "🦄",
+  "🎈",
+  "🎲",
+  "🎯",
+  "🎧",
+  "🧩",
+  "🔑",
+  "💎",
+  "🚀",
 ];
 
 const homeScreen = document.getElementById("homeScreen");
@@ -39,16 +67,17 @@ let boardLocked = false;
 function updateHighScoreDisplays() {
   const stdScore = getHighScore("standard");
   const chgScore = getHighScore("challenge");
-  if (bestStandardEl) bestStandardEl.textContent = stdScore !== null ? stdScore : "--";
-  if (bestChallengeEl) bestChallengeEl.textContent = chgScore !== null ? chgScore : "--";
+  if (bestStandardEl)
+    bestStandardEl.textContent = stdScore !== null ? stdScore : "--";
+  if (bestChallengeEl)
+    bestChallengeEl.textContent = chgScore !== null ? chgScore : "--";
 }
-
 
 // ---------------------------------------------------------
 // Screen switching
 // ---------------------------------------------------------
 
-function showScreen(screen){
+function showScreen(screen) {
   homeScreen.hidden = screen !== "home";
   gameScreen.hidden = screen !== "game";
   resultScreen.hidden = screen !== "result";
@@ -59,26 +88,26 @@ function showScreen(screen){
 // Game setup
 // ---------------------------------------------------------
 
-function shuffle(array){
-  for (let i = array.length - 1; i > 0; i--){
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
 }
 
-function buildDeck(){
+function buildDeck() {
   const deck = shuffle([...SYMBOLS, ...SYMBOLS]);
   return deck.map((symbol, index) => ({ id: index, symbol }));
 }
 
-function startGame(){
+function startGame() {
   flippedCards = [];
   matchedPairs = 0;
   flipCount = 0;
   flipsLeft = MAX_FLIPS_CHALLENGE;
   boardLocked = false;
-  
+
   if (gameModeSelect) {
     currentMode = gameModeSelect.value;
   }
@@ -122,16 +151,20 @@ function startGame(){
 // Game logic
 // ---------------------------------------------------------
 
-function onCardClick(card){
+function onCardClick(card) {
   if (boardLocked) return;
-  if (card.classList.contains("is-flipped") || card.classList.contains("is-matched")) return;
+  if (
+    card.classList.contains("is-flipped") ||
+    card.classList.contains("is-matched")
+  )
+    return;
   if (flippedCards.length === 2) return;
   if (currentMode === "challenge" && flipsLeft <= 0) return;
 
   card.classList.add("is-flipped");
   flippedCards.push(card);
 
-  if (flippedCards.length === 2){
+  if (flippedCards.length === 2) {
     if (currentMode === "challenge") {
       flipsLeft--;
       if (flipsLeftEl) flipsLeftEl.textContent = flipsLeft;
@@ -143,18 +176,18 @@ function onCardClick(card){
   }
 }
 
-function checkForMatch(){
+function checkForMatch() {
   const [first, second] = flippedCards;
   const isMatch = first.dataset.symbol === second.dataset.symbol;
 
-  if (isMatch){
+  if (isMatch) {
     first.classList.add("is-matched");
     second.classList.add("is-matched");
     flippedCards = [];
     matchedPairs++;
     matchCountEl.textContent = `${matchedPairs} / ${SYMBOLS.length}`;
 
-    if (matchedPairs === SYMBOLS.length){
+    if (matchedPairs === SYMBOLS.length) {
       setTimeout(() => endGame(true), 500);
     } else if (currentMode === "challenge" && flipsLeft <= 0) {
       setTimeout(() => endGame(false), 500);
@@ -170,36 +203,46 @@ function checkForMatch(){
       flippedCards = [];
       boardLocked = false;
 
-      if (currentMode === "challenge" && flipsLeft <= 0 && matchedPairs < SYMBOLS.length) {
+      if (
+        currentMode === "challenge" &&
+        flipsLeft <= 0 &&
+        matchedPairs < SYMBOLS.length
+      ) {
         endGame(false);
       }
     }, 700);
   }
 }
 
-function endGame(victory){
+function endGame(victory) {
   if (newRecordMsg) newRecordMsg.hidden = true;
 
   if (victory) {
     if (resultLabel) resultLabel.textContent = "Board cleared";
     if (currentMode === "standard") {
       if (finalFlipsEl) finalFlipsEl.textContent = flipCount;
-      if (resultTitle) resultTitle.innerHTML = `Solved in <span id="finalFlips">${flipCount}</span> flips`;
-      if (resultCopy) resultCopy.textContent = "Every pair found. Great memory!";
+      if (resultTitle)
+        resultTitle.innerHTML = `Solved in <span id="finalFlips">${flipCount}</span> flips`;
+      if (resultCopy)
+        resultCopy.textContent = "Every pair found. Great memory!";
       const isNew = saveHighScore(flipCount, "standard");
       if (newRecordMsg && isNew) newRecordMsg.hidden = false;
     } else {
       const spent = MAX_FLIPS_CHALLENGE - flipsLeft;
       if (finalFlipsEl) finalFlipsEl.textContent = spent;
-      if (resultTitle) resultTitle.innerHTML = `Solved in <span id="finalFlips">${spent}</span> flips`;
-      if (resultCopy) resultCopy.textContent = "Every pair found in challenge mode!";
+      if (resultTitle)
+        resultTitle.innerHTML = `Solved in <span id="finalFlips">${spent}</span> flips`;
+      if (resultCopy)
+        resultCopy.textContent = "Every pair found in challenge mode!";
       const isNew = saveHighScore(spent, "challenge");
       if (newRecordMsg && isNew) newRecordMsg.hidden = false;
     }
   } else {
     if (resultLabel) resultLabel.textContent = "Game Over";
     if (resultTitle) resultTitle.innerHTML = "Out of Flips!";
-    if (resultCopy) resultCopy.textContent = "You ran out of flips in Challenge Mode. Try again!";
+    if (resultCopy)
+      resultCopy.textContent =
+        "You ran out of flips in Challenge Mode. Try again!";
   }
 
   showScreen("result");
@@ -216,4 +259,3 @@ document.getElementById("playAgainBtn").addEventListener("click", startGame);
 
 // Initialize High Scores on load
 updateHighScoreDisplays();
-

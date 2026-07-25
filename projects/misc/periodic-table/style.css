@@ -34,7 +34,11 @@
 }
 
 body {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    "Outfit",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   background-color: var(--bg-dark);
   color: var(--text-main);
   min-height: 100vh;
@@ -184,7 +188,8 @@ body {
   transition: all 0.2s ease;
 }
 
-.mode-btn.active, .mode-btn:hover {
+.mode-btn.active,
+.mode-btn:hover {
   background: var(--accent-color);
   color: #fff;
   border-color: var(--accent-color);
@@ -225,10 +230,11 @@ body {
   cursor: pointer;
 }
 
-.temp-min, .temp-max {
+.temp-min,
+.temp-max {
   font-size: 0.75rem;
   color: var(--text-muted);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
 }
 
 .btn-sm {
@@ -266,7 +272,8 @@ body {
   transition: all 0.2s ease;
 }
 
-.cat-pill:hover, .cat-pill.active {
+.cat-pill:hover,
+.cat-pill.active {
   color: var(--text-main);
   background: var(--bg-hover);
   transform: translateY(-1px);
@@ -301,7 +308,10 @@ body {
   justify-content: space-between;
   cursor: pointer;
   position: relative;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.2s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.2s ease;
   user-select: none;
 }
 
@@ -330,7 +340,7 @@ body {
 }
 
 .atomic-num {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   font-weight: 600;
 }
 
@@ -341,10 +351,18 @@ body {
   display: inline-block;
 }
 
-.state-indicator.solid { background: #10b981; }
-.state-indicator.liquid { background: #38bdf8; }
-.state-indicator.gas { background: #f43f5e; }
-.state-indicator.synthetic { background: #94a3b8; }
+.state-indicator.solid {
+  background: #10b981;
+}
+.state-indicator.liquid {
+  background: #38bdf8;
+}
+.state-indicator.gas {
+  background: #f43f5e;
+}
+.state-indicator.synthetic {
+  background: #94a3b8;
+}
 
 .symbol {
   font-size: 1.25rem;
@@ -369,20 +387,47 @@ body {
 
 .mass {
   font-size: 0.6rem;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   color: #64748b;
 }
 
 /* Category Specific Left Border Accent */
-.element-tile[data-category="reactive-nonmetal"] { --cat-color: var(--cat-reactive-nonmetal); border-top: 3px solid var(--cat-reactive-nonmetal); }
-.element-tile[data-category="noble-gas"] { --cat-color: var(--cat-noble-gas); border-top: 3px solid var(--cat-noble-gas); }
-.element-tile[data-category="alkali-metal"] { --cat-color: var(--cat-alkali-metal); border-top: 3px solid var(--cat-alkali-metal); }
-.element-tile[data-category="alkaline-earth-metal"] { --cat-color: var(--cat-alkaline-earth-metal); border-top: 3px solid var(--cat-alkaline-earth-metal); }
-.element-tile[data-category="metalloid"] { --cat-color: var(--cat-metalloid); border-top: 3px solid var(--cat-metalloid); }
-.element-tile[data-category="post-transition-metal"] { --cat-color: var(--cat-post-transition-metal); border-top: 3px solid var(--cat-post-transition-metal); }
-.element-tile[data-category="transition-metal"] { --cat-color: var(--cat-transition-metal); border-top: 3px solid var(--cat-transition-metal); }
-.element-tile[data-category="lanthanide"] { --cat-color: var(--cat-lanthanide); border-top: 3px solid var(--cat-lanthanide); }
-.element-tile[data-category="actinide"] { --cat-color: var(--cat-actinide); border-top: 3px solid var(--cat-actinide); }
+.element-tile[data-category="reactive-nonmetal"] {
+  --cat-color: var(--cat-reactive-nonmetal);
+  border-top: 3px solid var(--cat-reactive-nonmetal);
+}
+.element-tile[data-category="noble-gas"] {
+  --cat-color: var(--cat-noble-gas);
+  border-top: 3px solid var(--cat-noble-gas);
+}
+.element-tile[data-category="alkali-metal"] {
+  --cat-color: var(--cat-alkali-metal);
+  border-top: 3px solid var(--cat-alkali-metal);
+}
+.element-tile[data-category="alkaline-earth-metal"] {
+  --cat-color: var(--cat-alkaline-earth-metal);
+  border-top: 3px solid var(--cat-alkaline-earth-metal);
+}
+.element-tile[data-category="metalloid"] {
+  --cat-color: var(--cat-metalloid);
+  border-top: 3px solid var(--cat-metalloid);
+}
+.element-tile[data-category="post-transition-metal"] {
+  --cat-color: var(--cat-post-transition-metal);
+  border-top: 3px solid var(--cat-post-transition-metal);
+}
+.element-tile[data-category="transition-metal"] {
+  --cat-color: var(--cat-transition-metal);
+  border-top: 3px solid var(--cat-transition-metal);
+}
+.element-tile[data-category="lanthanide"] {
+  --cat-color: var(--cat-lanthanide);
+  border-top: 3px solid var(--cat-lanthanide);
+}
+.element-tile[data-category="actinide"] {
+  --cat-color: var(--cat-actinide);
+  border-top: 3px solid var(--cat-actinide);
+}
 
 /* Lanthanide & Actinide Row */
 .f-block-wrapper {
@@ -418,7 +463,10 @@ body {
 /* Modal */
 .modal-backdrop {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(4px);
   display: flex;
@@ -447,8 +495,14 @@ body {
 }
 
 @keyframes modalIn {
-  from { opacity: 0; transform: scale(0.95) translateY(10px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .modal-close {
@@ -515,7 +569,7 @@ body {
 }
 
 .hero-number {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   font-size: 0.9rem;
   color: var(--text-muted);
   align-self: flex-start;
@@ -534,7 +588,7 @@ body {
 }
 
 .hero-mass {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   font-size: 0.85rem;
   color: var(--text-muted);
   margin-top: 0.25rem;
@@ -559,7 +613,7 @@ body {
 }
 
 .shell-text {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   font-size: 0.75rem;
   color: var(--text-muted);
   margin-top: 0.4rem;
@@ -603,7 +657,7 @@ body {
 }
 
 .font-mono {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
 }
 
 .element-summary {

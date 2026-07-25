@@ -3,12 +3,7 @@ const path = require("path");
 const { execSync } = require("child_process");
 
 const PROJECTS_DIR = path.join(__dirname, "..", "projects");
-const OUTPUT_FILE = path.join(
-  __dirname,
-  "..",
-  "data",
-  "projects.json"
-);
+const OUTPUT_FILE = path.join(__dirname, "..", "data", "projects.json");
 
 const CATEGORY_STYLES = {
   aiml: {
@@ -31,7 +26,7 @@ const CATEGORY_STYLES = {
       <circle cx="700" cy="500" r="9" fill="#a21caf" />
       <circle cx="900" cy="200" r="16" fill="#d946ef" />
       <circle cx="1100" cy="450" r="11" fill="#a21caf" />
-    </g>`
+    </g>`,
   },
   games: {
     bgStart: "#0f051d",
@@ -46,7 +41,7 @@ const CATEGORY_STYLES = {
       <circle cx="80" cy="450" r="40" fill="none" stroke="#ea580c" stroke-width="2" />
       <circle cx="500" cy="500" r="60" fill="none" stroke="#ea580c" stroke-width="2" />
       <path d="M 800,100 L 950,250 M 150,550 L 300,400" stroke="#ea580c" stroke-width="2" />
-    </g>`
+    </g>`,
   },
   productivity: {
     bgStart: "#022c22",
@@ -58,7 +53,7 @@ const CATEGORY_STYLES = {
       <path d="M 150,0 L 150,675 M 300,0 L 300,675 M 450,0 L 450,675 M 600,0 L 600,675 M 750,0 L 750,675 M 900,0 L 900,675 M 1050,0 L 1050,675" />
       <rect x="330" y="230" width="80" height="40" rx="5" fill="#10b981" opacity="0.3" />
       <rect x="780" y="430" width="80" height="40" rx="5" fill="#10b981" opacity="0.3" />
-    </g>`
+    </g>`,
   },
   "dev-tools": {
     bgStart: "#030712",
@@ -69,7 +64,7 @@ const CATEGORY_STYLES = {
       <path d="M -100,200 L 1300,550 M -100,250 L 1300,600 M -100,150 L 1300,500" />
       <path d="M 200,-100 L 550,800 M 250,-100 L 600,800 M 150,-100 L 500,800" />
       <path d="M 800,-100 L 1150,800 M 850,-100 L 1200,800 M 750,-100 L 1100,800" />
-    </g>`
+    </g>`,
   },
   misc: {
     bgStart: "#18001e",
@@ -83,7 +78,7 @@ const CATEGORY_STYLES = {
       <circle cx="600" cy="337" r="400" fill="none" stroke="#c084fc" stroke-width="1" />
       <line x1="600" y1="37" x2="600" y2="637" stroke="#c084fc" stroke-width="1" opacity="0.3" />
       <line x1="300" y1="337" x2="900" y2="337" stroke="#c084fc" stroke-width="1" opacity="0.3" />
-    </g>`
+    </g>`,
   },
   "file-tools": {
     bgStart: "#060913",
@@ -93,7 +88,7 @@ const CATEGORY_STYLES = {
     pattern: `<g opacity="0.1" fill="none" stroke="#38bdf8" stroke-width="2">
       <path d="M 0,150 L 1200,450 M 0,250 L 1200,550 M 0,50 L 1200,350" />
       <circle cx="600" cy="337" r="150" stroke-dasharray="8 8" />
-    </g>`
+    </g>`,
   },
   editor: {
     bgStart: "#080b16",
@@ -106,7 +101,7 @@ const CATEGORY_STYLES = {
       <rect x="90" y="110" width="720" height="330" rx="18" />
       <path d="M 900 120 L 1040 260 L 820 480 L 680 500 L 720 360 Z" />
       <path d="M 850 170 L 990 310" />
-    </g>`
+    </g>`,
   },
   math: {
     bgStart: "#090d16",
@@ -118,8 +113,8 @@ const CATEGORY_STYLES = {
       <path d="M 0,100 L 1200,100 M 0,200 L 1200,200 M 0,300 L 1200,300 M 0,400 L 1200,400 M 0,500 L 1200,500 M 0,600 L 1200,600" stroke-dasharray="6 6" />
       <path d="M 150,0 L 150,675 M 300,0 L 300,675 M 450,0 L 450,675 M 750,0 L 750,675 M 900,0 L 900,675 M 1050,0 L 1050,675" stroke-dasharray="6 6" />
       <path d="M 100,500 Q 300,100 600,337 T 1100,175" stroke-width="2.5" />
-    </g>`
-  }
+    </g>`,
+  },
 };
 
 const defaultStyle = {
@@ -130,7 +125,7 @@ const defaultStyle = {
   pattern: `<g opacity="0.1" stroke="#3b82f6" stroke-width="1.5" fill="none">
     <circle cx="200" cy="200" r="150" />
     <circle cx="1000" cy="475" r="250" />
-  </g>`
+  </g>`,
 };
 
 function titleCase(str) {
@@ -139,8 +134,8 @@ function titleCase(str) {
     .replace(/\b\w/g, char => char.toUpperCase());
 
   const acronyms = {
-    "Ai": "AI",
-    "Cpu": "CPU"
+    Ai: "AI",
+    Cpu: "CPU",
   };
 
   return title.replace(/\b(Ai|Cpu)\b/g, match => acronyms[match]);
@@ -163,13 +158,18 @@ function wrapText(text, maxChars = 20) {
 }
 
 function escapeXml(unsafe) {
-  return unsafe.replace(/[<>&'"]/g, (c) => {
+  return unsafe.replace(/[<>&'"]/g, c => {
     switch (c) {
-      case "<": return "&lt;";
-      case ">": return "&gt;";
-      case "&": return "&amp;";
-      case "'": return "&apos;";
-      case "\"": return "&quot;";
+      case "<":
+        return "&lt;";
+      case ">":
+        return "&gt;";
+      case "&":
+        return "&amp;";
+      case "'":
+        return "&apos;";
+      case '"':
+        return "&quot;";
     }
   });
 }
@@ -185,7 +185,10 @@ function generateSvgThumbnail(title, categoryName, projectAbsPath) {
   else textY = 260;
 
   const textMarkup = lines
-    .map((line, i) => `<text x="100" y="${textY + i * 75}" font-family="'Space Grotesk', Inter, system-ui, sans-serif" font-size="64" font-weight="800" fill="#ffffff" letter-spacing="-1.5">${escapeXml(line)}</text>`)
+    .map(
+      (line, i) =>
+        `<text x="100" y="${textY + i * 75}" font-family="'Space Grotesk', Inter, system-ui, sans-serif" font-size="64" font-weight="800" fill="#ffffff" letter-spacing="-1.5">${escapeXml(line)}</text>`
+    )
     .join("\n");
 
   const badgeWidth = Math.max(120, categoryName.length * 10 + 40);
@@ -278,14 +281,11 @@ function generateProjects() {
   for (const category of categories) {
     const categoryName = category.name;
 
-    const categoryPath = path.join(
-      PROJECTS_DIR,
-      categoryName
-    );
+    const categoryPath = path.join(PROJECTS_DIR, categoryName);
 
     const projectFolders = fs
       .readdirSync(categoryPath, {
-        withFileTypes: true
+        withFileTypes: true,
       })
       .filter(dirent => dirent.isDirectory());
 
@@ -298,7 +298,7 @@ function generateProjects() {
         title: projectTitle,
         category: categoryName,
         path: `projects/${categoryName}/${project.name}/`,
-        dateAdded: getDateAdded(projectAbsPath)
+        dateAdded: getDateAdded(projectAbsPath),
       });
 
       // Generate thumbnail SVG in the project folder
@@ -306,14 +306,9 @@ function generateProjects() {
     }
   }
 
-  projects.sort((a, b) =>
-    a.title.localeCompare(b.title)
-  );
+  projects.sort((a, b) => a.title.localeCompare(b.title));
 
-  fs.writeFileSync(
-    OUTPUT_FILE,
-    JSON.stringify(projects, null, 2)
-  );
+  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(projects, null, 2));
 
   console.log(
     `Generated ${projects.length} projects & thumbnails → data/projects.json`

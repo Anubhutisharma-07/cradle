@@ -9,11 +9,12 @@ A personal collection of small ideas, experiments, and geeky projects I'm explor
 Cradle is a repository for my small ideas, experiments and lightweight prototypes. It contains runnable demos, maybe eventually some short technical notes and utility scripts intended for rapid iteration and learning.
 
 ## Each project folder would include:
-- a short `README.md` describing the goal and how to run or test it,  
+
+- a short `README.md` describing the goal and how to run or test it,
 - minimal dependency manifest (`requirements.txt`, `package.json` etc.)
 - example usage or quick demo scripts if possible.
 
-## Project Structure 
+## Project Structure
 
 ```bash
 Cradle/
@@ -37,30 +38,41 @@ Cradle/
 ```
 
 ## Getting started
+
 1. Clone the repo after forking
+
 ```bash
 git clone https://github.com/<yourusername>/cradle.git
 ```
+
 2. Open the local repository
+
 ```bash
 cd cradle
 ```
+
 3. Open the Landing page
+
 - Simply just open the `index.html` on your browser... OR
 - Use a local server using Python(recomended by me)
+
 ```bash
 python -m http.server 8000
 ```
+
 Then visit
+
 ```bash
 http://localhost:8000
 ```
+
 4. For Individual projects
-   - Open their `index.html` directly on browser 
+   - Open their `index.html` directly on browser
 
 ## ⌨️ Keyboard Shortcuts
 
 The Cradle landing page supports intuitive keyboard navigation:
+
 - `<kbd>/</kbd>` or `<kbd>Ctrl</kbd>+<kbd>K</kbd>` / `<kbd>Cmd</kbd>+<kbd>K</kbd>` — Focus the project search bar
 - `<kbd>Esc</kbd>` — Clear active search query and reset category filters / close modal dialogs
 - `<kbd>T</kbd>` — Toggle light / dark color theme
@@ -90,6 +102,6 @@ Before getting started, please read our [Contributing Guide](CONTRIBUTING.md) fo
 
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
-
 ## Very Important Note
+
 Don't forget to leave a star behind for the repo if you're visiting this

@@ -17,16 +17,21 @@ docs: update setup instructions
 <!-- Thank you for taking the time to contribute to Cradle! 🙌 -->
 
 ## Summary
+
 <!-- What does this PR do? Why is this change needed? -->
 
 ## Changes Made
+
 <!-- List specific changes made in this PR -->
 
 ## Related Issue
+
 <!-- Every PR must be linked to an issue -->
+
 Closes #
 
 ## Type of Change
+
 - [ ] 🐛 Bug fix
 - [ ] ✨ New feature
 - [ ] 📝 Documentation update
@@ -36,6 +41,7 @@ Closes #
 - [ ] ⚙️ CI/tooling
 
 ## Checklist
+
 - [ ] I am a ECSOC26 contributor
 - [ ] I have read [CONTRIBUTING.md](../CONTRIBUTING.md)
 - [ ] My branch is up-to-date with `main`
@@ -43,8 +49,10 @@ Closes #
 - [ ] I have not merged my own PR
 
 # Packages Added (if any)
+
 <!-- List any new dependencies added. If none, leave blank. -->
 
 # Screenshots / Video (if applicable)
+
 <!-- Add before/after screenshots here -->
 <!-- Include UI screenshots or GIFs to demonstrate the changes. -->

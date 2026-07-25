@@ -55,8 +55,10 @@ const wordCount = document.getElementById("wordCount");
 document.addEventListener("DOMContentLoaded", initializeResumeGenerator);
 
 function initializeResumeGenerator() {
-  markdownInput.value = localStorage.getItem("cradle:markdown-resume") || DEFAULT_MARKDOWN;
-  templateSelect.value = localStorage.getItem("cradle:resume-template") || "classic";
+  markdownInput.value =
+    localStorage.getItem("cradle:markdown-resume") || DEFAULT_MARKDOWN;
+  templateSelect.value =
+    localStorage.getItem("cradle:resume-template") || "classic";
   themeSelect.value = localStorage.getItem("cradle:resume-theme") || "slate";
 
   markdownInput.addEventListener("input", updatePreview);
@@ -93,7 +95,7 @@ function parseMarkdown(markdown) {
   const html = [];
   let listOpen = false;
 
-  lines.forEach((line) => {
+  lines.forEach(line => {
     const trimmed = line.trim();
 
     if (!trimmed) {
@@ -146,7 +148,10 @@ function formatInline(text) {
   return escapeHtml(text)
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
     .replace(/\*(.*?)\*/g, "<em>$1</em>")
-    .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+    .replace(
+      /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
+      '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
+    );
 }
 
 function loadSampleResume() {

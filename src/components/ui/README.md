@@ -9,7 +9,7 @@ Zero dependencies. No build step. Works in any HTML page with a single `<script>
 
 ```html
 <!-- 1. Design tokens (shared CSS variables for colour, spacing, etc.) -->
-<link rel="stylesheet" href="/src/components/ui/tokens.css">
+<link rel="stylesheet" href="/src/components/ui/tokens.css" />
 
 <!-- 2. Full bundle — loads all 5 components -->
 <script src="/src/components/ui/index.js" defer></script>
@@ -18,7 +18,7 @@ Zero dependencies. No build step. Works in any HTML page with a single `<script>
 Or load only what you need:
 
 ```html
-<link rel="stylesheet" href="/src/components/ui/tokens.css">
+<link rel="stylesheet" href="/src/components/ui/tokens.css" />
 <script src="/src/components/ui/ThemeToggle/ThemeToggle.js" defer></script>
 <script src="/src/components/ui/Button/Button.js" defer></script>
 ```
@@ -27,13 +27,13 @@ Or load only what you need:
 
 ## Components
 
-| Component | File | Global |
-|---|---|---|
-| Button | `Button/Button.js` | `CradleButton` |
-| Card | `Card/Card.js` | `CradleCard` |
+| Component   | File                         | Global              |
+| ----------- | ---------------------------- | ------------------- |
+| Button      | `Button/Button.js`           | `CradleButton`      |
+| Card        | `Card/Card.js`               | `CradleCard`        |
 | ThemeToggle | `ThemeToggle/ThemeToggle.js` | `CradleThemeToggle` |
-| Navbar | `Navbar/Navbar.js` | `CradleNavbar` |
-| BackToHome | `BackToHome/BackToHome.js` | `CradleBackToHome` |
+| Navbar      | `Navbar/Navbar.js`           | `CradleNavbar`      |
+| BackToHome  | `BackToHome/BackToHome.js`   | `CradleBackToHome`  |
 
 ---
 
@@ -46,18 +46,18 @@ Or load only what you need:
 
 ```js
 const btn = CradleButton.create({
-  variant:   'primary',      // required
-  size:      'md',           // sm | md | lg
-  children:  'Save changes',
-  leftIcon:  '✓',
-  rightIcon: '→',
-  loading:   false,
-  disabled:  false,
+  variant: "primary", // required
+  size: "md", // sm | md | lg
+  children: "Save changes",
+  leftIcon: "✓",
+  rightIcon: "→",
+  loading: false,
+  disabled: false,
   fullWidth: false,
-  ariaLabel: 'Save your changes',
-  onClick:   (e) => console.log('clicked'),
+  ariaLabel: "Save your changes",
+  onClick: e => console.log("clicked"),
 });
-document.querySelector('.actions').appendChild(btn);
+document.querySelector(".actions").appendChild(btn);
 ```
 
 ### HTML (auto-upgraded)
@@ -84,31 +84,37 @@ Composable: `CradleCard.create()` · `CradleCard.Header()` · `CradleCard.Conten
 
 ```js
 const card = CradleCard.create({
-  title:    '2048 Game',
-  subtitle: 'A classic tile-merging puzzle',
-  badge:    'Games',
-  icon:     '🎮',
-  children: '<p>Slide tiles, merge numbers, reach 2048.</p>',
-  footer:   openBtn,           // Element or HTML string
-  footerAlign: 'right',        // left | right | between
+  title: "2048 Game",
+  subtitle: "A classic tile-merging puzzle",
+  badge: "Games",
+  icon: "🎮",
+  children: "<p>Slide tiles, merge numbers, reach 2048.</p>",
+  footer: openBtn, // Element or HTML string
+  footerAlign: "right", // left | right | between
   clickable: true,
-  onClick:   () => window.open('/projects/games/2048-game/'),
+  onClick: () => window.open("/projects/games/2048-game/"),
 });
-document.querySelector('.grid').appendChild(card);
+document.querySelector(".grid").appendChild(card);
 ```
 
 ### Composition
 
 ```js
-const card = document.createElement('article');
-card.className = 'cradle-card';
+const card = document.createElement("article");
+card.className = "cradle-card";
 
-card.appendChild(CradleCard.Header({ title: 'Chess', icon: '♟️', badge: 'Strategy' }));
-card.appendChild(CradleCard.Content({ children: '<p>A full chess engine with AI.</p>' }));
-card.appendChild(CradleCard.Footer({
-  children: [openBtn, shareBtn],
-  align: 'between',
-}));
+card.appendChild(
+  CradleCard.Header({ title: "Chess", icon: "♟️", badge: "Strategy" })
+);
+card.appendChild(
+  CradleCard.Content({ children: "<p>A full chess engine with AI.</p>" })
+);
+card.appendChild(
+  CradleCard.Footer({
+    children: [openBtn, shareBtn],
+    align: "between",
+  })
+);
 ```
 
 ### HTML (auto-upgraded)
@@ -134,15 +140,15 @@ Replaces the existing homepage toggle and can be added to any project page.
 ### Programmatic
 
 ```js
-const toggle = CradleThemeToggle.create({ size: 'md' });
-document.querySelector('.hero-actions').appendChild(toggle);
+const toggle = CradleThemeToggle.create({ size: "md" });
+document.querySelector(".hero-actions").appendChild(toggle);
 ```
 
 ### React to theme changes
 
 ```js
-document.documentElement.addEventListener('cradle:themechange', (e) => {
-  console.log('Theme changed to:', e.detail.theme); // 'light' | 'dark'
+document.documentElement.addEventListener("cradle:themechange", e => {
+  console.log("Theme changed to:", e.detail.theme); // 'light' | 'dark'
 });
 ```
 
@@ -157,10 +163,13 @@ document.documentElement.addEventListener('cradle:themechange', (e) => {
 ```html
 <script>
   // Prevents flash of wrong theme
-  (function() {
-    var t = localStorage.getItem('theme') ||
-      (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-    if (t === 'light') document.documentElement.classList.add('light-theme');
+  (function () {
+    var t =
+      localStorage.getItem("theme") ||
+      (window.matchMedia("(prefers-color-scheme: light)").matches
+        ? "light"
+        : "dark");
+    if (t === "light") document.documentElement.classList.add("light-theme");
   })();
 </script>
 ```
@@ -172,16 +181,16 @@ document.documentElement.addEventListener('cradle:themechange', (e) => {
 ### Programmatic
 
 ```js
-const toggle = CradleThemeToggle.create({ size: 'sm' });
+const toggle = CradleThemeToggle.create({ size: "sm" });
 
 const nav = CradleNavbar.create({
-  logo: { text: 'Cradle', href: '/index.html' },
+  logo: { text: "Cradle", href: "/index.html" },
   links: [
-    { label: 'Home',       href: '/index.html' },
-    { label: 'Games',      href: '/projects/games/' },
-    { label: 'AI / ML',    href: '/projects/aiml/' },
-    { label: 'Dev Tools',  href: '/projects/dev-tools/' },
-    { label: 'Misc',       href: '/projects/misc/' },
+    { label: "Home", href: "/index.html" },
+    { label: "Games", href: "/projects/games/" },
+    { label: "AI / ML", href: "/projects/aiml/" },
+    { label: "Dev Tools", href: "/projects/dev-tools/" },
+    { label: "Misc", href: "/projects/misc/" },
   ],
   currentRoute: window.location.pathname,
   actions: [toggle],
@@ -189,7 +198,7 @@ const nav = CradleNavbar.create({
 
 // Insert nav + its mobile drawer
 document.body.insertBefore(nav, document.body.firstChild);
-nav.insertAdjacentElement('afterend', nav._drawer);
+nav.insertAdjacentElement("afterend", nav._drawer);
 ```
 
 ### HTML (auto-upgraded)
@@ -226,17 +235,17 @@ It automatically detects whether the page is inside `/projects/` and injects the
 
 ```js
 const btn = CradleBackToHome.create({
-  to:      '/index.html',   // custom route (default: computed)
-  label:   'Back to Home',
-  variant: 'pill',          // pill (default) | minimal
+  to: "/index.html", // custom route (default: computed)
+  label: "Back to Home",
+  variant: "pill", // pill (default) | minimal
 });
-document.querySelector('.controls').appendChild(btn);
+document.querySelector(".controls").appendChild(btn);
 ```
 
 ### Minimal variant (inline, not fixed)
 
 ```js
-const btn = CradleBackToHome.create({ variant: 'minimal' });
+const btn = CradleBackToHome.create({ variant: "minimal" });
 ```
 
 ### HTML (auto-upgraded)
@@ -278,6 +287,7 @@ Projects that define their own tokens are not affected — Cradle UI uses
 ## Accessibility
 
 Every component:
+
 - Uses semantic HTML (`<button>`, `<nav>`, `<a>`, `<article>`)
 - Has `aria-label` / `aria-labelledby` where needed
 - Provides visible `:focus-visible` rings

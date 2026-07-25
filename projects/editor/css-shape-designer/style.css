@@ -20,7 +20,9 @@ body {
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
-  transition: background-color var(--cradle-transition), color var(--cradle-transition);
+  transition:
+    background-color var(--cradle-transition),
+    color var(--cradle-transition);
 }
 
 /* ===================== HEADER ===================== */
@@ -68,7 +70,11 @@ body {
   font-size: 1.25rem;
   font-weight: 800;
   letter-spacing: -0.5px;
-  background: linear-gradient(to right, var(--cradle-text), var(--theme-accent));
+  background: linear-gradient(
+    to right,
+    var(--cradle-text),
+    var(--theme-accent)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -127,7 +133,9 @@ body {
   padding: var(--cradle-space-5);
   margin-bottom: var(--cradle-space-5);
   box-shadow: var(--cradle-shadow-sm);
-  transition: border-color var(--cradle-transition), box-shadow var(--cradle-transition);
+  transition:
+    border-color var(--cradle-transition),
+    box-shadow var(--cradle-transition);
 }
 
 .card:hover {
@@ -432,7 +440,7 @@ body {
   width: 100%;
   height: 100%;
   background-size: 40px 40px;
-  background-image: 
+  background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   pointer-events: none;
@@ -503,12 +511,17 @@ body {
   cursor: grab;
   pointer-events: auto;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  transition: border-color 0.1s ease, transform 0.1s ease, box-shadow 0.1s ease;
+  transition:
+    border-color 0.1s ease,
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
 }
 
 .shape-handle:hover {
   transform: translate(-50%, -50%) scale(1.25);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), 0 0 0 4px var(--theme-accent-light);
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.4),
+    0 0 0 4px var(--theme-accent-light);
   border-color: #fff;
   background-color: var(--theme-accent);
 }
@@ -528,9 +541,15 @@ body {
 }
 
 @keyframes pulseAnchor {
-  0% { box-shadow: 0 0 0 0 rgba(129, 140, 248, 0.8); }
-  70% { box-shadow: 0 0 0 8px rgba(129, 140, 248, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(129, 140, 248, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(129, 140, 248, 0.8);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(129, 140, 248, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(129, 140, 248, 0);
+  }
 }
 
 /* ===================== CODE EXPORTER TABS ===================== */
@@ -644,8 +663,14 @@ body {
 }
 
 @keyframes slideToastUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 /* ===================== APP FOOTER ===================== */

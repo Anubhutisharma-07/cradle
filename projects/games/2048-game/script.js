@@ -1,12 +1,12 @@
 const logic = window.__2048Logic;
 const { createInitialState, moveGameState } = logic || {};
 
-const boardElement = document.getElementById('board');
-const scoreElement = document.getElementById('scoreValue');
-const bestScoreElement = document.getElementById('bestScoreValue');
-const statusElement = document.getElementById('status');
-const restartButton = document.getElementById('restartBtn');
-const gridSizeSelect = document.getElementById('gridSize');
+const boardElement = document.getElementById("board");
+const scoreElement = document.getElementById("scoreValue");
+const bestScoreElement = document.getElementById("bestScoreValue");
+const statusElement = document.getElementById("status");
+const restartButton = document.getElementById("restartBtn");
+const gridSizeSelect = document.getElementById("gridSize");
 
 let currentSize = 4;
 let state = null;
@@ -15,7 +15,7 @@ function initGame() {
   if (gridSizeSelect) {
     currentSize = parseInt(gridSizeSelect.value, 10);
   }
-  
+
   // Try loading saved state
   const saved = loadGameState(currentSize);
   if (saved) {
@@ -23,24 +23,24 @@ function initGame() {
   } else {
     state = createInitialState(currentSize);
   }
-  
+
   // Load best score
   state.bestScore = getBestScore(currentSize);
-  
+
   // Update board grid layout
   boardElement.style.gridTemplateColumns = `repeat(${currentSize}, 1fr)`;
-  
+
   renderBoard();
 }
 
 function renderBoard() {
-  boardElement.innerHTML = '';
+  boardElement.innerHTML = "";
 
-  state.board.forEach((row) => {
-    row.forEach((value) => {
-      const tile = document.createElement('div');
-      tile.className = `tile ${value ? `tile--${value}` : 'tile--empty'}`;
-      tile.textContent = value || '';
+  state.board.forEach(row => {
+    row.forEach(value => {
+      const tile = document.createElement("div");
+      tile.className = `tile ${value ? `tile--${value}` : "tile--empty"}`;
+      tile.textContent = value || "";
       boardElement.appendChild(tile);
     });
   });
@@ -51,11 +51,12 @@ function renderBoard() {
   bestScoreElement.textContent = state.bestScore;
 
   if (state.won) {
-    statusElement.textContent = 'You reached 2048. Keep going or restart for a fresh run.';
+    statusElement.textContent =
+      "You reached 2048. Keep going or restart for a fresh run.";
   } else if (state.over) {
-    statusElement.textContent = 'No moves left. Press restart to play again.';
+    statusElement.textContent = "No moves left. Press restart to play again.";
   } else {
-    statusElement.textContent = 'Use the arrow keys to move the tiles.';
+    statusElement.textContent = "Use the arrow keys to move the tiles.";
   }
 }
 
@@ -80,14 +81,14 @@ function restartGame() {
 
 function handleKeydown(event) {
   const map = {
-    ArrowUp: 'up',
-    ArrowDown: 'down',
-    ArrowLeft: 'left',
-    ArrowRight: 'right',
-    w: 'up',
-    s: 'down',
-    a: 'left',
-    d: 'right'
+    ArrowUp: "up",
+    ArrowDown: "down",
+    ArrowLeft: "left",
+    ArrowRight: "right",
+    w: "up",
+    s: "down",
+    a: "left",
+    d: "right",
   };
 
   const direction = map[event.key];
@@ -100,7 +101,7 @@ function handleKeydown(event) {
 }
 
 if (gridSizeSelect) {
-  gridSizeSelect.addEventListener('change', () => {
+  gridSizeSelect.addEventListener("change", () => {
     // Save current game state of the previous size before switching
     if (state) {
       saveGameState(currentSize, state);
@@ -109,7 +110,7 @@ if (gridSizeSelect) {
   });
 }
 
-restartButton.addEventListener('click', restartGame);
-document.addEventListener('keydown', handleKeydown);
+restartButton.addEventListener("click", restartGame);
+document.addEventListener("keydown", handleKeydown);
 
 initGame();

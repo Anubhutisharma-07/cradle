@@ -21,7 +21,7 @@ const state = {
 
   // Original user inputs (to restore on reset)
   originalA: [],
-  originalB: []
+  originalB: [],
 };
 
 // DOM References
@@ -63,7 +63,9 @@ const themeIcon = document.getElementById("theme-icon");
 function initTheme() {
   const currentTheme =
     localStorage.getItem("theme") ||
-    (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+    (window.matchMedia("(prefers-color-scheme: light)").matches
+      ? "light"
+      : "dark");
   applyTheme(currentTheme);
 }
 
@@ -103,23 +105,25 @@ function init() {
 
 function setupEventListeners() {
   // Dimension listeners
-  rowsASelect.addEventListener("change", (e) => {
+  rowsASelect.addEventListener("change", e => {
     state.rowsA = parseInt(e.target.value);
     syncDimensions();
   });
-  colsASelect.addEventListener("change", (e) => {
+  colsASelect.addEventListener("change", e => {
     state.colsA = parseInt(e.target.value);
     syncDimensions();
   });
-  colsBSelect.addEventListener("change", (e) => {
+  colsBSelect.addEventListener("change", e => {
     state.colsB = parseInt(e.target.value);
     syncDimensions();
   });
 
   // Operation selectors
-  document.querySelectorAll(".op-btn").forEach((btn) => {
+  document.querySelectorAll(".op-btn").forEach(btn => {
     btn.addEventListener("click", () => {
-      document.querySelectorAll(".op-btn").forEach((b) => b.classList.remove("active"));
+      document
+        .querySelectorAll(".op-btn")
+        .forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       state.selectedOp = btn.dataset.op;
       updateControls();
@@ -138,7 +142,7 @@ function setupEventListeners() {
   btnPlay.addEventListener("click", togglePlay);
   btnResetPlay.addEventListener("click", resetPlayback);
 
-  speedSlider.addEventListener("input", (e) => {
+  speedSlider.addEventListener("input", e => {
     state.speed = parseInt(e.target.value);
     speedDisplay.textContent = `${(state.speed / 1000).toFixed(1)}s / step`;
     if (state.isPlaying) {
@@ -152,10 +156,13 @@ function setupEventListeners() {
 function updateControls() {
   // Change operation sign visually
   let signHtml = '<i class="fa-solid fa-plus"></i>';
-  if (state.selectedOp === "multiply") signHtml = '<i class="fa-solid fa-times"></i>';
+  if (state.selectedOp === "multiply")
+    signHtml = '<i class="fa-solid fa-times"></i>';
   else if (state.selectedOp === "determinant") signHtml = "<span>det</span>";
-  else if (state.selectedOp === "inverse") signHtml = "<span>A<sup>-1</sup></span>";
-  else if (state.selectedOp === "transpose") signHtml = "<span>A<sup>T</sup></span>";
+  else if (state.selectedOp === "inverse")
+    signHtml = "<span>A<sup>-1</sup></span>";
+  else if (state.selectedOp === "transpose")
+    signHtml = "<span>A<sup>T</sup></span>";
   mathOperator.innerHTML = signHtml;
 
   // Show/Hide Grid B and Operator based on operation
@@ -170,7 +177,8 @@ function updateControls() {
 
   // Adjust Result Card visibility (determinant yields a scalar, which we style nicely)
   if (state.selectedOp === "determinant") {
-    cardResult.querySelector(".matrix-title").textContent = "Determinant Scalar";
+    cardResult.querySelector(".matrix-title").textContent =
+      "Determinant Scalar";
   } else {
     cardResult.querySelector(".matrix-title").textContent = "Result Matrix C";
   }
@@ -180,12 +188,12 @@ function syncDimensions() {
   resetPlayback();
 
   const op = state.selectedOp;
-  
+
   if (op === "add") {
     // Add: dims of A and B must match
     state.rowsB = state.rowsA;
     state.colsB = state.colsA;
-    
+
     // Disable B dimension inputs
     rowsBSelect.value = state.rowsA;
     colsBSelect.value = state.colsA;
@@ -195,7 +203,7 @@ function syncDimensions() {
   } else if (op === "multiply") {
     // Multiply: colsA must match rowsB
     state.rowsB = state.colsA;
-    
+
     rowsBSelect.value = state.colsA;
     rowsBSelect.disabled = true;
     colsBSelect.disabled = false;
@@ -208,7 +216,7 @@ function syncDimensions() {
     }
     state.colsA = state.rowsA;
     colsASelect.value = state.rowsA;
-    
+
     // Disable colsA Select to lock it square
     colsASelect.disabled = true;
   } else if (op === "transpose") {
@@ -220,8 +228,12 @@ function syncDimensions() {
 
 /* ===================== MATRIX GENERATION & DRAWING ===================== */
 function generateMatrices() {
-  state.matrixA = Array(state.rowsA).fill(0).map(() => Array(state.colsA).fill(0));
-  state.matrixB = Array(state.rowsB).fill(0).map(() => Array(state.colsB).fill(0));
+  state.matrixA = Array(state.rowsA)
+    .fill(0)
+    .map(() => Array(state.colsA).fill(0));
+  state.matrixB = Array(state.rowsB)
+    .fill(0)
+    .map(() => Array(state.colsB).fill(0));
 
   let resRows = state.rowsA;
   let resCols = state.colsA;
@@ -235,7 +247,9 @@ function generateMatrices() {
     resRows = 1;
     resCols = 1;
   }
-  state.resultMatrix = Array(resRows).fill(0).map(() => Array(resCols).fill(0));
+  state.resultMatrix = Array(resRows)
+    .fill(0)
+    .map(() => Array(resCols).fill(0));
 
   drawGrid(gridA, state.rowsA, state.colsA, "A");
   if (state.selectedOp === "add" || state.selectedOp === "multiply") {
@@ -243,7 +257,8 @@ function generateMatrices() {
   }
   drawGrid(gridResult, resRows, resCols, "C", true);
 
-  explanationText.textContent = "Adjust matrix elements above and click 'Play' or 'Next Step' to visualize.";
+  explanationText.textContent =
+    "Adjust matrix elements above and click 'Play' or 'Next Step' to visualize.";
   mathScratchpad.textContent = "Waiting...";
 }
 
@@ -259,11 +274,11 @@ function drawGrid(container, rows, cols, prefix, isReadOnly = false) {
       input.className = "matrix-cell";
       input.id = `cell-${prefix.toLowerCase()}-${r}-${c}`;
       input.value = "0";
-      
+
       if (isReadOnly) {
         input.disabled = true;
       } else {
-        input.addEventListener("input", (e) => {
+        input.addEventListener("input", e => {
           resetPlayback();
           const val = parseFloat(e.target.value) || 0;
           if (prefix === "A") state.matrixA[r][c] = val;
@@ -285,7 +300,7 @@ function fillRandom() {
       document.getElementById(`cell-a-${r}-${c}`).value = val;
     }
   }
-  
+
   if (state.selectedOp === "add" || state.selectedOp === "multiply") {
     for (let r = 0; r < state.rowsB; r++) {
       for (let c = 0; c < state.colsB; c++) {
@@ -307,7 +322,10 @@ function fillIdentity() {
     }
   }
 
-  if ((state.selectedOp === "add" || state.selectedOp === "multiply") && state.rowsB === state.colsB) {
+  if (
+    (state.selectedOp === "add" || state.selectedOp === "multiply") &&
+    state.rowsB === state.colsB
+  ) {
     for (let r = 0; r < state.rowsB; r++) {
       for (let c = 0; c < state.colsB; c++) {
         const val = r === c ? 1 : 0;
@@ -326,7 +344,7 @@ function fillZero() {
       document.getElementById(`cell-a-${r}-${c}`).value = 0;
     }
   }
-  
+
   if (state.selectedOp === "add" || state.selectedOp === "multiply") {
     for (let r = 0; r < state.rowsB; r++) {
       for (let c = 0; c < state.colsB; c++) {
@@ -345,18 +363,26 @@ function captureStep(explanation, scratchpad, highlights = {}) {
     matrixAState: state.matrixA.map(row => [...row]),
     matrixBState: state.matrixB.map(row => [...row]),
     matrixCState: state.resultMatrix.map(row => [...row]),
-    highlightsA: Array(state.rowsA).fill().map(() => Array(state.colsA).fill("")),
-    highlightsB: Array(state.rowsB).fill().map(() => Array(state.colsB).fill("")),
-    highlightsC: Array(state.resultMatrix.length).fill().map(() => Array(state.resultMatrix[0]?.length || 0).fill(""))
+    highlightsA: Array(state.rowsA)
+      .fill()
+      .map(() => Array(state.colsA).fill("")),
+    highlightsB: Array(state.rowsB)
+      .fill()
+      .map(() => Array(state.colsB).fill("")),
+    highlightsC: Array(state.resultMatrix.length)
+      .fill()
+      .map(() => Array(state.resultMatrix[0]?.length || 0).fill("")),
   };
 
   // Process highlights for A
   if (highlights.A) {
     highlights.A.forEach(hl => {
       if (hl.type === "row") {
-        for (let c = 0; c < state.colsA; c++) step.highlightsA[hl.r][c] = "cell-highlight-row";
+        for (let c = 0; c < state.colsA; c++)
+          step.highlightsA[hl.r][c] = "cell-highlight-row";
       } else if (hl.type === "col") {
-        for (let r = 0; r < state.rowsA; r++) step.highlightsA[r][hl.c] = "cell-highlight-col";
+        for (let r = 0; r < state.rowsA; r++)
+          step.highlightsA[r][hl.c] = "cell-highlight-col";
       } else if (hl.type === "active") {
         step.highlightsA[hl.r][hl.c] = "cell-highlight-active";
       } else if (hl.type === "inactive") {
@@ -369,9 +395,11 @@ function captureStep(explanation, scratchpad, highlights = {}) {
   if (highlights.B) {
     highlights.B.forEach(hl => {
       if (hl.type === "row") {
-        for (let c = 0; c < state.colsB; c++) step.highlightsB[hl.r][c] = "cell-highlight-row";
+        for (let c = 0; c < state.colsB; c++)
+          step.highlightsB[hl.r][c] = "cell-highlight-row";
       } else if (hl.type === "col") {
-        for (let r = 0; r < state.rowsB; r++) step.highlightsB[r][hl.c] = "cell-highlight-col";
+        for (let r = 0; r < state.rowsB; r++)
+          step.highlightsB[r][hl.c] = "cell-highlight-col";
       } else if (hl.type === "active") {
         step.highlightsB[hl.r][hl.c] = "cell-highlight-active";
       } else if (hl.type === "inactive") {
@@ -384,9 +412,11 @@ function captureStep(explanation, scratchpad, highlights = {}) {
   if (highlights.C) {
     highlights.C.forEach(hl => {
       if (hl.type === "row") {
-        for (let c = 0; c < step.matrixCState[0].length; c++) step.highlightsC[hl.r][c] = "cell-highlight-row";
+        for (let c = 0; c < step.matrixCState[0].length; c++)
+          step.highlightsC[hl.r][c] = "cell-highlight-row";
       } else if (hl.type === "col") {
-        for (let r = 0; r < step.matrixCState.length; r++) step.highlightsC[r][hl.c] = "cell-highlight-col";
+        for (let r = 0; r < step.matrixCState.length; r++)
+          step.highlightsC[r][hl.c] = "cell-highlight-col";
       } else if (hl.type === "active") {
         step.highlightsC[hl.r][hl.c] = "cell-highlight-active";
       } else if (hl.type === "inactive") {
@@ -399,21 +429,24 @@ function captureStep(explanation, scratchpad, highlights = {}) {
   if (highlights.dimOthersA) {
     for (let r = 0; r < state.rowsA; r++) {
       for (let c = 0; c < state.colsA; c++) {
-        if (!step.highlightsA[r][c]) step.highlightsA[r][c] = "cell-highlight-inactive";
+        if (!step.highlightsA[r][c])
+          step.highlightsA[r][c] = "cell-highlight-inactive";
       }
     }
   }
   if (highlights.dimOthersB) {
     for (let r = 0; r < state.rowsB; r++) {
       for (let c = 0; c < state.colsB; c++) {
-        if (!step.highlightsB[r][c]) step.highlightsB[r][c] = "cell-highlight-inactive";
+        if (!step.highlightsB[r][c])
+          step.highlightsB[r][c] = "cell-highlight-inactive";
       }
     }
   }
   if (highlights.dimOthersC) {
     for (let r = 0; r < step.matrixCState.length; r++) {
       for (let c = 0; c < step.matrixCState[0].length; c++) {
-        if (!step.highlightsC[r][c]) step.highlightsC[r][c] = "cell-highlight-inactive";
+        if (!step.highlightsC[r][c])
+          step.highlightsC[r][c] = "cell-highlight-inactive";
       }
     }
   }
@@ -424,7 +457,7 @@ function captureStep(explanation, scratchpad, highlights = {}) {
 /* ===================== STEP GENERATORS BY OPERATION ===================== */
 function generateSteps() {
   state.steps = [];
-  
+
   // Clear Result Matrix C to default zero state
   state.resultMatrix = state.resultMatrix.map(row => row.fill(0));
 
@@ -465,7 +498,7 @@ function buildAdditionSteps() {
           C: [{ r, c, type: "active" }],
           dimOthersA: true,
           dimOthersB: true,
-          dimOthersC: true
+          dimOthersC: true,
         }
       );
     }
@@ -496,7 +529,7 @@ function buildTransposeSteps() {
           A: [{ r, c, type: "active" }],
           C: [{ r: c, c: r, type: "active" }],
           dimOthersA: true,
-          dimOthersC: true
+          dimOthersC: true,
         }
       );
     }
@@ -525,7 +558,7 @@ function buildMultiplicationSteps() {
           A: [{ r, type: "row" }],
           B: [{ c, type: "col" }],
           C: [{ r, c, type: "active" }],
-          dimOthersC: true
+          dimOthersC: true,
         }
       );
 
@@ -540,7 +573,9 @@ function buildMultiplicationSteps() {
         sum += term;
 
         formulaParts.push(`(A[${r}][${k}] &times; B[${k}][${c}])`);
-        valParts.push(`(<span class="scratch-term-a">${formatNum(valA)}</span>&times;<span class="scratch-term-b">${formatNum(valB)}</span>)`);
+        valParts.push(
+          `(<span class="scratch-term-a">${formatNum(valA)}</span>&times;<span class="scratch-term-b">${formatNum(valB)}</span>)`
+        );
 
         state.resultMatrix[r][c] = sum;
 
@@ -549,10 +584,16 @@ function buildMultiplicationSteps() {
           `Multiply A[${r}][${k}] (${formatNum(valA)}) and B[${k}][${c}] (${formatNum(valB)}). Term: ${formatNum(term)}. Added to running sum: ${formatNum(sum)}.`,
           `C[${r}][${c}] = ${valParts.join(" + ")} = <span class="scratch-term-c">${formatNum(sum)}</span>`,
           {
-            A: [{ r, c: k, type: "active" }, { r, type: "row" }],
-            B: [{ r: k, c, type: "active" }, { c, type: "col" }],
+            A: [
+              { r, c: k, type: "active" },
+              { r, type: "row" },
+            ],
+            B: [
+              { r: k, c, type: "active" },
+              { c, type: "col" },
+            ],
             C: [{ r, c, type: "active" }],
-            dimOthersC: true
+            dimOthersC: true,
           }
         );
       }
@@ -565,7 +606,7 @@ function buildMultiplicationSteps() {
           A: [{ r, type: "row" }],
           B: [{ c, type: "col" }],
           C: [{ r, c, type: "active" }],
-          dimOthersC: true
+          dimOthersC: true,
         }
       );
     }
@@ -598,8 +639,11 @@ function buildDeterminantSteps() {
       `Multiply main diagonal elements: A[0][0] (${formatNum(a)}) &times; A[1][1] (${formatNum(d)}) = ${formatNum(a * d)}`,
       `ad = <span class="scratch-term-a">${formatNum(a)}</span> &times; <span class="scratch-term-a">${formatNum(d)}</span> = <span class="scratch-term-a">${formatNum(a * d)}</span>`,
       {
-        A: [{ r: 0, c: 0, type: "active" }, { r: 1, c: 1, type: "active" }],
-        dimOthersA: true
+        A: [
+          { r: 0, c: 0, type: "active" },
+          { r: 1, c: 1, type: "active" },
+        ],
+        dimOthersA: true,
       }
     );
 
@@ -608,8 +652,11 @@ function buildDeterminantSteps() {
       `Multiply anti-diagonal elements: A[0][1] (${formatNum(b)}) &times; A[1][0] (${formatNum(c)}) = ${formatNum(b * c)}`,
       `bc = <span class="scratch-term-b">${formatNum(b)}</span> &times; <span class="scratch-term-b">${formatNum(c)}</span> = <span class="scratch-term-b">${formatNum(b * c)}</span>`,
       {
-        A: [{ r: 0, c: 1, type: "active" }, { r: 1, c: 0, type: "active" }],
-        dimOthersA: true
+        A: [
+          { r: 0, c: 1, type: "active" },
+          { r: 1, c: 0, type: "active" },
+        ],
+        dimOthersA: true,
       }
     );
 
@@ -618,16 +665,21 @@ function buildDeterminantSteps() {
       `Subtract anti-diagonal product from main diagonal product: ${formatNum(a * d)} - ${formatNum(b * c)} = ${formatNum(det)}`,
       `det(A) = <span class="scratch-term-a">${formatNum(a * d)}</span> - <span class="scratch-term-b">${formatNum(b * c)}</span> = <span class="scratch-term-c">${formatNum(det)}</span>`
     );
-
   } else if (n === 3) {
     const a00 = state.matrixA[0][0];
     const a01 = state.matrixA[0][1];
     const a02 = state.matrixA[0][2];
-    
+
     // Sub-determinants
-    const m00_det = state.matrixA[1][1] * state.matrixA[2][2] - state.matrixA[1][2] * state.matrixA[2][1];
-    const m01_det = state.matrixA[1][0] * state.matrixA[2][2] - state.matrixA[1][2] * state.matrixA[2][0];
-    const m02_det = state.matrixA[1][0] * state.matrixA[2][1] - state.matrixA[1][1] * state.matrixA[2][0];
+    const m00_det =
+      state.matrixA[1][1] * state.matrixA[2][2] -
+      state.matrixA[1][2] * state.matrixA[2][1];
+    const m01_det =
+      state.matrixA[1][0] * state.matrixA[2][2] -
+      state.matrixA[1][2] * state.matrixA[2][0];
+    const m02_det =
+      state.matrixA[1][0] * state.matrixA[2][1] -
+      state.matrixA[1][1] * state.matrixA[2][0];
 
     const termA = a00 * m00_det;
     const termB = a01 * m01_det;
@@ -647,11 +699,15 @@ function buildDeterminantSteps() {
       {
         A: [
           { r: 0, c: 0, type: "active" },
-          { r: 0, c: 1, type: "inactive" }, { r: 0, c: 2, type: "inactive" },
-          { r: 1, c: 0, type: "inactive" }, { r: 2, c: 0, type: "inactive" },
-          { r: 1, c: 1, type: "active" }, { r: 1, c: 2, type: "active" },
-          { r: 2, c: 1, type: "active" }, { r: 2, c: 2, type: "active" }
-        ]
+          { r: 0, c: 1, type: "inactive" },
+          { r: 0, c: 2, type: "inactive" },
+          { r: 1, c: 0, type: "inactive" },
+          { r: 2, c: 0, type: "inactive" },
+          { r: 1, c: 1, type: "active" },
+          { r: 1, c: 2, type: "active" },
+          { r: 2, c: 1, type: "active" },
+          { r: 2, c: 2, type: "active" },
+        ],
       }
     );
 
@@ -662,11 +718,15 @@ function buildDeterminantSteps() {
       {
         A: [
           { r: 0, c: 1, type: "active" },
-          { r: 0, c: 0, type: "inactive" }, { r: 0, c: 2, type: "inactive" },
-          { r: 1, c: 1, type: "inactive" }, { r: 2, c: 1, type: "inactive" },
-          { r: 1, c: 0, type: "active" }, { r: 1, c: 2, type: "active" },
-          { r: 2, c: 0, type: "active" }, { r: 2, c: 2, type: "active" }
-        ]
+          { r: 0, c: 0, type: "inactive" },
+          { r: 0, c: 2, type: "inactive" },
+          { r: 1, c: 1, type: "inactive" },
+          { r: 2, c: 1, type: "inactive" },
+          { r: 1, c: 0, type: "active" },
+          { r: 1, c: 2, type: "active" },
+          { r: 2, c: 0, type: "active" },
+          { r: 2, c: 2, type: "active" },
+        ],
       }
     );
 
@@ -677,11 +737,15 @@ function buildDeterminantSteps() {
       {
         A: [
           { r: 0, c: 2, type: "active" },
-          { r: 0, c: 0, type: "inactive" }, { r: 0, c: 1, type: "inactive" },
-          { r: 1, c: 2, type: "inactive" }, { r: 2, c: 2, type: "inactive" },
-          { r: 1, c: 0, type: "active" }, { r: 1, c: 1, type: "active" },
-          { r: 2, c: 0, type: "active" }, { r: 2, c: 1, type: "active" }
-        ]
+          { r: 0, c: 0, type: "inactive" },
+          { r: 0, c: 1, type: "inactive" },
+          { r: 1, c: 2, type: "inactive" },
+          { r: 2, c: 2, type: "inactive" },
+          { r: 1, c: 0, type: "active" },
+          { r: 1, c: 1, type: "active" },
+          { r: 2, c: 0, type: "active" },
+          { r: 2, c: 1, type: "active" },
+        ],
       }
     );
 
@@ -725,7 +789,13 @@ function buildInverseSteps() {
   }
 
   // C starts as the Identity matrix
-  state.resultMatrix = Array(n).fill(0).map((_, r) => Array(n).fill(0).map((_, c) => r === c ? 1 : 0));
+  state.resultMatrix = Array(n)
+    .fill(0)
+    .map((_, r) =>
+      Array(n)
+        .fill(0)
+        .map((_, c) => (r === c ? 1 : 0))
+    );
 
   captureStep(
     "To find the inverse, we augment A with the Identity matrix [A | I]. Row operations will reduce [A | I] to [I | A^-1]. Matrix C starts as the Identity.",
@@ -758,8 +828,14 @@ function buildInverseSteps() {
         `Swap Row ${p} and Row ${maxRow} to place a larger element on the main diagonal pivot.`,
         `Row ${p} &harr; Row ${maxRow}`,
         {
-          A: [{ r: p, type: "row" }, { r: maxRow, type: "row" }],
-          C: [{ r: p, type: "row" }, { r: maxRow, type: "row" }]
+          A: [
+            { r: p, type: "row" },
+            { r: maxRow, type: "row" },
+          ],
+          C: [
+            { r: p, type: "row" },
+            { r: maxRow, type: "row" },
+          ],
         }
       );
     }
@@ -776,8 +852,11 @@ function buildInverseSteps() {
         `Divide Row ${p} by the pivot element ${formatNum(divisor)} to set diagonal cell to 1.`,
         `Row ${p} &larr; Row ${p} / ${formatNum(divisor)}`,
         {
-          A: [{ r: p, c: p, type: "active" }, { r: p, type: "row" }],
-          C: [{ r: p, type: "row" }]
+          A: [
+            { r: p, c: p, type: "active" },
+            { r: p, type: "row" },
+          ],
+          C: [{ r: p, type: "row" }],
         }
       );
     }
@@ -796,8 +875,16 @@ function buildInverseSteps() {
             `Eliminate cell at Row ${r}, Col ${p} (${formatNum(factor)}) by subtracting ${formatNum(factor)} &times; Row ${p} from Row ${r}.`,
             `Row ${r} &larr; Row ${r} - (${formatNum(factor)})&middot;Row ${p}`,
             {
-              A: [{ r, c: p, type: "active" }, { r: p, c: p, type: "active" }, { r, type: "row" }, { r: p, type: "row" }],
-              C: [{ r: p, type: "row" }, { r, type: "row" }]
+              A: [
+                { r, c: p, type: "active" },
+                { r: p, c: p, type: "active" },
+                { r, type: "row" },
+                { r: p, type: "row" },
+              ],
+              C: [
+                { r: p, type: "row" },
+                { r, type: "row" },
+              ],
             }
           );
         }
@@ -909,13 +996,21 @@ function applyGridHighlights(gridElement, highlightsMatrix) {
 }
 
 function disableInputGrids() {
-  gridA.querySelectorAll(".matrix-cell").forEach(cell => cell.disabled = true);
-  gridB.querySelectorAll(".matrix-cell").forEach(cell => cell.disabled = true);
+  gridA
+    .querySelectorAll(".matrix-cell")
+    .forEach(cell => (cell.disabled = true));
+  gridB
+    .querySelectorAll(".matrix-cell")
+    .forEach(cell => (cell.disabled = true));
 }
 
 function enableInputGrids() {
-  gridA.querySelectorAll(".matrix-cell").forEach(cell => cell.disabled = false);
-  gridB.querySelectorAll(".matrix-cell").forEach(cell => cell.disabled = false);
+  gridA
+    .querySelectorAll(".matrix-cell")
+    .forEach(cell => (cell.disabled = false));
+  gridB
+    .querySelectorAll(".matrix-cell")
+    .forEach(cell => (cell.disabled = false));
 }
 
 function togglePlay() {
@@ -934,7 +1029,7 @@ function play() {
   if (state.steps.length === 0) {
     generateSteps();
   }
-  
+
   if (state.currentStep >= state.steps.length - 1) {
     state.currentStep = -1; // restart
   }
@@ -968,7 +1063,7 @@ function resetPlayback() {
 
   // Restore input values from state
   enableInputGrids();
-  
+
   // Re-draw original matrix state
   for (let r = 0; r < state.rowsA; r++) {
     for (let c = 0; c < state.colsA; c++) {
@@ -984,7 +1079,7 @@ function resetPlayback() {
       }
     }
   }
-  
+
   if (state.selectedOp === "add" || state.selectedOp === "multiply") {
     for (let r = 0; r < state.rowsB; r++) {
       for (let c = 0; c < state.colsB; c++) {
@@ -1015,14 +1110,15 @@ function resetPlayback() {
 
   state.steps = [];
   state.currentStep = -1;
-  
+
   stepCounter.textContent = "Step 0 / 0";
   stepProgressFill.style.width = "0%";
-  
+
   btnPrev.disabled = true;
   btnNext.disabled = true;
-  
-  explanationText.textContent = "Adjust values and click 'Play' or 'Next Step' to visualize.";
+
+  explanationText.textContent =
+    "Adjust values and click 'Play' or 'Next Step' to visualize.";
   mathScratchpad.textContent = "Waiting...";
 }
 

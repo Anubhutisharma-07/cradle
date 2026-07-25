@@ -45,6 +45,7 @@ graph TD
 ```
 
 Instead of modifying the live DOM elements incrementally and trying to undo operations when step-backing, `script.js` pre-generates a sequence of static **step snapshots** whenever the matrix values or selected operations change. Each step snapshot retains:
+
 1. The exact matrix values of `A`, `B`, and `C` at that frame.
 2. The CSS highlight class maps (`row`, `col`, `active`, `inactive`) for each cell.
 3. The custom visual explanation text and formula markup.
@@ -55,11 +56,11 @@ To traverse the steps, the visual stepper simply loads the corresponding snapsho
 
 ## Component Breakdown
 
-| File | Responsibility |
-|---|---|
-| `index.html` | Page structure, sidebar controls, preset action triggers, visual playback toolbar, and grid placeholder containers. |
-| `script.js` | Dimension synchronization, preset loading, step generators, operation arithmetic, timeline interval management, and DOM bindings. |
-| `style.css` | Flex/Grid styling, bracket decorations, keyframe pulse animations, custom slider inputs, and responsiveness rules. |
+| File         | Responsibility                                                                                                                    |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| `index.html` | Page structure, sidebar controls, preset action triggers, visual playback toolbar, and grid placeholder containers.               |
+| `script.js`  | Dimension synchronization, preset loading, step generators, operation arithmetic, timeline interval management, and DOM bindings. |
+| `style.css`  | Flex/Grid styling, bracket decorations, keyframe pulse animations, custom slider inputs, and responsiveness rules.                |
 
 ---
 
@@ -101,10 +102,10 @@ Final step shows the completed calculation and final result matrix
 
 ## Technologies Used
 
-| Technology | Purpose |
-|---|---|
-| HTML5 | Semantic structure and accessibility markup. |
-| CSS3 | Flexbox, CSS Grid layouts, custom transition animations. |
-| Cradle Design Tokens | Shared theme styling variables for light/dark modes. |
-| Vanilla JavaScript (ES6) | Step generation, matrix arithmetic, state management. |
-| Font Awesome 6.5.1 | Icon vector graphics for the operation buttons and controls. |
+| Technology               | Purpose                                                      |
+| ------------------------ | ------------------------------------------------------------ |
+| HTML5                    | Semantic structure and accessibility markup.                 |
+| CSS3                     | Flexbox, CSS Grid layouts, custom transition animations.     |
+| Cradle Design Tokens     | Shared theme styling variables for light/dark modes.         |
+| Vanilla JavaScript (ES6) | Step generation, matrix arithmetic, state management.        |
+| Font Awesome 6.5.1       | Icon vector graphics for the operation buttons and controls. |

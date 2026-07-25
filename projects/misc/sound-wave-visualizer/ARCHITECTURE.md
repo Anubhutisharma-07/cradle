@@ -68,11 +68,11 @@ sound-wave-visualizer/
 
 ### Component Breakdown
 
-| File | Responsibility |
-|---|---|
-| `index.html` | App structure: header, control bar, settings row, three canvas panels, recordings list |
-| `style.css` | Design tokens, button styles, visualiser grid (2-col), recording rows, status pill animations |
-| `script.js` | Audio graph, waveform / spectrum / spectrogram draw functions, MediaRecorder, playback, timer, event wiring |
+| File         | Responsibility                                                                                              |
+| ------------ | ----------------------------------------------------------------------------------------------------------- |
+| `index.html` | App structure: header, control bar, settings row, three canvas panels, recordings list                      |
+| `style.css`  | Design tokens, button styles, visualiser grid (2-col), recording rows, status pill animations               |
+| `script.js`  | Audio graph, waveform / spectrum / spectrogram draw functions, MediaRecorder, playback, timer, event wiring |
 
 ### Detailed File Responsibilities
 
@@ -164,6 +164,7 @@ User clicks Play / Download on a recording row
 ## Technologies Used & Dependencies
 
 None. Uses only native browser APIs:
+
 - **Web Audio API** (`AudioContext`, `AnalyserNode`, `GainNode`, `MediaStreamSource`)
 - **MediaDevices API** (`getUserMedia`)
 - **MediaRecorder API** (recording + download)

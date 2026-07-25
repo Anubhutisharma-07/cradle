@@ -4,19 +4,25 @@
 
 const state = {
   selectedShape: "polygon", // 'polygon' | 'blob' | 'circle' | 'ellipse'
-  
+
   // Polygon State
   polygonVertices: [
     { x: 50, y: 0 },
     { x: 100, y: 100 },
-    { x: 0, y: 100 }
+    { x: 0, y: 100 },
   ],
   selectedVertexIndex: -1,
 
   // Blob State (top-left, top-right, bottom-right, bottom-left) for Horiz and Vert
   blob: {
-    tlh: 30, trh: 70, brh: 70, blh: 30,
-    tlv: 30, trv: 30, brv: 70, blv: 70
+    tlh: 30,
+    trh: 70,
+    brh: 70,
+    blh: 30,
+    tlv: 30,
+    trv: 30,
+    brv: 70,
+    blv: 70,
   },
 
   // Circle State
@@ -31,7 +37,8 @@ const state = {
   gradColor1: "#818cf8",
   gradColor2: "#6366f1",
   gradAngle: 135,
-  imageUrl: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=600&auto=format&fit=crop&q=80",
+  imageUrl:
+    "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=600&auto=format&fit=crop&q=80",
   shadowBlur: 20,
   shadowColor: "#818cf8",
 
@@ -41,34 +48,152 @@ const state = {
   draggedPart: null, // 'center' | 'radius' | 'radiusX' | 'radiusY' for circles/ellipses
 
   // Active Tab
-  activeTab: "css"
+  activeTab: "css",
 };
 
 // Shape Presets
 const PRESETS = {
   polygon: [
-    { name: "Triangle", value: [{ x: 50, y: 0 }, { x: 100, y: 100 }, { x: 0, y: 100 }] },
-    { name: "Square", value: [{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 100 }, { x: 0, y: 100 }] },
-    { name: "Pentagon", value: [{ x: 50, y: 0 }, { x: 100, y: 38 }, { x: 81, y: 100 }, { x: 19, y: 100 }, { x: 0, y: 38 }] },
-    { name: "Hexagon", value: [{ x: 50, y: 0 }, { x: 100, y: 25 }, { x: 100, y: 75 }, { x: 50, y: 100 }, { x: 0, y: 75 }, { x: 0, y: 25 }] },
-    { name: "Star", value: [{ x: 50, y: 0 }, { x: 63, y: 38 }, { x: 100, y: 38 }, { x: 69, y: 59 }, { x: 82, y: 100 }, { x: 50, y: 75 }, { x: 18, y: 100 }, { x: 31, y: 59 }, { x: 0, y: 38 }, { x: 37, y: 38 }] },
-    { name: "Message", value: [{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 75 }, { x: 75, y: 75 }, { x: 75, y: 100 }, { x: 50, y: 75 }, { x: 0, y: 75 }] },
-    { name: "Arrow", value: [{ x: 0, y: 30 }, { x: 60, y: 30 }, { x: 60, y: 0 }, { x: 100, y: 50 }, { x: 60, y: 100 }, { x: 60, y: 70 }, { x: 0, y: 70 }] }
+    {
+      name: "Triangle",
+      value: [
+        { x: 50, y: 0 },
+        { x: 100, y: 100 },
+        { x: 0, y: 100 },
+      ],
+    },
+    {
+      name: "Square",
+      value: [
+        { x: 0, y: 0 },
+        { x: 100, y: 0 },
+        { x: 100, y: 100 },
+        { x: 0, y: 100 },
+      ],
+    },
+    {
+      name: "Pentagon",
+      value: [
+        { x: 50, y: 0 },
+        { x: 100, y: 38 },
+        { x: 81, y: 100 },
+        { x: 19, y: 100 },
+        { x: 0, y: 38 },
+      ],
+    },
+    {
+      name: "Hexagon",
+      value: [
+        { x: 50, y: 0 },
+        { x: 100, y: 25 },
+        { x: 100, y: 75 },
+        { x: 50, y: 100 },
+        { x: 0, y: 75 },
+        { x: 0, y: 25 },
+      ],
+    },
+    {
+      name: "Star",
+      value: [
+        { x: 50, y: 0 },
+        { x: 63, y: 38 },
+        { x: 100, y: 38 },
+        { x: 69, y: 59 },
+        { x: 82, y: 100 },
+        { x: 50, y: 75 },
+        { x: 18, y: 100 },
+        { x: 31, y: 59 },
+        { x: 0, y: 38 },
+        { x: 37, y: 38 },
+      ],
+    },
+    {
+      name: "Message",
+      value: [
+        { x: 0, y: 0 },
+        { x: 100, y: 0 },
+        { x: 100, y: 75 },
+        { x: 75, y: 75 },
+        { x: 75, y: 100 },
+        { x: 50, y: 75 },
+        { x: 0, y: 75 },
+      ],
+    },
+    {
+      name: "Arrow",
+      value: [
+        { x: 0, y: 30 },
+        { x: 60, y: 30 },
+        { x: 60, y: 0 },
+        { x: 100, y: 50 },
+        { x: 60, y: 100 },
+        { x: 60, y: 70 },
+        { x: 0, y: 70 },
+      ],
+    },
   ],
   blob: [
-    { name: "Organic Blob", value: { tlh: 30, trh: 70, brh: 70, blh: 30, tlv: 30, trv: 30, brv: 70, blv: 70 } },
-    { name: "Smooth Egg", value: { tlh: 50, trh: 50, brh: 40, blh: 40, tlv: 30, trv: 30, brv: 60, blv: 60 } },
-    { name: "Bean Shape", value: { tlh: 40, trh: 80, brh: 30, blh: 70, tlv: 50, trv: 20, brv: 80, blv: 50 } },
-    { name: "Soft Rounded", value: { tlh: 20, trh: 20, brh: 20, blh: 20, tlv: 20, trv: 20, brv: 20, blv: 20 } }
+    {
+      name: "Organic Blob",
+      value: {
+        tlh: 30,
+        trh: 70,
+        brh: 70,
+        blh: 30,
+        tlv: 30,
+        trv: 30,
+        brv: 70,
+        blv: 70,
+      },
+    },
+    {
+      name: "Smooth Egg",
+      value: {
+        tlh: 50,
+        trh: 50,
+        brh: 40,
+        blh: 40,
+        tlv: 30,
+        trv: 30,
+        brv: 60,
+        blv: 60,
+      },
+    },
+    {
+      name: "Bean Shape",
+      value: {
+        tlh: 40,
+        trh: 80,
+        brh: 30,
+        blh: 70,
+        tlv: 50,
+        trv: 20,
+        brv: 80,
+        blv: 50,
+      },
+    },
+    {
+      name: "Soft Rounded",
+      value: {
+        tlh: 20,
+        trh: 20,
+        brh: 20,
+        blh: 20,
+        tlv: 20,
+        trv: 20,
+        brv: 20,
+        blv: 20,
+      },
+    },
   ],
   circle: [
     { name: "Centered Circle", value: { cx: 50, cy: 50, r: 40 } },
-    { name: "Small Corner", value: { cx: 20, cy: 20, r: 15 } }
+    { name: "Small Corner", value: { cx: 20, cy: 20, r: 15 } },
   ],
   ellipse: [
     { name: "Wide Ellipse", value: { cx: 50, cy: 50, rx: 45, ry: 25 } },
-    { name: "Tall Ellipse", value: { cx: 50, cy: 50, rx: 25, ry: 45 } }
-  ]
+    { name: "Tall Ellipse", value: { cx: 50, cy: 50, rx: 25, ry: 45 } },
+  ],
 };
 
 // DOM References
@@ -141,7 +266,9 @@ function init() {
 function initTheme() {
   const currentTheme =
     localStorage.getItem("theme") ||
-    (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+    (window.matchMedia("(prefers-color-scheme: light)").matches
+      ? "light"
+      : "dark");
   applyTheme(currentTheme);
 }
 
@@ -165,9 +292,9 @@ if (themeToggle) {
 
 function setupEventListeners() {
   // Shape Selector Buttons
-  shapeBtns.forEach((btn) => {
+  shapeBtns.forEach(btn => {
     btn.addEventListener("click", () => {
-      shapeBtns.forEach((b) => b.classList.remove("active"));
+      shapeBtns.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       state.selectedShape = btn.dataset.shape;
       state.selectedVertexIndex = -1;
@@ -178,12 +305,14 @@ function setupEventListeners() {
   });
 
   // Exporter tabs
-  tabBtns.forEach((btn) => {
+  tabBtns.forEach(btn => {
     btn.addEventListener("click", () => {
-      tabBtns.forEach((b) => b.classList.remove("active"));
-      tabPanes.forEach((p) => p.classList.remove("active"));
+      tabBtns.forEach(b => b.classList.remove("active"));
+      tabPanes.forEach(p => p.classList.remove("active"));
       btn.classList.add("active");
-      document.getElementById(`tab-pane-${btn.dataset.tab}`).classList.add("active");
+      document
+        .getElementById(`tab-pane-${btn.dataset.tab}`)
+        .classList.add("active");
       state.activeTab = btn.dataset.tab;
     });
   });
@@ -199,22 +328,40 @@ function setupEventListeners() {
 
   // Blob Sliders
   const blobSliders = [
-    "blob-r-top-left-h", "blob-r-top-right-h", "blob-r-bottom-right-h", "blob-r-bottom-left-h",
-    "blob-r-top-left-v", "blob-r-top-right-v", "blob-r-bottom-right-v", "blob-r-bottom-left-v"
+    "blob-r-top-left-h",
+    "blob-r-top-right-h",
+    "blob-r-bottom-right-h",
+    "blob-r-bottom-left-h",
+    "blob-r-top-left-v",
+    "blob-r-top-right-v",
+    "blob-r-bottom-right-v",
+    "blob-r-bottom-left-v",
   ];
-  blobSliders.forEach((id) => {
-    document.getElementById(id).addEventListener("input", handleBlobSliderInput);
+  blobSliders.forEach(id => {
+    document
+      .getElementById(id)
+      .addEventListener("input", handleBlobSliderInput);
   });
 
   // Circle & Ellipse Sliders
-  document.getElementById("radius-r").addEventListener("input", handleCircleSliderInput);
-  document.getElementById("radius-rx").addEventListener("input", handleCircleSliderInput);
-  document.getElementById("radius-ry").addEventListener("input", handleCircleSliderInput);
-  document.getElementById("center-cx").addEventListener("input", handleCircleSliderInput);
-  document.getElementById("center-cy").addEventListener("input", handleCircleSliderInput);
+  document
+    .getElementById("radius-r")
+    .addEventListener("input", handleCircleSliderInput);
+  document
+    .getElementById("radius-rx")
+    .addEventListener("input", handleCircleSliderInput);
+  document
+    .getElementById("radius-ry")
+    .addEventListener("input", handleCircleSliderInput);
+  document
+    .getElementById("center-cx")
+    .addEventListener("input", handleCircleSliderInput);
+  document
+    .getElementById("center-cy")
+    .addEventListener("input", handleCircleSliderInput);
 
   // Styling customizers listeners
-  fillModeSelect.addEventListener("change", (e) => {
+  fillModeSelect.addEventListener("change", e => {
     state.fillMode = e.target.value;
     fillSolidGroup.classList.toggle("hidden", state.fillMode !== "solid");
     fillGradientGroup.classList.toggle("hidden", state.fillMode !== "gradient");
@@ -227,41 +374,47 @@ function setupEventListeners() {
   bindColorSync(colorGrad2Picker, colorGrad2Text, "gradColor2");
   bindColorSync(colorShadowPicker, colorShadowText, "shadowColor");
 
-  gradAngleSlider.addEventListener("input", (e) => {
+  gradAngleSlider.addEventListener("input", e => {
     state.gradAngle = parseInt(e.target.value);
     gradAngleVal.textContent = `${state.gradAngle}°`;
     updateCanvas();
   });
 
-  imageUrlInput.addEventListener("input", (e) => {
+  imageUrlInput.addEventListener("input", e => {
     state.imageUrl = e.target.value;
     updateCanvas();
   });
 
-  shadowBlurSlider.addEventListener("input", (e) => {
+  shadowBlurSlider.addEventListener("input", e => {
     state.shadowBlur = parseInt(e.target.value);
     shadowBlurVal.textContent = `${state.shadowBlur}px`;
     updateCanvas();
   });
 
   // Clipboard Copiers
-  btnCopyCss.addEventListener("click", () => copyToClipboard(codeCss.textContent, "CSS properties copied to clipboard!"));
-  btnCopyHtml.addEventListener("click", () => copyToClipboard(codeHtml.textContent, "HTML template copied to clipboard!"));
+  btnCopyCss.addEventListener("click", () =>
+    copyToClipboard(codeCss.textContent, "CSS properties copied to clipboard!")
+  );
+  btnCopyHtml.addEventListener("click", () =>
+    copyToClipboard(codeHtml.textContent, "HTML template copied to clipboard!")
+  );
 
   // Global Drag listeners
   document.addEventListener("mousemove", handleDocumentMouseMove);
-  document.addEventListener("touchmove", handleDocumentMouseMove, { passive: false });
+  document.addEventListener("touchmove", handleDocumentMouseMove, {
+    passive: false,
+  });
   document.addEventListener("mouseup", handleDocumentMouseUp);
   document.addEventListener("touchend", handleDocumentMouseUp);
 }
 
 function bindColorSync(picker, text, stateKey) {
-  picker.addEventListener("input", (e) => {
+  picker.addEventListener("input", e => {
     state[stateKey] = e.target.value;
     text.value = e.target.value;
     updateCanvas();
   });
-  text.addEventListener("input", (e) => {
+  text.addEventListener("input", e => {
     const val = e.target.value;
     if (val.match(/^#[0-9A-Fa-f]{6}$/)) {
       state[stateKey] = val;
@@ -275,11 +428,16 @@ function bindColorSync(picker, text, stateKey) {
 function updatePanelsVisibility() {
   polyCard.classList.toggle("hidden", state.selectedShape !== "polygon");
   blobCard.classList.toggle("hidden", state.selectedShape !== "blob");
-  
-  const isCircleOrEllipse = state.selectedShape === "circle" || state.selectedShape === "ellipse";
+
+  const isCircleOrEllipse =
+    state.selectedShape === "circle" || state.selectedShape === "ellipse";
   ellipseCard.classList.toggle("hidden", !isCircleOrEllipse);
-  document.getElementById("circle-radii-sliders").classList.toggle("hidden", state.selectedShape !== "circle");
-  document.getElementById("ellipse-radii-sliders").classList.toggle("hidden", state.selectedShape !== "ellipse");
+  document
+    .getElementById("circle-radii-sliders")
+    .classList.toggle("hidden", state.selectedShape !== "circle");
+  document
+    .getElementById("ellipse-radii-sliders")
+    .classList.toggle("hidden", state.selectedShape !== "ellipse");
 }
 
 function loadPresets() {
@@ -291,7 +449,9 @@ function loadPresets() {
     btn.className = `preset-btn ${index === 0 ? "active" : ""}`;
     btn.textContent = preset.name;
     btn.addEventListener("click", () => {
-      presetsContainer.querySelectorAll(".preset-btn").forEach((b) => b.classList.remove("active"));
+      presetsContainer
+        .querySelectorAll(".preset-btn")
+        .forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       loadPresetValue(preset.value);
     });
@@ -311,7 +471,7 @@ function loadPresetValue(val) {
   const op = state.selectedShape;
 
   if (op === "polygon") {
-    state.polygonVertices = val.map((pt) => ({ ...pt }));
+    state.polygonVertices = val.map(pt => ({ ...pt }));
   } else if (op === "blob") {
     state.blob = { ...val };
     syncSlidersFromBlobState();
@@ -342,7 +502,7 @@ function syncSlidersFromBlobState() {
 function syncSlidersFromCircleState() {
   document.getElementById("center-cx").value = state[state.selectedShape].cx;
   document.getElementById("center-cy").value = state[state.selectedShape].cy;
-  
+
   document.getElementById("radius-r").value = state.circle.r;
   document.getElementById("radius-rx").value = state.ellipse.rx;
   document.getElementById("radius-ry").value = state.ellipse.ry;
@@ -353,13 +513,17 @@ function syncSlidersFromCircleState() {
 function updateBlobLabels() {
   document.getElementById("val-top-left-h").textContent = `${state.blob.tlh}%`;
   document.getElementById("val-top-right-h").textContent = `${state.blob.trh}%`;
-  document.getElementById("val-bottom-right-h").textContent = `${state.blob.brh}%`;
-  document.getElementById("val-bottom-left-h").textContent = `${state.blob.blh}%`;
+  document.getElementById("val-bottom-right-h").textContent =
+    `${state.blob.brh}%`;
+  document.getElementById("val-bottom-left-h").textContent =
+    `${state.blob.blh}%`;
 
   document.getElementById("val-top-left-v").textContent = `${state.blob.tlv}%`;
   document.getElementById("val-top-right-v").textContent = `${state.blob.trv}%`;
-  document.getElementById("val-bottom-right-v").textContent = `${state.blob.brv}%`;
-  document.getElementById("val-bottom-left-v").textContent = `${state.blob.blv}%`;
+  document.getElementById("val-bottom-right-v").textContent =
+    `${state.blob.brv}%`;
+  document.getElementById("val-bottom-left-v").textContent =
+    `${state.blob.blv}%`;
 }
 
 function updateCircleLabels() {
@@ -373,8 +537,14 @@ function updateCircleLabels() {
 
 function handleBlobSliderInput(e) {
   const keyMap = {
-    "blob-r-top-left-h": "tlh", "blob-r-top-right-h": "trh", "blob-r-bottom-right-h": "brh", "blob-r-bottom-left-h": "blh",
-    "blob-r-top-left-v": "tlv", "blob-r-top-right-v": "trv", "blob-r-bottom-right-v": "brv", "blob-r-bottom-left-v": "blv"
+    "blob-r-top-left-h": "tlh",
+    "blob-r-top-right-h": "trh",
+    "blob-r-bottom-right-h": "brh",
+    "blob-r-bottom-left-h": "blh",
+    "blob-r-top-left-v": "tlv",
+    "blob-r-top-right-v": "trv",
+    "blob-r-bottom-right-v": "brv",
+    "blob-r-bottom-left-v": "blv",
   };
   const val = parseInt(e.target.value);
   state.blob[keyMap[e.target.id]] = val;
@@ -422,7 +592,9 @@ function renderPreviewElement() {
   // Apply Clip-path or Border-radius shape
   const op = state.selectedShape;
   if (op === "polygon") {
-    const pointsStr = state.polygonVertices.map((v) => `${v.x}% ${v.y}%`).join(", ");
+    const pointsStr = state.polygonVertices
+      .map(v => `${v.x}% ${v.y}%`)
+      .join(", ");
     shapePreview.style.clipPath = `polygon(${pointsStr})`;
     shapePreview.style.borderRadius = "0";
   } else if (op === "blob") {
@@ -449,7 +621,9 @@ function renderTracerOutlines() {
   ellipseTrace.classList.add("hidden");
 
   if (op === "polygon") {
-    const pointsStr = state.polygonVertices.map((v) => `${v.x}%,${v.y}%`).join(" ");
+    const pointsStr = state.polygonVertices
+      .map(v => `${v.x}%,${v.y}%`)
+      .join(" ");
     polyTrace.setAttribute("points", pointsStr);
     polyTrace.classList.remove("hidden");
   } else if (op === "circle") {
@@ -509,12 +683,15 @@ function createHandle(x, y, identifier, tooltip = "Drag to Morph") {
   handle.setAttribute("title", tooltip);
   handle.setAttribute("data-id", identifier);
 
-  if (state.selectedShape === "polygon" && identifier === state.selectedVertexIndex) {
+  if (
+    state.selectedShape === "polygon" &&
+    identifier === state.selectedVertexIndex
+  ) {
     handle.classList.add("active");
   }
 
   // Double click handle to delete (Polygon only)
-  handle.addEventListener("dblclick", (e) => {
+  handle.addEventListener("dblclick", e => {
     e.stopPropagation();
     if (state.selectedShape === "polygon") {
       deleteVertex(parseInt(identifier));
@@ -522,19 +699,22 @@ function createHandle(x, y, identifier, tooltip = "Drag to Morph") {
   });
 
   // Start dragging
-  const startDrag = (e) => {
+  const startDrag = e => {
     e.preventDefault();
     state.isDragging = true;
-    
+
     if (state.selectedShape === "polygon") {
       state.selectedVertexIndex = parseInt(identifier);
       btnDeleteVertex.disabled = false;
       coordEditor.classList.remove("hidden");
       syncVertexCoordinatesDisplay();
-      
+
       // Re-render handles to show active glow
       renderHandles();
-    } else if (state.selectedShape === "circle" || state.selectedShape === "ellipse") {
+    } else if (
+      state.selectedShape === "circle" ||
+      state.selectedShape === "ellipse"
+    ) {
       state.draggedPart = identifier;
     } else {
       state.draggedIndex = identifier; // String keys for blob
@@ -553,7 +733,7 @@ function handleDocumentMouseMove(e) {
   e.preventDefault();
 
   const rect = handlesContainer.getBoundingClientRect();
-  
+
   // Resolve client cursor position (touch vs mouse)
   const clientX = e.touches ? e.touches[0].clientX : e.clientX;
   const clientY = e.touches ? e.touches[0].clientY : e.clientY;
@@ -573,7 +753,7 @@ function handleDocumentMouseMove(e) {
     syncVertexCoordinatesDisplay();
   } else if (op === "blob" && state.draggedIndex !== -1) {
     const key = state.draggedIndex;
-    
+
     // Horizontal edge sliders
     if (key === "tlh") state.blob.tlh = px;
     else if (key === "trh") state.blob.trh = 100 - px;
@@ -594,13 +774,22 @@ function handleDocumentMouseMove(e) {
       target.cx = px;
       target.cy = py;
     } else if (part === "radius") {
-      target.r = Math.max(5, Math.min(50, Math.round(Math.abs(px - target.cx))));
+      target.r = Math.max(
+        5,
+        Math.min(50, Math.round(Math.abs(px - target.cx)))
+      );
     } else if (part === "radiusX") {
-      target.rx = Math.max(5, Math.min(50, Math.round(Math.abs(px - target.cx))));
+      target.rx = Math.max(
+        5,
+        Math.min(50, Math.round(Math.abs(px - target.cx)))
+      );
     } else if (part === "radiusY") {
-      target.ry = Math.max(5, Math.min(50, Math.round(Math.abs(py - target.cy))));
+      target.ry = Math.max(
+        5,
+        Math.min(50, Math.round(Math.abs(py - target.cy)))
+      );
     }
-    
+
     syncSlidersFromCircleState();
   }
 
@@ -628,10 +817,10 @@ function handleVertexManualInput() {
   if (state.selectedVertexIndex !== -1) {
     const x = Math.max(0, Math.min(100, parseInt(vertexInputX.value) || 0));
     const y = Math.max(0, Math.min(100, parseInt(vertexInputY.value) || 0));
-    
+
     state.polygonVertices[state.selectedVertexIndex].x = x;
     state.polygonVertices[state.selectedVertexIndex].y = y;
-    
+
     updateCanvas();
   }
 }
@@ -640,11 +829,11 @@ function addVertexAtCenter() {
   const newPt = { x: 50, y: 50 };
   state.polygonVertices.push(newPt);
   state.selectedVertexIndex = state.polygonVertices.length - 1;
-  
+
   btnDeleteVertex.disabled = false;
   coordEditor.classList.remove("hidden");
   syncVertexCoordinatesDisplay();
-  
+
   updateCanvas();
 }
 
@@ -659,12 +848,12 @@ function deleteVertex(index) {
     showToast("A polygon must have at least 3 vertices!");
     return;
   }
-  
+
   state.polygonVertices.splice(index, 1);
   state.selectedVertexIndex = -1;
   btnDeleteVertex.disabled = true;
   coordEditor.classList.add("hidden");
-  
+
   updateCanvas();
 }
 
@@ -687,7 +876,7 @@ function handleCanvasDoubleClick(e) {
   for (let i = 0; i < vertices.length; i++) {
     const p1 = vertices[i];
     const p2 = vertices[(i + 1) % vertices.length];
-    
+
     const dist = getDistanceToSegment(px, py, p1.x, p1.y, p2.x, p2.y);
     if (dist < minDistance) {
       minDistance = dist;
@@ -698,7 +887,7 @@ function handleCanvasDoubleClick(e) {
   // Insert point right after the segment anchor i
   state.polygonVertices.splice(nearestSegmentIndex + 1, 0, { x: px, y: py });
   state.selectedVertexIndex = nearestSegmentIndex + 1;
-  
+
   btnDeleteVertex.disabled = false;
   coordEditor.classList.remove("hidden");
   syncVertexCoordinatesDisplay();
@@ -710,13 +899,13 @@ function handleCanvasDoubleClick(e) {
 function getDistanceToSegment(px, py, x1, y1, x2, y2) {
   const l2 = (x2 - x1) ** 2 + (y2 - y1) ** 2;
   if (l2 === 0) return Math.sqrt((px - x1) ** 2 + (py - y1) ** 2);
-  
+
   let t = ((px - x1) * (x2 - x1) + (py - y1) * (y2 - y1)) / l2;
   t = Math.max(0, Math.min(1, t));
-  
+
   const projX = x1 + t * (x2 - x1);
   const projY = y1 + t * (y2 - y1);
-  
+
   return Math.sqrt((px - projX) ** 2 + (py - projY) ** 2);
 }
 
@@ -724,7 +913,7 @@ function getDistanceToSegment(px, py, x1, y1, x2, y2) {
 function updateExporters() {
   const shape = state.selectedShape;
   let cssValue = "";
-  
+
   // Format Background styling
   let fillBgCss = "";
   if (state.fillMode === "solid") {
@@ -740,7 +929,9 @@ function updateExporters() {
 
   // Shape geometry CSS
   if (shape === "polygon") {
-    const pointsStr = state.polygonVertices.map((v) => `${v.x}% ${v.y}%`).join(", ");
+    const pointsStr = state.polygonVertices
+      .map(v => `${v.x}% ${v.y}%`)
+      .join(", ");
     cssValue = `clip-path: polygon(${pointsStr});\n${fillBgCss}\n${glowCss}`;
   } else if (shape === "blob") {
     const b = state.blob;
@@ -763,7 +954,7 @@ function updateExporters() {
 function copyToClipboard(text, msg) {
   navigator.clipboard.writeText(text).then(
     () => showToast(msg),
-    (err) => console.error("Clipboard copy failed:", err)
+    err => console.error("Clipboard copy failed:", err)
   );
 }
 
@@ -771,11 +962,12 @@ function showToast(message) {
   const toast = document.createElement("div");
   toast.className = "toast";
   toast.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--theme-accent);"></i> ${message}`;
-  
+
   toastContainer.appendChild(toast);
-  
+
   setTimeout(() => {
-    toast.style.animation = "slideToastUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) reverse";
+    toast.style.animation =
+      "slideToastUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) reverse";
     toast.addEventListener("animationend", () => {
       toast.remove();
     });

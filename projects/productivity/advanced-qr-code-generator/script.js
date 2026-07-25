@@ -3,42 +3,42 @@
    Uses: qr-code-styling library (loaded globally as QRCodeStyling)
    ========================================================= */
 
-'use strict';
+"use strict";
 
 /* ---------------------- DOM REFERENCES ---------------------- */
 const el = {
-  themeToggle: document.getElementById('theme-toggle'),
-  themeIcon: document.getElementById('theme-icon'),
-  textInput: document.getElementById('qr-text'),
-  fgColor: document.getElementById('fg-color'),
-  fgColorText: document.getElementById('fg-color-text'),
-  bgColor: document.getElementById('bg-color'),
-  bgColorText: document.getElementById('bg-color-text'),
-  size: document.getElementById('qr-size'),
-  sizeValue: document.getElementById('size-value'),
-  margin: document.getElementById('qr-margin'),
-  marginValue: document.getElementById('margin-value'),
-  errorLevel: document.getElementById('error-level'),
-  logoUpload: document.getElementById('logo-upload'),
-  uploadText: document.getElementById('upload-text'),
-  removeLogoBtn: document.getElementById('remove-logo-btn'),
-  downloadPngBtn: document.getElementById('download-png-btn'),
-  downloadSvgBtn: document.getElementById('download-svg-btn'),
-  copyImageBtn: document.getElementById('copy-image-btn'),
-  resetBtn: document.getElementById('reset-btn'),
-  qrContainer: document.getElementById('qr-code-container'),
-  emptyState: document.getElementById('empty-state'),
-  toastContainer: document.getElementById('toast-container'),
+  themeToggle: document.getElementById("theme-toggle"),
+  themeIcon: document.getElementById("theme-icon"),
+  textInput: document.getElementById("qr-text"),
+  fgColor: document.getElementById("fg-color"),
+  fgColorText: document.getElementById("fg-color-text"),
+  bgColor: document.getElementById("bg-color"),
+  bgColorText: document.getElementById("bg-color-text"),
+  size: document.getElementById("qr-size"),
+  sizeValue: document.getElementById("size-value"),
+  margin: document.getElementById("qr-margin"),
+  marginValue: document.getElementById("margin-value"),
+  errorLevel: document.getElementById("error-level"),
+  logoUpload: document.getElementById("logo-upload"),
+  uploadText: document.getElementById("upload-text"),
+  removeLogoBtn: document.getElementById("remove-logo-btn"),
+  downloadPngBtn: document.getElementById("download-png-btn"),
+  downloadSvgBtn: document.getElementById("download-svg-btn"),
+  copyImageBtn: document.getElementById("copy-image-btn"),
+  resetBtn: document.getElementById("reset-btn"),
+  qrContainer: document.getElementById("qr-code-container"),
+  emptyState: document.getElementById("empty-state"),
+  toastContainer: document.getElementById("toast-container"),
 };
 
 /* ---------------------- DEFAULT STATE ---------------------- */
 const DEFAULTS = Object.freeze({
-  text: '',
-  fgColor: '#2B2D42',
-  bgColor: '#FFFFFF',
+  text: "",
+  fgColor: "#2B2D42",
+  bgColor: "#FFFFFF",
   size: 300,
   margin: 10,
-  errorLevel: 'M',
+  errorLevel: "M",
   logo: null,
 });
 
@@ -50,34 +50,34 @@ let debounceTimer = null;
 
 /** Apply a theme and persist the choice */
 function applyTheme(theme) {
-  if (theme === 'dark') {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    el.themeIcon.classList.remove('fa-moon');
-    el.themeIcon.classList.add('fa-sun');
-    el.themeToggle.setAttribute('aria-pressed', 'true');
+  if (theme === "dark") {
+    document.documentElement.setAttribute("data-theme", "dark");
+    el.themeIcon.classList.remove("fa-moon");
+    el.themeIcon.classList.add("fa-sun");
+    el.themeToggle.setAttribute("aria-pressed", "true");
   } else {
-    document.documentElement.removeAttribute('data-theme');
-    el.themeIcon.classList.remove('fa-sun');
-    el.themeIcon.classList.add('fa-moon');
-    el.themeToggle.setAttribute('aria-pressed', 'false');
+    document.documentElement.removeAttribute("data-theme");
+    el.themeIcon.classList.remove("fa-sun");
+    el.themeIcon.classList.add("fa-moon");
+    el.themeToggle.setAttribute("aria-pressed", "false");
   }
-  localStorage.setItem('qr-studio-theme', theme);
+  localStorage.setItem("qr-studio-theme", theme);
 }
 
 /** Initialize theme from saved preference or system setting */
 function initTheme() {
-  const saved = localStorage.getItem('qr-studio-theme');
+  const saved = localStorage.getItem("qr-studio-theme");
   if (saved) {
     applyTheme(saved);
     return;
   }
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  applyTheme(prefersDark ? 'dark' : 'light');
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  applyTheme(prefersDark ? "dark" : "light");
 }
 
-el.themeToggle.addEventListener('click', () => {
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  applyTheme(isDark ? 'light' : 'dark');
+el.themeToggle.addEventListener("click", () => {
+  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+  applyTheme(isDark ? "light" : "dark");
 });
 
 /* ---------------------- UTILITIES ---------------------- */
@@ -96,23 +96,25 @@ function isValidHex(hex) {
 }
 
 /** Show a toast notification */
-function showToast(message, type = 'info') {
+function showToast(message, type = "info") {
   const icons = {
-    success: 'fa-circle-check',
-    error: 'fa-circle-exclamation',
-    info: 'fa-circle-info',
+    success: "fa-circle-check",
+    error: "fa-circle-exclamation",
+    info: "fa-circle-info",
   };
 
-  const toast = document.createElement('div');
+  const toast = document.createElement("div");
   toast.className = `toast ${type}`;
-  toast.setAttribute('role', 'status');
+  toast.setAttribute("role", "status");
   toast.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span>${message}</span>`;
 
   el.toastContainer.appendChild(toast);
 
   setTimeout(() => {
-    toast.classList.add('hide');
-    toast.addEventListener('animationend', () => toast.remove(), { once: true });
+    toast.classList.add("hide");
+    toast.addEventListener("animationend", () => toast.remove(), {
+      once: true,
+    });
   }, 3200);
 }
 
@@ -125,13 +127,13 @@ function toggleExportButtons(enabled) {
 
 /** Ripple effect for buttons */
 function attachRippleEffect() {
-  document.querySelectorAll('.btn').forEach((btn) => {
-    btn.addEventListener('click', function (e) {
+  document.querySelectorAll(".btn").forEach(btn => {
+    btn.addEventListener("click", function (e) {
       if (this.disabled) return;
       const rect = this.getBoundingClientRect();
-      const ripple = document.createElement('span');
+      const ripple = document.createElement("span");
       const size = Math.max(rect.width, rect.height);
-      ripple.className = 'ripple';
+      ripple.className = "ripple";
       ripple.style.width = ripple.style.height = `${size}px`;
       ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
       ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
@@ -155,22 +157,22 @@ function buildQrOptions() {
     },
     dotsOptions: {
       color: state.fgColor,
-      type: 'rounded',
+      type: "rounded",
     },
     cornersSquareOptions: {
       color: state.fgColor,
-      type: 'extra-rounded',
+      type: "extra-rounded",
     },
     cornersDotOptions: {
       color: state.fgColor,
-      type: 'dot',
+      type: "dot",
     },
     backgroundOptions: {
       color: state.bgColor,
     },
     image: state.logo || undefined,
     imageOptions: {
-      crossOrigin: 'anonymous',
+      crossOrigin: "anonymous",
       margin: 6,
       imageSize: 0.4,
     },
@@ -180,9 +182,9 @@ function buildQrOptions() {
 /** Show the empty/validation state and hide the QR */
 function showEmptyState() {
   el.emptyState.hidden = false;
-  el.emptyState.style.display = 'flex';
+  el.emptyState.style.display = "flex";
   el.qrContainer.hidden = true;
-  el.qrContainer.innerHTML = '';
+  el.qrContainer.innerHTML = "";
   toggleExportButtons(false);
 }
 
@@ -201,11 +203,11 @@ function generateQRCode() {
 
     // Hide empty state completely once QR generation starts
     el.emptyState.hidden = true;
-    el.emptyState.style.display = 'none';
+    el.emptyState.style.display = "none";
 
     if (!qrCode) {
       qrCode = new QRCodeStyling(options);
-      el.qrContainer.innerHTML = '';
+      el.qrContainer.innerHTML = "";
       qrCode.append(el.qrContainer);
     } else {
       qrCode.update(options);
@@ -214,15 +216,15 @@ function generateQRCode() {
     el.qrContainer.hidden = false;
 
     // Restart the subtle fade-in animation
-    el.qrContainer.classList.remove('qr-code-container');
+    el.qrContainer.classList.remove("qr-code-container");
     void el.qrContainer.offsetWidth;
-    el.qrContainer.classList.add('qr-code-container');
+    el.qrContainer.classList.add("qr-code-container");
 
     toggleExportButtons(true);
   } catch (err) {
     showEmptyState();
-    showToast('Something went wrong generating the QR code.', 'error');
-    console.error('QR generation error:', err);
+    showToast("Something went wrong generating the QR code.", "error");
+    console.error("QR generation error:", err);
   }
 }
 
@@ -231,19 +233,19 @@ const debouncedGenerate = debounce(generateQRCode, 200);
 /* ---------------------- EVENT HANDLERS ---------------------- */
 
 /** Text input — live generation */
-el.textInput.addEventListener('input', (e) => {
+el.textInput.addEventListener("input", e => {
   state.text = e.target.value;
   debouncedGenerate();
 });
 
 /** Foreground color — swatch + text field sync */
-el.fgColor.addEventListener('input', (e) => {
+el.fgColor.addEventListener("input", e => {
   state.fgColor = e.target.value;
   el.fgColorText.value = e.target.value.toUpperCase();
   debouncedGenerate();
 });
 
-el.fgColorText.addEventListener('input', (e) => {
+el.fgColorText.addEventListener("input", e => {
   const value = e.target.value;
   if (isValidHex(value)) {
     state.fgColor = value;
@@ -253,13 +255,13 @@ el.fgColorText.addEventListener('input', (e) => {
 });
 
 /** Background color — swatch + text field sync */
-el.bgColor.addEventListener('input', (e) => {
+el.bgColor.addEventListener("input", e => {
   state.bgColor = e.target.value;
   el.bgColorText.value = e.target.value.toUpperCase();
   debouncedGenerate();
 });
 
-el.bgColorText.addEventListener('input', (e) => {
+el.bgColorText.addEventListener("input", e => {
   const value = e.target.value;
   if (isValidHex(value)) {
     state.bgColor = value;
@@ -269,123 +271,126 @@ el.bgColorText.addEventListener('input', (e) => {
 });
 
 /** Size slider */
-el.size.addEventListener('input', (e) => {
+el.size.addEventListener("input", e => {
   state.size = parseInt(e.target.value, 10);
   el.sizeValue.textContent = `${state.size}px`;
   debouncedGenerate();
 });
 
 /** Margin slider */
-el.margin.addEventListener('input', (e) => {
+el.margin.addEventListener("input", e => {
   state.margin = parseInt(e.target.value, 10);
   el.marginValue.textContent = `${state.margin}px`;
   debouncedGenerate();
 });
 
 /** Error correction level */
-el.errorLevel.addEventListener('change', (e) => {
+el.errorLevel.addEventListener("change", e => {
   state.errorLevel = e.target.value;
   debouncedGenerate();
 });
 
 /** Logo upload */
-el.logoUpload.addEventListener('change', (e) => {
+el.logoUpload.addEventListener("change", e => {
   const file = e.target.files[0];
   if (!file) return;
 
-  const validTypes = ['image/png', 'image/jpeg', 'image/svg+xml'];
+  const validTypes = ["image/png", "image/jpeg", "image/svg+xml"];
   if (!validTypes.includes(file.type)) {
-    showToast('Please upload a PNG, JPG, JPEG, or SVG file.', 'error');
-    el.logoUpload.value = '';
+    showToast("Please upload a PNG, JPG, JPEG, or SVG file.", "error");
+    el.logoUpload.value = "";
     return;
   }
 
   const reader = new FileReader();
-  reader.onload = (event) => {
+  reader.onload = event => {
     state.logo = event.target.result;
     el.uploadText.textContent = file.name;
     el.removeLogoBtn.disabled = false;
     generateQRCode();
-    showToast('Logo added to your QR code!', 'success');
+    showToast("Logo added to your QR code!", "success");
   };
   reader.onerror = () => {
-    showToast('Failed to read the logo file.', 'error');
+    showToast("Failed to read the logo file.", "error");
   };
   reader.readAsDataURL(file);
 });
 
 /** Remove logo */
-el.removeLogoBtn.addEventListener('click', () => {
+el.removeLogoBtn.addEventListener("click", () => {
   state.logo = null;
-  el.logoUpload.value = '';
-  el.uploadText.textContent = 'Click to upload logo';
+  el.logoUpload.value = "";
+  el.uploadText.textContent = "Click to upload logo";
   el.removeLogoBtn.disabled = true;
   generateQRCode();
-  showToast('Logo removed.', 'info');
+  showToast("Logo removed.", "info");
 });
 
 /** Download PNG */
-el.downloadPngBtn.addEventListener('click', async () => {
+el.downloadPngBtn.addEventListener("click", async () => {
   if (!qrCode || !state.text.trim()) return;
   try {
-    await qrCode.download({ name: 'qr-code', extension: 'png' });
-    showToast('PNG downloaded successfully!', 'success');
+    await qrCode.download({ name: "qr-code", extension: "png" });
+    showToast("PNG downloaded successfully!", "success");
   } catch (err) {
-    showToast('Failed to download PNG.', 'error');
+    showToast("Failed to download PNG.", "error");
     console.error(err);
   }
 });
 
 /** Download SVG */
-el.downloadSvgBtn.addEventListener('click', async () => {
+el.downloadSvgBtn.addEventListener("click", async () => {
   if (!qrCode || !state.text.trim()) return;
   try {
-    await qrCode.download({ name: 'qr-code', extension: 'svg' });
-    showToast('SVG downloaded successfully!', 'success');
+    await qrCode.download({ name: "qr-code", extension: "svg" });
+    showToast("SVG downloaded successfully!", "success");
   } catch (err) {
-    showToast('Failed to download SVG.', 'error');
+    showToast("Failed to download SVG.", "error");
     console.error(err);
   }
 });
 
 /** Copy QR image to clipboard */
-el.copyImageBtn.addEventListener('click', async () => {
+el.copyImageBtn.addEventListener("click", async () => {
   if (!qrCode || !state.text.trim()) return;
 
-  const canvas = el.qrContainer.querySelector('canvas');
+  const canvas = el.qrContainer.querySelector("canvas");
 
   if (!canvas) {
-    showToast('Unable to copy image right now.', 'error');
+    showToast("Unable to copy image right now.", "error");
     return;
   }
 
   if (!navigator.clipboard || !window.ClipboardItem) {
-    showToast('Clipboard image copy is not supported in this browser.', 'error');
+    showToast(
+      "Clipboard image copy is not supported in this browser.",
+      "error"
+    );
     return;
   }
 
   try {
-    canvas.toBlob(async (blob) => {
+    canvas.toBlob(async blob => {
       if (!blob) {
-        showToast('Failed to prepare image for copying.', 'error');
+        showToast("Failed to prepare image for copying.", "error");
         return;
       }
       await navigator.clipboard.write([
-        new ClipboardItem({ 'image/png': blob }),
+        new ClipboardItem({ "image/png": blob }),
       ]);
-      showToast('QR image copied to clipboard!', 'success');
-    }, 'image/png');
+      showToast("QR image copied to clipboard!", "success");
+    }, "image/png");
   } catch (err) {
-    showToast('Failed to copy image to clipboard.', 'error');
+    showToast("Failed to copy image to clipboard.", "error");
     console.error(err);
   }
 });
 
 /** Reset everything to defaults */
-el.resetBtn.addEventListener('click', () => {
+el.resetBtn.addEventListener("click", () => {
   state = { ...DEFAULTS };
 
-  el.textInput.value = '';
+  el.textInput.value = "";
   el.fgColor.value = DEFAULTS.fgColor;
   el.fgColorText.value = DEFAULTS.fgColor;
   el.bgColor.value = DEFAULTS.bgColor;
@@ -395,20 +400,20 @@ el.resetBtn.addEventListener('click', () => {
   el.margin.value = DEFAULTS.margin;
   el.marginValue.textContent = `${DEFAULTS.margin}px`;
   el.errorLevel.value = DEFAULTS.errorLevel;
-  el.logoUpload.value = '';
-  el.uploadText.textContent = 'Click to upload logo';
+  el.logoUpload.value = "";
+  el.uploadText.textContent = "Click to upload logo";
   el.removeLogoBtn.disabled = true;
 
   qrCode = null;
   showEmptyState();
-  showToast('Everything has been reset.', 'info');
+  showToast("Everything has been reset.", "info");
 });
 
 /* ---------------------- KEYBOARD ACCESSIBILITY ---------------------- */
 
 /** Allow Enter/Space on upload label to trigger file dialog */
-document.querySelector('.upload-label').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' || e.key === ' ') {
+document.querySelector(".upload-label").addEventListener("keydown", e => {
+  if (e.key === "Enter" || e.key === " ") {
     e.preventDefault();
     el.logoUpload.click();
   }
@@ -421,4 +426,4 @@ function init() {
   showEmptyState();
 }
 
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener("DOMContentLoaded", init);

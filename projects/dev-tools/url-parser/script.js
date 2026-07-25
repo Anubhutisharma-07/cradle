@@ -80,7 +80,7 @@ function parseURL() {
       </h3>
       `;
 
-      queryParams.forEach((param) => {
+      queryParams.forEach(param => {
         createRow(param.key, param.value);
       });
     }
