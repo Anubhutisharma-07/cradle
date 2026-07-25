@@ -40,7 +40,7 @@
 /* ─── Loading them individually is also supported                ─── */
 
 (function () {
-  'use strict';
+  "use strict";
 
   /**
    * Dynamically load a script relative to this file's location.
@@ -54,10 +54,10 @@
      * Strategy 1: scan all <script src> tags for our file name.
      * Works whether the script was loaded with defer, async, or inline.
      */
-    const scripts = document.querySelectorAll('script[src]');
+    const scripts = document.querySelectorAll("script[src]");
     for (const s of scripts) {
-      if (s.src && s.src.includes('components/ui/index.js')) {
-        return s.src.replace('index.js', '');
+      if (s.src && s.src.includes("components/ui/index.js")) {
+        return s.src.replace("index.js", "");
       }
     }
 
@@ -67,7 +67,7 @@
      * Keep as a secondary fallback.
      */
     if (document.currentScript && document.currentScript.src) {
-      return document.currentScript.src.replace('index.js', '');
+      return document.currentScript.src.replace("index.js", "");
     }
 
     /*
@@ -78,27 +78,27 @@
      *   → http://127.0.0.1:8080/src/components/ui/
      */
     const origin = window.location.origin;
-    const segments = window.location.pathname.split('/').filter(Boolean);
+    const segments = window.location.pathname.split("/").filter(Boolean);
     /* Find 'projects' segment to determine depth */
-    const projectsIdx = segments.indexOf('projects');
+    const projectsIdx = segments.indexOf("projects");
     if (projectsIdx >= 0) {
       /* Root is everything before 'projects' */
-      const root = '/' + segments.slice(0, projectsIdx).join('/');
-      return origin + (root === '/' ? '' : root) + '/src/components/ui/';
+      const root = "/" + segments.slice(0, projectsIdx).join("/");
+      return origin + (root === "/" ? "" : root) + "/src/components/ui/";
     }
 
     /* Strategy 4: assume we're at the repo root */
-    return origin + '/src/components/ui/';
+    return origin + "/src/components/ui/";
   }
 
   const BASE_URL = resolveBase();
 
   const COMPONENTS = [
-    'Button/Button.js',
-    'Card/Card.js',
-    'ThemeToggle/ThemeToggle.js',
-    'Navbar/Navbar.js',
-    'BackToHome/BackToHome.js',
+    "Button/Button.js",
+    "Card/Card.js",
+    "ThemeToggle/ThemeToggle.js",
+    "Navbar/Navbar.js",
+    "BackToHome/BackToHome.js",
   ];
 
   /**
@@ -115,11 +115,12 @@
         return;
       }
 
-      const script = document.createElement('script');
+      const script = document.createElement("script");
       script.src = fullUrl;
       script.async = false; /* Preserve load order */
-      script.onload  = () => resolve();
-      script.onerror = () => reject(new Error(`[CradleUI] Failed to load ${relativePath}`));
+      script.onload = () => resolve();
+      script.onerror = () =>
+        reject(new Error(`[CradleUI] Failed to load ${relativePath}`));
       document.head.appendChild(script);
     });
   }
@@ -132,11 +133,11 @@
    */
   const CradleUI = {
     _baseUrl: BASE_URL,
-    _loaded:  {},
+    _loaded: {},
 
     /** Load every component */
     loadAll() {
-      return Promise.all(COMPONENTS.map(p => this.load(p.split('/')[0])));
+      return Promise.all(COMPONENTS.map(p => this.load(p.split("/")[0])));
     },
 
     /**
@@ -147,7 +148,7 @@
     load(name) {
       if (this._loaded[name]) return Promise.resolve();
 
-      const found = COMPONENTS.find(p => p.startsWith(name + '/'));
+      const found = COMPONENTS.find(p => p.startsWith(name + "/"));
       if (!found) {
         console.warn(`[CradleUI] Unknown component: "${name}"`);
         return Promise.resolve();
@@ -163,5 +164,4 @@
 
   /* Auto-load all components when the bundle file itself is loaded */
   CradleUI.loadAll().catch(err => console.error(err));
-
 })();

@@ -66,7 +66,9 @@ First player to get all 4 tokens to the centre wins
 ## Core Modules
 
 ### `ludoEngine.js`
+
 Houses deterministic game rules and board geometry:
+
 - `GLOBAL_TRACK`: 52 `[row, col]` coordinates defining the main loop.
 - `VICTORY_PATHS`: Final 5-step lanes into the center triangle.
 - `SAFE_ZONES`: 8 safe star coordinates.
@@ -77,11 +79,14 @@ Houses deterministic game rules and board geometry:
 - `checkWinner(state, color)`: Checks if all tokens reached final index 5.
 
 ### `ludoBot.js`
+
 Heuristic AI decision module:
+
 - `evaluateMove(token, diceValue, gameState)`: Scores candidate moves based on capture priority (+120), finishing (+150), victory path entry (+60), spawning (+50), safe stars (+40), and advancement distance.
 - `selectBestMove(validTokens, diceValue, gameState, rng)`: Selects optimal move token.
 
 ### `script.js`
+
 Canvas rendering controller & UI listener bindings.
 
 ---
@@ -89,6 +94,7 @@ Canvas rendering controller & UI listener bindings.
 ## Unit Testing
 
 Automated unit test suite is located in `tests/ludo-game.test.js` and can be run using Node test runner:
+
 ```bash
 node --test tests/ludo-game.test.js
 ```

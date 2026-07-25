@@ -64,7 +64,7 @@ const MORSE = {
 };
 
 const REVERSE = Object.fromEntries(
-  Object.entries(MORSE).map(([k, v]) => [v, k]),
+  Object.entries(MORSE).map(([k, v]) => [v, k])
 );
 
 speedSlider.addEventListener("input", () => {
@@ -102,10 +102,10 @@ function decodeText() {
 
   const words = morse.split(" / ");
 
-  const decoded = words.map((word) => {
+  const decoded = words.map(word => {
     return word
       .split(" ")
-      .map((code) => REVERSE[code] || "?")
+      .map(code => REVERSE[code] || "?")
       .join("");
   });
 
@@ -156,7 +156,7 @@ async function playMorse() {
 }
 
 function beep(ctx, duration) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const oscillator = ctx.createOscillator();
     const gain = ctx.createGain();
 
@@ -177,7 +177,7 @@ function beep(ctx, duration) {
 }
 
 function wait(ms) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(resolve, ms);
   });
 }

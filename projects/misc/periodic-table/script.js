@@ -27,7 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalDiscovery = document.getElementById("modal-discovery");
   const modalState = document.getElementById("modal-state");
   const modalConfig = document.getElementById("modal-config");
-  const modalElectronegativity = document.getElementById("modal-electronegativity");
+  const modalElectronegativity = document.getElementById(
+    "modal-electronegativity"
+  );
   const modalMelting = document.getElementById("modal-melting");
   const modalBoiling = document.getElementById("modal-boiling");
   const modalDensity = document.getElementById("modal-density");
@@ -80,14 +82,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Calculate State of Matter at temperature T (Kelvin)
   function getElementState(elem, tempK) {
-    if (elem.phaseAtSTP === "Synthetic" && !elem.meltingPoint) {
-      return "Synthetic";
+    if (typeof PeriodicEngine !== "undefined") {
+      return PeriodicEngine.calculatePhaseState(elem.meltingPoint, elem.boilingPoint, tempK, elem.phaseAtSTP);
     }
+    if (elem.phaseAtSTP === "Synthetic" && !elem.meltingPoint) return "Synthetic";
     const melt = elem.meltingPoint;
     const boil = elem.boilingPoint;
-
     if (!melt && !boil) return elem.phaseAtSTP || "Solid";
-
     if (melt && tempK < melt) return "Solid";
     if (melt && boil && tempK >= melt && tempK < boil) return "Liquid";
     if (boil && tempK >= boil) return "Gas";
@@ -172,7 +173,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const elem = ELEMENTS.find(e => e.number === elemNum);
       if (!elem) return;
 
-      const matchesCategory = activeCategory === "all" || elem.category === activeCategory;
+      const matchesCategory =
+        activeCategory === "all" || elem.category === activeCategory;
       const matchesSearch =
         !query ||
         elem.name.toLowerCase().includes(query) ||
@@ -195,7 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Search input listeners
-  searchInput.addEventListener("input", (e) => {
+  searchInput.addEventListener("input", e => {
     searchFilter = e.target.value;
     clearSearchBtn.hidden = !searchFilter;
     applyFilters();
@@ -219,7 +221,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Temperature Slider Listener
-  tempSlider.addEventListener("input", (e) => {
+  tempSlider.addEventListener("input", e => {
     currentTempK = parseInt(e.target.value, 10);
     updateTempDisplay();
     updateTileStates();
@@ -234,7 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateTempDisplay() {
     const celsius = Math.round(currentTempK - 273.15);
-    const fahrenheit = Math.round((celsius * 9/5) + 32);
+    const fahrenheit = Math.round((celsius * 9) / 5 + 32);
     tempDisplay.textContent = `${currentTempK} K (${celsius}°C / ${fahrenheit}°F)`;
   }
 
@@ -279,9 +281,15 @@ document.addEventListener("DOMContentLoaded", () => {
     modalDiscovery.textContent = elem.discoveryYear || "Unknown";
     modalState.textContent = state;
     modalConfig.textContent = elem.electronConfig || "N/A";
-    modalElectronegativity.textContent = elem.electronegativity ? `${elem.electronegativity} (Pauling)` : "N/A";
-    modalMelting.textContent = elem.meltingPoint ? `${elem.meltingPoint} K (${Math.round(elem.meltingPoint - 273.15)}°C)` : "N/A";
-    modalBoiling.textContent = elem.boilingPoint ? `${elem.boilingPoint} K (${Math.round(elem.boilingPoint - 273.15)}°C)` : "N/A";
+    modalElectronegativity.textContent = elem.electronegativity
+      ? `${elem.electronegativity} (Pauling)`
+      : "N/A";
+    modalMelting.textContent = elem.meltingPoint
+      ? `${elem.meltingPoint} K (${Math.round(elem.meltingPoint - 273.15)}°C)`
+      : "N/A";
+    modalBoiling.textContent = elem.boilingPoint
+      ? `${elem.boilingPoint} K (${Math.round(elem.boilingPoint - 273.15)}°C)`
+      : "N/A";
     modalDensity.textContent = elem.density ? `${elem.density} g/cm³` : "N/A";
     modalSummary.textContent = elem.summary || "No detailed summary available.";
 
@@ -297,10 +305,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   modalClose.addEventListener("click", closeModal);
-  modal.addEventListener("click", (e) => {
+  modal.addEventListener("click", e => {
     if (e.target === modal) closeModal();
   });
-  document.addEventListener("keydown", (e) => {
+  document.addEventListener("keydown", e => {
     if (e.key === "Escape" && !modal.hidden) closeModal();
   });
 
@@ -347,7 +355,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Draw Electrons on Orbit
       for (let i = 0; i < electronCount; i++) {
-        const angle = (2 * Math.PI / electronCount) * i - Math.PI / 2;
+        const angle = ((2 * Math.PI) / electronCount) * i - Math.PI / 2;
         const eX = centerX + radius * Math.cos(angle);
         const eY = centerY + radius * Math.sin(angle);
 

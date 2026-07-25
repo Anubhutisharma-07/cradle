@@ -105,18 +105,18 @@ graph TD
 
 ## Component Breakdown
 
-| File / Path | Responsibility |
-|---|---|
-| `index.html` | Landing page markup: hero, search box, category buttons, project grid, footer |
-| `script.js` | Landing page controller: loads/caches project data, renders categories and cards, wires search and filter events |
-| `style.css` | Landing page visual styling |
-| `data/projects.json` | Generated flat list of `{ title, category, path }` for every project |
-| `scripts/generate-projects.js` | Build-time script that walks `projects/` and regenerates `data/projects.json` |
-| `scripts/theme.js` | Light/dark theme state, `localStorage` persistence, toggle button wiring |
-| `scripts/worker.js` | Web Worker that filters the project list by category and search query off the main thread |
-| `src/components/ui/*` | Shared UI primitives (Button, Card, ThemeToggle, Navbar, BackToHome) and design tokens |
-| `projects/<category>/<name>/` | One self-contained experiment with its own HTML/CSS/JS, README, and ARCHITECTURE.md |
-| `tests/*.test.js` | Node's built-in test runner exercising pure logic exported by individual projects |
+| File / Path                    | Responsibility                                                                                                   |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `index.html`                   | Landing page markup: hero, search box, category buttons, project grid, footer                                    |
+| `script.js`                    | Landing page controller: loads/caches project data, renders categories and cards, wires search and filter events |
+| `style.css`                    | Landing page visual styling                                                                                      |
+| `data/projects.json`           | Generated flat list of `{ title, category, path }` for every project                                             |
+| `scripts/generate-projects.js` | Build-time script that walks `projects/` and regenerates `data/projects.json`                                    |
+| `scripts/theme.js`             | Light/dark theme state, `localStorage` persistence, toggle button wiring                                         |
+| `scripts/worker.js`            | Web Worker that filters the project list by category and search query off the main thread                        |
+| `src/components/ui/*`          | Shared UI primitives (Button, Card, ThemeToggle, Navbar, BackToHome) and design tokens                           |
+| `projects/<category>/<name>/`  | One self-contained experiment with its own HTML/CSS/JS, README, and ARCHITECTURE.md                              |
+| `tests/*.test.js`              | Node's built-in test runner exercising pure logic exported by individual projects                                |
 
 ---
 
@@ -161,6 +161,7 @@ renderProjects() re-renders the grid with the filtered list
 - Zero-build static site: no bundler, framework, or transpilation needed to run or contribute
 - Project registry auto-generated from the folder tree (`scripts/generate-projects.js`)
 - Client-side search and category filtering, offloaded to a Web Worker when available
+- Responsive keyboard shortcuts (`/` search focus, `Esc` clear/close, `T` theme toggle, `?` helper modal)
 - IndexedDB caching of the project list for instant repeat loads, with background refresh
 - Light/dark theme with `localStorage` persistence and an inline pre-paint script to avoid a flash of the wrong theme
 - Shared, dependency-free UI component library (`src/components/ui`) usable by the landing page and, optionally, individual projects
@@ -170,22 +171,23 @@ renderProjects() re-renders the grid with the filtered list
 
 ## Technologies Used
 
-| Technology | Purpose |
-|---|---|
-| HTML5 | Structure for the landing page and every individual project |
-| CSS3 (Custom Properties / design tokens) | Landing page styling and the shared Cradle UI token system |
-| Vanilla JavaScript (ES6 modules) | Landing page logic, theme handling, per-project logic |
-| IndexedDB API | Client-side caching of the project registry |
-| Web Workers | Off-main-thread search/category filtering |
-| Node.js | Runs `scripts/generate-projects.js` at build/dev time |
+| Technology                                | Purpose                                                      |
+| ----------------------------------------- | ------------------------------------------------------------ |
+| HTML5                                     | Structure for the landing page and every individual project  |
+| CSS3 (Custom Properties / design tokens)  | Landing page styling and the shared Cradle UI token system   |
+| Vanilla JavaScript (ES6 modules)          | Landing page logic, theme handling, per-project logic        |
+| IndexedDB API                             | Client-side caching of the project registry                  |
+| Web Workers                               | Off-main-thread search/category filtering                    |
+| Node.js                                   | Runs `scripts/generate-projects.js` at build/dev time        |
 | Node's built-in test runner (`node:test`) | Root-level tests for individual projects' pure logic modules |
-| Google Fonts (CDN) | Landing page typography (Space Grotesk) |
+| Google Fonts (CDN)                        | Landing page typography (Space Grotesk)                      |
 
 ---
 
 ## File Responsibilities
 
 ### `script.js` (root)
+
 - `openDB()` / `getCachedProjects()` - open/read the `CradleDB` IndexedDB store
 - `fetchAndCacheProjects()` - fetch `data/projects.json`, populate the cache
 - `loadProjects()` - orchestrates cache-first loading with background refresh
@@ -193,20 +195,25 @@ renderProjects() re-renders the grid with the filtered list
 - `renderProjects()` - builds the project card grid
 - `applyFilters()` - dispatches filtering to the Web Worker or falls back to synchronous filtering
 - `updateClearButtonVisibility()` / `clearFilters()` - manage and reset the "Clear Filters" control
+- `toggleShortcutsModal()` / Global keydown event listener - handles accessibility keyboard navigation (`/`, `Esc`, `T`, `?`)
 
 ### `scripts/generate-projects.js`
+
 - `titleCase(str)` - converts a folder name (e.g. `ai-circuit-builder`) into a display title, with acronym correction (`Ai` → `AI`, `Cpu` → `CPU`)
 - `generateProjects()` - walks `projects/<category>/*`, builds the sorted registry, writes `data/projects.json`
 
 ### `scripts/theme.js`
+
 - `initTheme()` - reads the saved or OS-preferred theme on load
 - `applyTheme(theme)` - applies the theme class, persists it, updates the toggle button
 - `toggleTheme()` - flips between light and dark
 
 ### `scripts/worker.js`
+
 - Single `onmessage` handler that filters a project list by category and search query and posts the filtered result back
 
 ### `src/components/ui/index.js`
+
 - `resolveBase()` - locates the component library's own base URL regardless of how deep the current page is nested under `projects/`
 - `CradleUI.loadAll()` / `CradleUI.load(name)` - dynamically load individual component scripts on demand
 
@@ -227,10 +234,10 @@ renderProjects() re-renders the grid with the filtered list
 
 None at runtime. The site uses only native browser APIs (DOM, `fetch`, IndexedDB, Web Workers) and Node.js's built-in `fs`/`path`/`node:test` modules for tooling and tests.
 
-| Dependency | Version | How loaded | Purpose |
-|---|---|---|---|
-| Space Grotesk (font) | — | Google Fonts CDN | Landing page typography |
-| live-server | — | npm, dev-only (`npm run dev`) | Local static file serving during development |
+| Dependency           | Version | How loaded                    | Purpose                                      |
+| -------------------- | ------- | ----------------------------- | -------------------------------------------- |
+| Space Grotesk (font) | —       | Google Fonts CDN              | Landing page typography                      |
+| live-server          | —       | npm, dev-only (`npm run dev`) | Local static file serving during development |
 
 ## Future Improvements
 

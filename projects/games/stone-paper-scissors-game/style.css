@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: "Rajdhani", sans-serif;
 }
 
 body {
@@ -26,7 +26,7 @@ body {
 }
 
 .logo {
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   font-size: 20px;
   font-weight: 800;
   letter-spacing: 1px;
@@ -105,7 +105,7 @@ main {
 }
 
 .title {
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   font-size: 28px;
   letter-spacing: 2px;
 }
@@ -142,7 +142,8 @@ main {
   transition: all 0.2s;
 }
 
-.mode-btn.active, .mode-btn:hover {
+.mode-btn.active,
+.mode-btn:hover {
   background: rgba(0, 245, 255, 0.15);
   border-color: #00f5ff;
   color: #00f5ff;
@@ -173,7 +174,7 @@ main {
 
 .score-card .score {
   display: block;
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   font-size: 24px;
   margin-top: 4px;
   color: #00f5ff;
@@ -196,7 +197,9 @@ main {
   height: 10px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.2);
-  transition: background 0.3s, box-shadow 0.3s;
+  transition:
+    background 0.3s,
+    box-shadow 0.3s;
 }
 
 .tally .dot.won {
@@ -232,7 +235,7 @@ main {
 }
 
 .vs-text {
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   font-size: 16px;
   color: #ff2e88;
   text-shadow: 0 0 8px #ff2e88;
@@ -243,9 +246,16 @@ main {
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-8px); }
-  75% { transform: translateX(8px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-8px);
+  }
+  75% {
+    transform: translateX(8px);
+  }
 }
 
 .pop {
@@ -253,9 +263,17 @@ main {
 }
 
 @keyframes pop {
-  0% { transform: scale(0.5); opacity: 0.3; }
-  60% { transform: scale(1.15); }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.5);
+    opacity: 0.3;
+  }
+  60% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .win-glow {
@@ -269,7 +287,7 @@ main {
 }
 
 .result-text {
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   font-size: 16px;
   min-height: 24px;
   margin-bottom: 25px;
@@ -298,7 +316,10 @@ main {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.15s,
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .choice-btn span {
@@ -333,7 +354,9 @@ main {
   cursor: pointer;
   font-weight: 700;
   letter-spacing: 1px;
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
 }
 
 #resetBtn:hover {
@@ -348,7 +371,7 @@ main {
 }
 
 .how-section h2 {
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   margin-bottom: 30px;
   color: #00f5ff;
   text-shadow: 0 0 8px rgba(0, 245, 255, 0.4);
@@ -431,7 +454,9 @@ footer {
   align-items: center;
   z-index: 1000;
   opacity: 1;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
 }
 
 .modal-overlay.hidden {
@@ -456,7 +481,7 @@ footer {
 }
 
 .modal-box h2 {
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   color: #ff2e88;
   text-shadow: 0 0 10px rgba(255, 46, 136, 0.4);
   margin-bottom: 15px;
@@ -479,7 +504,9 @@ footer {
   font-weight: 700;
   font-size: 16px;
   letter-spacing: 1px;
-  transition: background 0.2s, box-shadow 0.2s;
+  transition:
+    background 0.2s,
+    box-shadow 0.2s;
   box-shadow: 0 0 15px rgba(0, 245, 255, 0.4);
 }
 
@@ -490,10 +517,23 @@ footer {
 
 /* RESPONSIVE */
 @media (max-width: 500px) {
-  .game-box { padding: 25px; }
-  .choice-btn { width: 80px; height: 80px; font-size: 26px; }
-  .fighter { width: 70px; height: 70px; font-size: 40px; }
-  .nav-links { gap: 15px; font-size: 14px; }
+  .game-box {
+    padding: 25px;
+  }
+  .choice-btn {
+    width: 80px;
+    height: 80px;
+    font-size: 26px;
+  }
+  .fighter {
+    width: 70px;
+    height: 70px;
+    font-size: 40px;
+  }
+  .nav-links {
+    gap: 15px;
+    font-size: 14px;
+  }
 }
 
 .rules-mode-selector {
@@ -505,7 +545,7 @@ footer {
 }
 
 .rules-mode-selector label {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: "Rajdhani", sans-serif;
   font-weight: 600;
   font-size: 16px;
   color: #eaeaf5;
@@ -517,7 +557,7 @@ footer {
   border: 1px solid rgba(0, 245, 255, 0.3);
   border-radius: 6px;
   color: #00f5ff;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: "Rajdhani", sans-serif;
   font-size: 16px;
   outline: none;
 }
@@ -532,7 +572,7 @@ footer {
 }
 
 .stats-title {
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Orbitron", sans-serif;
   font-size: 11px;
   color: #ff2e88;
   letter-spacing: 1px;
@@ -549,7 +589,7 @@ footer {
 }
 
 .stat-item {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: "Rajdhani", sans-serif;
   font-size: 14px;
   color: #eaeaf5;
 }
@@ -557,4 +597,4 @@ footer {
 .stat-item span {
   font-weight: 700;
   color: #00f5ff;
-}
+}

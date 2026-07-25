@@ -25,7 +25,7 @@ const state = {
 };
 
 // ── DOM REFS ─────────────────────────────────────────────────
-const $ = (id) => document.getElementById(id);
+const $ = id => document.getElementById(id);
 const boundaryCanvas = $("boundaryCanvas");
 const networkCanvas = $("networkCanvas");
 const lossCanvas = $("lossCanvas");
@@ -48,7 +48,7 @@ function initNetwork() {
 
 function initData() {
   if (state.dataset === "custom") {
-    state.data = state.customData.map((p) => [...p]);
+    state.data = state.customData.map(p => [...p]);
   } else {
     state.data = generateDataset(state.dataset, state.numPoints, state.noise);
   }
@@ -276,8 +276,8 @@ function renderAll() {
 function trainStep() {
   if (!state.training || !state.net) return;
 
-  const inputs = state.data.map((d) => [d[0], d[1]]);
-  const targets = state.data.map((d) => d[2]);
+  const inputs = state.data.map(d => [d[0], d[1]]);
+  const targets = state.data.map(d => d[2]);
 
   for (let s = 0; s < state.speed; s++) {
     const { loss, accuracy } = state.net.train(
@@ -337,7 +337,7 @@ function renderLayerUI() {
       <input type="range" min="1" max="12" value="${n}" data-layer="${i}">
       <span class="neuron-count">${n}</span>
     `;
-    row.querySelector("input").addEventListener("input", (e) => {
+    row.querySelector("input").addEventListener("input", e => {
       const val = parseInt(e.target.value);
       state.hiddenLayers[i] = val;
       row.querySelector(".neuron-count").textContent = val;
@@ -352,7 +352,7 @@ function setupEvents() {
   $("btnPause").addEventListener("click", pauseTraining);
   $("btnReset").addEventListener("click", resetAll);
 
-  $("speedSlider").addEventListener("input", (e) => {
+  $("speedSlider").addEventListener("input", e => {
     state.speed = parseInt(e.target.value);
     $("speedLabel").textContent = state.speed + " steps/frame";
   });
@@ -374,26 +374,26 @@ function setupEvents() {
     }
   });
 
-  $("learningRate").addEventListener("change", (e) => {
+  $("learningRate").addEventListener("change", e => {
     state.learningRate = parseFloat(e.target.value);
     if (state.net) state.net.lr = state.learningRate;
   });
 
-  $("activation").addEventListener("change", (e) => {
+  $("activation").addEventListener("change", e => {
     state.activationName = e.target.value;
     resetAll();
   });
 
-  $("batchSize").addEventListener("change", (e) => {
+  $("batchSize").addEventListener("change", e => {
     state.batchSize = parseInt(e.target.value);
   });
 
-  $("showDataToggle").addEventListener("change", (e) => {
+  $("showDataToggle").addEventListener("change", e => {
     state.showData = e.target.checked;
     drawBoundary();
   });
 
-  $("showWeightsToggle").addEventListener("change", (e) => {
+  $("showWeightsToggle").addEventListener("change", e => {
     state.showWeights = e.target.checked;
     drawNetwork();
   });

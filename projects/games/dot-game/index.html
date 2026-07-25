@@ -1,123 +1,120 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dot Game</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="../../../src/components/ui/tokens.css">
-</head>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../../../src/components/ui/tokens.css" />
+  </head>
 
-<body>
-
+  <body>
     <div class="container">
-
-    <header class="card" data-cradle-card data-title="Dot Game" data-subtitle="Build, Explode, Conquer">
-
-            <div class="header-top">
-                <h1>Dot Game</h1>
-                <button id="themeToggle" class="theme-toggle-btn p-2 rounded-lg hover:bg-gray-800 transition">
-                    🌙
-                </button>
-            </div>
-
+      <header class="card" data-cradle-card>
+        <div class="header-top">
+          <div class="header-titles">
+            <h1>Dot Game</h1>
             <p>Build, Explode, Conquer</p>
+          </div>
+          <button
+            id="themeToggle"
+            class="theme-toggle-btn p-2 rounded-lg hover:bg-gray-800 transition"
+          >
+            🌙
+          </button>
+        </div>
+      </header>
+      <section class="card controls">
+        <div class="control-group">
+          <label for="gameMode"> Mode </label>
+          <select id="gameMode">
+            <option value="pvp" selected>Player vs Player</option>
+            <option value="pvai">Player vs AI</option>
+          </select>
+        </div>
 
-        </header>
-        <section class="card controls">
+        <div class="control-group" id="difficultyGroup">
+          <label for="difficulty"> Difficulty </label>
+          <select id="difficulty">
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard" selected>Hard</option>
+          </select>
+        </div>
 
-            <div class="control-group">
-                <label for="gameMode">
-                    Mode
-                </label>
-                <select id="gameMode">
-                    <option value="pvp" selected>Player vs Player</option>
-                    <option value="pvai">Player vs AI</option>
-                </select>
-            </div>
+        <div class="control-group">
+          <label for="playerCount"> Players </label>
 
-            <div class="control-group" id="difficultyGroup">
-                <label for="difficulty">
-                    Difficulty
-                </label>
-                <select id="difficulty">
-                    <option value="easy">Easy</option>
-                    <option value="medium">Medium</option>
-                    <option value="hard" selected>Hard</option>
-                </select>
-            </div>
+          <select id="playerCount">
+            <option value="2">2 Players</option>
+            <option value="3">3 Players</option>
+            <option value="4" selected>4 Players</option>
+          </select>
+        </div>
 
-            <div class="control-group">
-                <label for="playerCount">
-                    Players
-                </label>
+        <div class="control-group">
+          <label for="gridPreset">
+            Grid Size:
+            <span id="gridValue"> 8 × 8 </span>
+          </label>
 
-                <select id="playerCount">
-                    <option value="2">2 Players</option>
-                    <option value="3">3 Players</option>
-                    <option value="4" selected>4 Players</option>
-                </select>
-            </div>
+          <select id="gridPreset">
+            <option value="3">3 × 3</option>
+            <option value="5">5 × 5</option>
+            <option value="8" selected>8 × 8</option>
+            <option value="custom">Custom</option>
+          </select>
 
-            <div class="control-group">
-                <label for="gridPreset">
-                    Grid Size:
-                    <span id="gridValue">
-                        8 × 8
-                    </span>
-                </label>
+          <input
+            type="number"
+            id="gridCustom"
+            min="2"
+            max="12"
+            value="10"
+            style="display: none; margin-top: 5px"
+            placeholder="2-12"
+          />
+        </div>
 
-                <select id="gridPreset">
-                    <option value="3">3 × 3</option>
-                    <option value="5">5 × 5</option>
-                    <option value="8" selected>8 × 8</option>
-                    <option value="custom">Custom</option>
-                </select>
+        <button id="newGame" class="btn">New Game</button>
 
-                <input type="number" id="gridCustom" min="2" max="12" value="10" style="display: none; margin-top: 5px;"
-                    placeholder="2-12">
-            </div>
+        <button id="hintBtn" class="btn">Hint</button>
+      </section>
 
-            <button id="newGame" class="btn">
-                New Game
-            </button>
+      <section class="card status-bar">
+        Turn:
+        <span id="currentPlayer"> Red </span>
+      </section>
 
-            <button id="hintBtn" class="btn">
-                Hint
-            </button>
+      <section id="boardWrapper" class="card">
+        <div id="board"></div>
+      </section>
 
-        </section>
+      <section class="card" data-cradle-card data-title="Player Stats">
+        <div id="playerStats"></div>
+      </section>
 
-        <section class="card status-bar">
-            Turn:
-            <span id="currentPlayer">
-                Red
-            </span>
-        </section>
-
-        <section id="boardWrapper" class="card">
-            <div id="board"></div>
-        </section>
-
-        <section class="card" data-cradle-card data-title="Player Stats">
-            <div id="playerStats"></div>
-        </section>
-
-        <section class="card analytics-section" data-cradle-card data-title="Match Analytics">
-            <div id="analyticsContainer">
-                <p class="empty-state">No completed games yet.</p>
-            </div>
-        </section>
-
+      <section
+        class="card analytics-section"
+        data-cradle-card
+        data-title="Match Analytics"
+      >
+        <div id="analyticsContainer">
+          <p class="empty-state">No completed games yet.</p>
+        </div>
+      </section>
     </div>
     <script src="../../../src/components/ui/Button/Button.js"></script>
     <script src="../../../src/components/ui/Card/Card.js"></script>
-    <script src="../../../src/components/ui/BackToHome/BackToHome.js" defer></script>
+    <script
+      src="../../../src/components/ui/BackToHome/BackToHome.js"
+      defer
+    ></script>
     <script type="module" src="../../../scripts/theme.js"></script>
     <script type="module" src="script.js"></script>
-
-</body>
-
+  </body>
 </html>
