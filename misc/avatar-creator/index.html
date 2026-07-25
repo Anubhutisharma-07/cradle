@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pixel Avatar Creator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Pixel Avatar Creator</h1>
+
+  <div class="container">
+    <!-- Live pixel-grid preview -->
+    <div id="avatar-preview">
+      <svg id="avatar-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+
+    <!-- Controls -->
+    <div id="controls">
+      <label>
+        Background Color:
+        <input type="color" id="bg-color" value="#a1e3ff">
+      </label>
+
+      <label>
+        Skin Tone:
+        <input type="color" id="skin-color" value="#f1c27d">
+      </label>
+
+      <label>
+        Hair Color:
+        <input type="color" id="hair-color" value="#3b2f2f">
+      </label>
+
+      <label>
+        Hair Style:
+        <select id="hair-style">
+          <option value="0">Bowl Cut</option>
+          <option value="1">Spiky</option>
+          <option value="2">Bald</option>
+        </select>
+      </label>
+
+      <button id="randomize-btn">🎲 Randomize</button>
+      <button id="download-btn">Download Avatar</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
