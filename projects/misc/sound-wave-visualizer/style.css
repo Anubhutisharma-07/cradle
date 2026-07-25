@@ -21,6 +21,12 @@
   --vis-amber-end: #fbbf24;
   --vis-green-start: #10b981;
   --vis-green-end: #34d399;
+  --peak-glow: rgba(56, 189, 248, 0.4);
+}
+
+.canvas-peak-active {
+  box-shadow: 0 0 30px var(--peak-glow);
+  transition: box-shadow 0.15s ease-in-out;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }

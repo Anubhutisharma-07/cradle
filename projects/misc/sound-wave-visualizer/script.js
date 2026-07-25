@@ -40,6 +40,18 @@ let settings = {
     colorScheme:  'violet',
 };
 
+function getPeakLevel(dataArray) {
+    if (typeof VisualizerEngine !== 'undefined') {
+        return VisualizerEngine.calculatePeakLevel(dataArray);
+    }
+    let max = 0;
+    for (let i = 0; i < dataArray.length; i++) {
+        const val = Math.abs(dataArray[i] - 128);
+        if (val > max) max = val;
+    }
+    return Math.min(1, max / 128);
+}
+
 // ──────────────────────────────────────────────────────────────────────────────
 // DOM
 // ──────────────────────────────────────────────────────────────────────────────

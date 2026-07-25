@@ -18,6 +18,13 @@
   --cat-lanthanide: #ec4899;
   --cat-actinide: #d946ef;
   --cat-unknown: #64748b;
+  --bookmark-active: #f59e0b;
+}
+
+.bookmark-star {
+  color: var(--bookmark-active);
+  font-size: 0.85rem;
+  margin-left: 0.25rem;
 }
 
 * {
