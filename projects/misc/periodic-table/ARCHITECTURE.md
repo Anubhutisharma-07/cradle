@@ -44,12 +44,14 @@ Interactive Periodic Table is a client-side web application for exploring elemen
 
 ```text
 projects/misc/periodic-table/
-├── index.html      # Main HTML entry point, layout structure, control panel, modal markup
-├── style.css       # Visual styles, CSS Grid periodic layout, theme tokens, category colors
-├── elements.js     # Comprehensive dataset of all 118 chemical elements
-├── script.js       # Table grid rendering, filter handlers, modal interaction, canvas Bohr model
-├── thumbnail.svg   # Project thumbnail image
-└── README.md       # Consolidated project documentation and technical architecture
+├── index.html          # Main HTML entry point, layout structure, control panel, modal markup
+├── style.css           # Visual styles, CSS Grid periodic layout, theme tokens, category colors
+├── elements.js         # Comprehensive dataset of all 118 chemical elements
+├── periodicEngine.js   # Core engine for thermal phase calculations, temperature conversion, shell parsing
+├── periodicStorage.js  # Persistence handler for element bookmarks and filter settings
+├── script.js           # Table grid rendering, filter handlers, modal interaction, canvas Bohr model
+├── README.md           # Project overview and usage guidelines
+└── ARCHITECTURE.md     # Project architecture documentation
 ```
 
 ---
@@ -59,18 +61,9 @@ projects/misc/periodic-table/
 The application is structured into three main layers:
 
 1. **Data Layer (`elements.js`)**: Static array of element objects containing physical constants, atomic numbers, electron shell configurations, and summaries.
-2. **Presentation Layer (`index.html`, `style.css`)**: Responsive 18-column grid layout with CSS custom properties for category color coding and glassmorphism styling.
-3. **Logic Layer (`script.js`)**: Handles filtering, search indexing, temperature state evaluation, view mode switching, and HTML5 Canvas drawing.
-
-```text
-User Action (Search / Slider / Filter / Tile Click)
-                      ↓
-          Event Listeners (script.js)
-                      ↓
-  State Engine (Temperature / Filter Query / View Mode)
-                      ↓
-     DOM Re-render & HTML5 Canvas Draw (Bohr Model)
-```
+2. **Engine Layer (`periodicEngine.js`)**: Pure functions for phase state determination, temperature unit conversions, electron configuration string parsing, and search indexing.
+3. **Storage Layer (`periodicStorage.js`)**: Manages element bookmarks and user settings in localStorage with in-memory fallback.
+4. **Presentation Layer (`index.html`, `style.css`, `script.js`)**: Responsive 18-column grid layout with CSS custom properties for category color coding, glassmorphism styling, and HTML5 Canvas drawing.
 
 ---
 

@@ -299,7 +299,7 @@ document.addEventListener("keydown", e => {
 
   // Close Modal or Clear search
   if (e.key === "Escape") {
-    if (shortcutsModal && shortcutsModal.classList.contains("visible")) {
+    if (shortcutsModal && (shortcutsModal.classList.contains("visible") || shortcutsModal.getAttribute("aria-hidden") === "false")) {
       closeShortcutsModal();
     } else {
       clearFilters();
@@ -309,7 +309,10 @@ document.addEventListener("keydown", e => {
   // Toggle Theme
   if (e.key.toLowerCase() === "t" && !isInputActive) {
     e.preventDefault();
-    if (typeof window.toggleTheme === "function") {
+    const themeToggleEl = document.getElementById("themeToggle");
+    if (themeToggleEl) {
+      themeToggleEl.click();
+    } else if (typeof window.toggleTheme === "function") {
       window.toggleTheme();
     } else {
       const isLight =
@@ -328,7 +331,8 @@ document.addEventListener("keydown", e => {
   if (e.key === "?" && !isInputActive) {
     e.preventDefault();
     if (shortcutsModal) {
-      if (shortcutsModal.classList.contains("visible")) {
+      const isVisible = shortcutsModal.classList.contains("visible") || shortcutsModal.getAttribute("aria-hidden") === "false";
+      if (isVisible) {
         closeShortcutsModal();
       } else {
         openShortcutsModal();
