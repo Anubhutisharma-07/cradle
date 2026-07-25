@@ -13,7 +13,7 @@ memory-flip-game/
 ├── index.html   # Page shell: navbar, home screen, game screen, result screen
 ├── utils.js     # Score management utilities (localStorage)
 ├── script.js    # All game logic and screen management
-└── styles.css   # CSS flip animation, tile styling, layout
+└── style.css   # CSS flip animation, tile styling, layout
 ```
 
 ---
@@ -54,6 +54,7 @@ User clicks "Play Again" → startGame() restarts
 ## Core Components
 
 ### `index.html`
+
 Three `<section>` elements are used as screens; only one is visible at a time (controlled via the `hidden` attribute):
 
 - **`#homeScreen`** — welcome copy and the "Start Game" button.
@@ -63,21 +64,23 @@ Three `<section>` elements are used as screens; only one is visible at a time (c
 The `<header class="navbar">` is always visible. It shows the live flip counter and matched pair count during a game, hidden on the home and result screens.
 
 ### `script.js`
+
 The entire game fits in one small file. Key functions:
 
-| Function | Purpose |
-|---|---|
-| `buildDeck()` | Duplicates the 32-symbol `SYMBOLS` array, shuffles it using Fisher-Yates, and returns an array of `{ id, symbol }` card objects |
-| `startGame()` | Resets all counters, clears the board, creates card DOM elements, and switches to the game screen |
-| `onCardClick(card)` | Guards against double-clicks and locked board; flips the card by adding `.is-flipped`; calls `checkForMatch` when two are flipped |
-| `checkForMatch()` | Compares `data-symbol` attributes of the two flipped cards; marks matched pairs or schedules a flip-back |
-| `endGame()` | Writes the final flip count to the result screen and switches to it |
-| `showScreen(screen)` | Toggles the `hidden` attribute on the three screens and the navbar stats |
-| `shuffle(array)` | In-place Fisher-Yates shuffle, returns the mutated array |
+| Function             | Purpose                                                                                                                           |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `buildDeck()`        | Duplicates the 32-symbol `SYMBOLS` array, shuffles it using Fisher-Yates, and returns an array of `{ id, symbol }` card objects   |
+| `startGame()`        | Resets all counters, clears the board, creates card DOM elements, and switches to the game screen                                 |
+| `onCardClick(card)`  | Guards against double-clicks and locked board; flips the card by adding `.is-flipped`; calls `checkForMatch` when two are flipped |
+| `checkForMatch()`    | Compares `data-symbol` attributes of the two flipped cards; marks matched pairs or schedules a flip-back                          |
+| `endGame()`          | Writes the final flip count to the result screen and switches to it                                                               |
+| `showScreen(screen)` | Toggles the `hidden` attribute on the three screens and the navbar stats                                                          |
+| `shuffle(array)`     | In-place Fisher-Yates shuffle, returns the mutated array                                                                          |
 
 The `SYMBOLS` array at the top of the file contains 32 unique emoji characters. These are the only "assets" in the game.
 
 ### `style.css`
+
 Implements the card flip effect using CSS 3D transforms:
 
 - Each `.card` has `perspective` applied.
@@ -94,14 +97,14 @@ Layout uses a CSS Grid of `repeat(8, 1fr)` for the board and flexbox for the nav
 
 State is tracked with several module-level variables in `script.js`:
 
-| Variable | Type | Purpose |
-|---|---|---|
+| Variable       | Type        | Purpose                                                 |
+| -------------- | ----------- | ------------------------------------------------------- |
 | `flippedCards` | `Element[]` | Holds the one or two currently face-up, unmatched cards |
-| `matchedPairs` | `number` | Count of matched pairs; wins when it reaches 32 |
-| `flipCount` | `number` | Total number of two-card flip attempts in Standard Mode |
-| `flipsLeft` | `number` | Remaining flips left in Challenge Mode (starts at 50) |
-| `currentMode` | `string` | Selected game mode: `"standard"` or `"challenge"` |
-| `boardLocked` | `boolean` | Prevents further clicks during the mismatch delay |
+| `matchedPairs` | `number`    | Count of matched pairs; wins when it reaches 32         |
+| `flipCount`    | `number`    | Total number of two-card flip attempts in Standard Mode |
+| `flipsLeft`    | `number`    | Remaining flips left in Challenge Mode (starts at 50)   |
+| `currentMode`  | `string`    | Selected game mode: `"standard"` or `"challenge"`       |
+| `boardLocked`  | `boolean`   | Prevents further clicks during the mismatch delay       |
 
 Scores are persisted locally via `localStorage` for both Standard and Challenge modes, and the personal bests are loaded and updated dynamically.
 
@@ -144,9 +147,9 @@ No image or audio files are used. The 32 game symbols are Unicode emoji embedded
 
 ## Dependencies
 
-| Library | Source | Purpose |
-|---|---|---|
-| Fraunces (font) | Google Fonts CDN | Display headings |
+| Library              | Source           | Purpose                 |
+| -------------------- | ---------------- | ----------------------- |
+| Fraunces (font)      | Google Fonts CDN | Display headings        |
 | Space Grotesk (font) | Google Fonts CDN | Body text and UI labels |
 
 No JavaScript libraries are used.

@@ -5,7 +5,13 @@
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   background: linear-gradient(135deg, #0f172a, #1e293b);
   color: #f8fafc;
 }
@@ -106,7 +112,6 @@ h1 {
   color: white;
 }
 
-
 .instructions {
   margin: 0;
   font-size: 0.95rem;
@@ -146,7 +151,9 @@ button:hover {
   font-weight: 800;
   color: #0f172a;
   background: #dbeafe;
-  transition: transform 160ms ease, background 160ms ease;
+  transition:
+    transform 160ms ease,
+    background 160ms ease;
 }
 
 .tile--empty {
@@ -154,17 +161,47 @@ button:hover {
   color: transparent;
 }
 
-.tile--2 { background: #e0f2fe; }
-.tile--4 { background: #bfdbfe; }
-.tile--8 { background: #93c5fd; }
-.tile--16 { background: #60a5fa; color: #eff6ff; }
-.tile--32 { background: #3b82f6; color: #eff6ff; }
-.tile--64 { background: #2563eb; color: #eff6ff; }
-.tile--128 { background: #1d4ed8; color: #eff6ff; }
-.tile--256 { background: #1e40af; color: #eff6ff; }
-.tile--512 { background: #1e3a8a; color: #eff6ff; }
-.tile--1024 { background: #172554; color: #eff6ff; }
-.tile--2048 { background: #f59e0b; color: #fff7ed; }
+.tile--2 {
+  background: #e0f2fe;
+}
+.tile--4 {
+  background: #bfdbfe;
+}
+.tile--8 {
+  background: #93c5fd;
+}
+.tile--16 {
+  background: #60a5fa;
+  color: #eff6ff;
+}
+.tile--32 {
+  background: #3b82f6;
+  color: #eff6ff;
+}
+.tile--64 {
+  background: #2563eb;
+  color: #eff6ff;
+}
+.tile--128 {
+  background: #1d4ed8;
+  color: #eff6ff;
+}
+.tile--256 {
+  background: #1e40af;
+  color: #eff6ff;
+}
+.tile--512 {
+  background: #1e3a8a;
+  color: #eff6ff;
+}
+.tile--1024 {
+  background: #172554;
+  color: #eff6ff;
+}
+.tile--2048 {
+  background: #f59e0b;
+  color: #fff7ed;
+}
 
 .status {
   margin-top: 16px;

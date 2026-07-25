@@ -56,6 +56,7 @@ renderAnalytics() updates the match history panel
 ## Core Components
 
 ### `index.html`
+
 Defines all visible UI sections:
 
 - **Controls card** — dropdowns for game mode, AI difficulty, player count, and grid size; New Game and Hint buttons.
@@ -65,13 +66,16 @@ Defines all visible UI sections:
 - **Match analytics** — bar charts of past games loaded from localStorage.
 
 ### `script.js`
+
 The entire game is implemented in one file. It covers:
 
 **Board creation**
+
 - `createBoard(size)` — builds a 2D array of `{ owner, dots }` objects.
 - `getCapacity(row, col)` — returns the explosion threshold for a cell. Corner cells explode at 2, edge cells at 3, interior cells at 4.
 
 **Gameplay**
+
 - `addDot(row, col)` — the main move handler. Validates the click, increments dots, renders the intermediate state, then starts the chain reaction.
 - `resolveBoardStep(queue, onDone)` — processes chain explosions wave by wave using `setTimeout(..., 0)` to yield control to the browser between each wave, keeping the UI responsive during long chains.
 - `explode(row, col, owner)` — resets a cell to zero and propagates one dot to each neighbour, changing their ownership.
@@ -79,18 +83,22 @@ The entire game is implemented in one file. It covers:
 - `nextTurn()` — advances to the next player, skipping eliminated players.
 
 **AI**
+
 - `getBestMove(player)` — greedy heuristic: scores every valid cell. Prioritises cells that trigger an explosion (+1000), penalises vulnerable cells next to an opponent about to explode (−100/−500), and prefers safe moves (+100). Returns the highest-scoring cell (with random tie-breaking).
 - `getRandomMove(player)` — used for Easy difficulty; picks any valid cell at random.
 - `handleAiTurn()` — delays the AI move by 500 ms and runs Easy/Medium/Hard logic based on the selected difficulty.
 
 **Hint system**
+
 - `getBestMove()` is reused to find the recommended cell, which is highlighted with the `.hint` CSS class.
 
 **Analytics**
+
 - `saveMatchHistory()` — writes a match summary (winner, moves, explosions, captures per player, average move time) to `localStorage`. Keeps up to 10 recent games.
 - `renderAnalytics()` — reads match history from `localStorage` and renders bar charts comparing captures and average move times.
 
 ### `style.css`
+
 Visual styling for the grid, player colour classes (`red`, `blue`, `green`, `yellow`), hint highlight, and analytics bar charts. The board is a CSS Grid whose column count is set dynamically by JavaScript.
 
 ---

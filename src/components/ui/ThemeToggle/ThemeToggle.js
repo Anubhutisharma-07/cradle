@@ -24,16 +24,16 @@
  */
 
 (function (global) {
-  'use strict';
+  "use strict";
 
-  const STYLE_ID   = 'cradle-theme-toggle-styles';
-  const STORAGE_KEY = 'theme';
-  const LIGHT_CLASS = 'light-theme';
+  const STYLE_ID = "cradle-theme-toggle-styles";
+  const STORAGE_KEY = "theme";
+  const LIGHT_CLASS = "light-theme";
 
   /* ── Styles ───────────────────────────────────────────── */
   function injectStyles() {
     if (document.getElementById(STYLE_ID)) return;
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.id = STYLE_ID;
     style.textContent = `
       .cradle-theme-toggle {
@@ -94,17 +94,26 @@
 
   /* ── Theme helpers ────────────────────────────────────── */
   function getStoredTheme() {
-    try { return localStorage.getItem(STORAGE_KEY); } catch { return null; }
+    try {
+      return localStorage.getItem(STORAGE_KEY);
+    } catch {
+      return null;
+    }
   }
 
   function storeTheme(theme) {
-    try { localStorage.setItem(STORAGE_KEY, theme); } catch { /* ignore */ }
+    try {
+      localStorage.setItem(STORAGE_KEY, theme);
+    } catch {
+      /* ignore */
+    }
   }
 
   function getSystemTheme() {
     return window.matchMedia &&
-      window.matchMedia('(prefers-color-scheme: light)').matches
-      ? 'light' : 'dark';
+      window.matchMedia("(prefers-color-scheme: light)").matches
+      ? "light"
+      : "dark";
   }
 
   function resolveTheme() {
@@ -113,7 +122,7 @@
 
   function applyTheme(theme) {
     const html = document.documentElement;
-    if (theme === 'light') {
+    if (theme === "light") {
       html.classList.add(LIGHT_CLASS);
     } else {
       html.classList.remove(LIGHT_CLASS);
@@ -121,55 +130,58 @@
     storeTheme(theme);
 
     /* Notify all registered toggle instances */
-    html.dispatchEvent(new CustomEvent('cradle:themechange', {
-      detail: { theme },
-      bubbles: false,
-    }));
+    html.dispatchEvent(
+      new CustomEvent("cradle:themechange", {
+        detail: { theme },
+        bubbles: false,
+      })
+    );
   }
 
   function currentTheme() {
     return document.documentElement.classList.contains(LIGHT_CLASS)
-      ? 'light' : 'dark';
+      ? "light"
+      : "dark";
   }
 
   function toggleTheme() {
-    applyTheme(currentTheme() === 'light' ? 'dark' : 'light');
+    applyTheme(currentTheme() === "light" ? "dark" : "light");
   }
 
   /* ── Icon mapper ──────────────────────────────────────── */
   function iconFor(theme) {
-    return theme === 'light' ? '☀️' : '🌙';
+    return theme === "light" ? "☀️" : "🌙";
   }
 
   function labelFor(theme) {
-    return theme === 'light'
-      ? 'Switch to dark theme'
-      : 'Switch to light theme';
+    return theme === "light" ? "Switch to dark theme" : "Switch to light theme";
   }
 
   /* ── Sync all toggle instances ────────────────────────── */
   function syncAll(theme) {
-    document.querySelectorAll('.cradle-theme-toggle').forEach(btn => {
-      btn.setAttribute('aria-checked', theme === 'light' ? 'true' : 'false');
-      btn.setAttribute('aria-label', labelFor(theme));
-      const icon = btn.querySelector('.cradle-theme-toggle__icon');
+    document.querySelectorAll(".cradle-theme-toggle").forEach(btn => {
+      btn.setAttribute("aria-checked", theme === "light" ? "true" : "false");
+      btn.setAttribute("aria-label", labelFor(theme));
+      const icon = btn.querySelector(".cradle-theme-toggle__icon");
       if (icon) icon.textContent = iconFor(theme);
     });
   }
 
   /* Listen for theme changes from any source */
-  document.documentElement.addEventListener('cradle:themechange', e => {
+  document.documentElement.addEventListener("cradle:themechange", e => {
     syncAll(e.detail.theme);
   });
 
   /* Also listen for OS preference changes */
   if (window.matchMedia) {
-    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {
-      /* Only follow OS change if user hasn't set a manual preference */
-      if (!getStoredTheme()) {
-        applyTheme(e.matches ? 'light' : 'dark');
-      }
-    });
+    window
+      .matchMedia("(prefers-color-scheme: light)")
+      .addEventListener("change", e => {
+        /* Only follow OS change if user hasn't set a manual preference */
+        if (!getStoredTheme()) {
+          applyTheme(e.matches ? "light" : "dark");
+        }
+      });
   }
 
   /* ── Factory ──────────────────────────────────────────── */
@@ -190,32 +202,37 @@
      * @param {string} [options.className='']
      * @returns {HTMLButtonElement}
      */
-    create({ size = 'md', className = '' } = {}) {
+    create({ size = "md", className = "" } = {}) {
       injectStyles();
       const theme = currentTheme();
 
-      const btn = document.createElement('button');
-      btn.type = 'button';
+      const btn = document.createElement("button");
+      btn.type = "button";
       btn.className = [
-        'cradle-theme-toggle',
+        "cradle-theme-toggle",
         `cradle-theme-toggle--${size}`,
         className,
-      ].filter(Boolean).join(' ');
+      ]
+        .filter(Boolean)
+        .join(" ");
 
-      btn.setAttribute('role', 'switch');
-      btn.setAttribute('aria-checked', theme === 'light' ? 'true' : 'false');
-      btn.setAttribute('aria-label', labelFor(theme));
+      btn.setAttribute("role", "switch");
+      btn.setAttribute("aria-checked", theme === "light" ? "true" : "false");
+      btn.setAttribute("aria-label", labelFor(theme));
 
-      const icon = document.createElement('span');
-      icon.className = 'cradle-theme-toggle__icon';
-      icon.setAttribute('aria-hidden', 'true');
+      const icon = document.createElement("span");
+      icon.className = "cradle-theme-toggle__icon";
+      icon.setAttribute("aria-hidden", "true");
       icon.textContent = iconFor(theme);
       btn.appendChild(icon);
 
-      btn.addEventListener('click', () => {
+      btn.addEventListener("click", () => {
         /* Spin animation */
-        btn.classList.add('cradle-theme-toggle--spinning');
-        setTimeout(() => btn.classList.remove('cradle-theme-toggle--spinning'), 200);
+        btn.classList.add("cradle-theme-toggle--spinning");
+        setTimeout(
+          () => btn.classList.remove("cradle-theme-toggle--spinning"),
+          200
+        );
 
         toggleTheme();
       });
@@ -228,30 +245,33 @@
      */
     upgradeAll() {
       injectStyles();
-      document.querySelectorAll('[data-cradle-theme-toggle]').forEach(el => {
+      document.querySelectorAll("[data-cradle-theme-toggle]").forEach(el => {
         if (el.dataset.cradleUpgraded) return;
-        el.dataset.cradleUpgraded = 'true';
+        el.dataset.cradleUpgraded = "true";
 
-        const size  = el.dataset.size || 'md';
+        const size = el.dataset.size || "md";
         const theme = currentTheme();
 
-        el.classList.add('cradle-theme-toggle', `cradle-theme-toggle--${size}`);
-        el.setAttribute('role', 'switch');
-        el.setAttribute('aria-checked', theme === 'light' ? 'true' : 'false');
-        el.setAttribute('aria-label', labelFor(theme));
-        el.type = 'button';
+        el.classList.add("cradle-theme-toggle", `cradle-theme-toggle--${size}`);
+        el.setAttribute("role", "switch");
+        el.setAttribute("aria-checked", theme === "light" ? "true" : "false");
+        el.setAttribute("aria-label", labelFor(theme));
+        el.type = "button";
 
         /* Replace inner content with icon span */
-        el.innerHTML = '';
-        const icon = document.createElement('span');
-        icon.className = 'cradle-theme-toggle__icon';
-        icon.setAttribute('aria-hidden', 'true');
+        el.innerHTML = "";
+        const icon = document.createElement("span");
+        icon.className = "cradle-theme-toggle__icon";
+        icon.setAttribute("aria-hidden", "true");
         icon.textContent = iconFor(theme);
         el.appendChild(icon);
 
-        el.addEventListener('click', () => {
-          el.classList.add('cradle-theme-toggle--spinning');
-          setTimeout(() => el.classList.remove('cradle-theme-toggle--spinning'), 200);
+        el.addEventListener("click", () => {
+          el.classList.add("cradle-theme-toggle--spinning");
+          setTimeout(
+            () => el.classList.remove("cradle-theme-toggle--spinning"),
+            200
+          );
           toggleTheme();
         });
       });
@@ -266,12 +286,13 @@
   /* Init theme immediately (prevents FOIT) */
   CradleThemeToggle.init();
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => CradleThemeToggle.upgradeAll());
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () =>
+      CradleThemeToggle.upgradeAll()
+    );
   } else {
     CradleThemeToggle.upgradeAll();
   }
 
   global.CradleThemeToggle = CradleThemeToggle;
-
 })(window);
