@@ -106,7 +106,8 @@
   {
     "title": "Matrix Playground",
     "category": "math",
-    "path": "projects/math/matrix-playground/"
+    "path": "projects/math/matrix-playground/",
+    "dateAdded": "2026-07-25T09:01:27+05:30"
   },
   {
     "title": "Meme Generator",
