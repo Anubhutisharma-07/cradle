@@ -37,14 +37,14 @@
  */
 
 (function (global) {
-  'use strict';
+  "use strict";
 
-  const STYLE_ID = 'cradle-navbar-styles';
+  const STYLE_ID = "cradle-navbar-styles";
 
   /* ── Styles ───────────────────────────────────────────── */
   function injectStyles() {
     if (document.getElementById(STYLE_ID)) return;
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.id = STYLE_ID;
     style.textContent = `
       /* ── Navbar shell ──────────────────────────────────── */
@@ -286,8 +286,8 @@
   /* ── Helpers ──────────────────────────────────────────── */
   function isActive(href, currentRoute) {
     if (!currentRoute || !href) return false;
-    if (href === '/' || href === '/index.html') {
-      return currentRoute === '/' || currentRoute === '/index.html';
+    if (href === "/" || href === "/index.html") {
+      return currentRoute === "/" || currentRoute === "/index.html";
     }
     return currentRoute.startsWith(href);
   }
@@ -303,35 +303,35 @@
       injectStyles();
 
       const {
-        logo         = { text: 'Cradle', href: '/' },
-        links        = [],
+        logo = { text: "Cradle", href: "/" },
+        links = [],
         currentRoute = window.location.pathname,
-        actions      = [],
-        className    = '',
+        actions = [],
+        className = "",
       } = options;
 
       /* ── Nav element ── */
-      const nav = document.createElement('nav');
-      nav.className = ['cradle-navbar', className].filter(Boolean).join(' ');
-      nav.setAttribute('role', 'navigation');
-      nav.setAttribute('aria-label', 'Main navigation');
+      const nav = document.createElement("nav");
+      nav.className = ["cradle-navbar", className].filter(Boolean).join(" ");
+      nav.setAttribute("role", "navigation");
+      nav.setAttribute("aria-label", "Main navigation");
 
       /* Brand */
-      const brand = document.createElement('a');
-      brand.className = 'cradle-navbar__brand';
-      brand.href = logo.href || '/';
-      brand.setAttribute('aria-label', logo.text || 'Home');
+      const brand = document.createElement("a");
+      brand.className = "cradle-navbar__brand";
+      brand.href = logo.href || "/";
+      brand.setAttribute("aria-label", logo.text || "Home");
 
       if (logo.imgSrc) {
-        const img = document.createElement('img');
+        const img = document.createElement("img");
         img.src = logo.imgSrc;
-        img.alt = logo.text || '';
-        img.className = 'cradle-navbar__logo-img';
+        img.alt = logo.text || "";
+        img.className = "cradle-navbar__logo-img";
         brand.appendChild(img);
       }
       if (logo.text) {
-        const text = document.createElement('span');
-        text.className = 'cradle-navbar__logo-text';
+        const text = document.createElement("span");
+        text.className = "cradle-navbar__logo-text";
         text.textContent = logo.text;
         brand.appendChild(text);
       }
@@ -339,21 +339,25 @@
 
       /* Desktop links */
       if (links.length) {
-        const ul = document.createElement('ul');
-        ul.className = 'cradle-navbar__links';
-        ul.setAttribute('role', 'list');
+        const ul = document.createElement("ul");
+        ul.className = "cradle-navbar__links";
+        ul.setAttribute("role", "list");
 
         links.forEach(link => {
-          const li = document.createElement('li');
-          const a  = document.createElement('a');
+          const li = document.createElement("li");
+          const a = document.createElement("a");
           a.className = [
-            'cradle-navbar__link',
-            isActive(link.href, currentRoute) ? 'cradle-navbar__link--active' : '',
-          ].filter(Boolean).join(' ');
+            "cradle-navbar__link",
+            isActive(link.href, currentRoute)
+              ? "cradle-navbar__link--active"
+              : "",
+          ]
+            .filter(Boolean)
+            .join(" ");
           a.href = link.href;
           a.textContent = link.label;
           if (isActive(link.href, currentRoute)) {
-            a.setAttribute('aria-current', 'page');
+            a.setAttribute("aria-current", "page");
           }
           li.appendChild(a);
           ul.appendChild(li);
@@ -363,18 +367,18 @@
       }
 
       /* Actions + hamburger */
-      const actionsSlot = document.createElement('div');
-      actionsSlot.className = 'cradle-navbar__actions';
+      const actionsSlot = document.createElement("div");
+      actionsSlot.className = "cradle-navbar__actions";
 
       actions.forEach(el => actionsSlot.appendChild(el));
 
       /* Hamburger button */
-      const burger = document.createElement('button');
-      burger.className = 'cradle-navbar__hamburger';
-      burger.type = 'button';
-      burger.setAttribute('aria-label', 'Open menu');
-      burger.setAttribute('aria-expanded', 'false');
-      burger.setAttribute('aria-controls', 'cradle-navbar-drawer');
+      const burger = document.createElement("button");
+      burger.className = "cradle-navbar__hamburger";
+      burger.type = "button";
+      burger.setAttribute("aria-label", "Open menu");
+      burger.setAttribute("aria-expanded", "false");
+      burger.setAttribute("aria-controls", "cradle-navbar-drawer");
       burger.innerHTML = `
         <span class="cradle-navbar__hamburger-line" aria-hidden="true"></span>
         <span class="cradle-navbar__hamburger-line" aria-hidden="true"></span>
@@ -384,26 +388,30 @@
       nav.appendChild(actionsSlot);
 
       /* ── Mobile drawer ── */
-      const drawer = document.createElement('div');
-      drawer.className = 'cradle-navbar__drawer';
-      drawer.id = 'cradle-navbar-drawer';
-      drawer.setAttribute('aria-hidden', 'true');
-      drawer.setAttribute('role', 'menu');
+      const drawer = document.createElement("div");
+      drawer.className = "cradle-navbar__drawer";
+      drawer.id = "cradle-navbar-drawer";
+      drawer.setAttribute("aria-hidden", "true");
+      drawer.setAttribute("role", "menu");
 
       links.forEach(link => {
-        const a = document.createElement('a');
+        const a = document.createElement("a");
         a.className = [
-          'cradle-navbar__drawer-link',
-          isActive(link.href, currentRoute) ? 'cradle-navbar__drawer-link--active' : '',
-        ].filter(Boolean).join(' ');
+          "cradle-navbar__drawer-link",
+          isActive(link.href, currentRoute)
+            ? "cradle-navbar__drawer-link--active"
+            : "",
+        ]
+          .filter(Boolean)
+          .join(" ");
         a.href = link.href;
         a.textContent = link.label;
-        a.setAttribute('role', 'menuitem');
+        a.setAttribute("role", "menuitem");
         if (isActive(link.href, currentRoute)) {
-          a.setAttribute('aria-current', 'page');
+          a.setAttribute("aria-current", "page");
         }
         /* Close drawer on link click */
-        a.addEventListener('click', () => closeDrawer());
+        a.addEventListener("click", () => closeDrawer());
         drawer.appendChild(a);
       });
 
@@ -412,37 +420,39 @@
 
       function openDrawer() {
         isOpen = true;
-        nav.classList.add('cradle-navbar--open');
-        drawer.classList.add('cradle-navbar__drawer--open');
-        burger.setAttribute('aria-expanded', 'true');
-        burger.setAttribute('aria-label', 'Close menu');
-        drawer.setAttribute('aria-hidden', 'false');
+        nav.classList.add("cradle-navbar--open");
+        drawer.classList.add("cradle-navbar__drawer--open");
+        burger.setAttribute("aria-expanded", "true");
+        burger.setAttribute("aria-label", "Close menu");
+        drawer.setAttribute("aria-hidden", "false");
         /* Focus first drawer link */
-        const firstLink = drawer.querySelector('.cradle-navbar__drawer-link');
+        const firstLink = drawer.querySelector(".cradle-navbar__drawer-link");
         if (firstLink) firstLink.focus();
       }
 
       function closeDrawer() {
         isOpen = false;
-        nav.classList.remove('cradle-navbar--open');
-        drawer.classList.remove('cradle-navbar__drawer--open');
-        burger.setAttribute('aria-expanded', 'false');
-        burger.setAttribute('aria-label', 'Open menu');
-        drawer.setAttribute('aria-hidden', 'true');
+        nav.classList.remove("cradle-navbar--open");
+        drawer.classList.remove("cradle-navbar__drawer--open");
+        burger.setAttribute("aria-expanded", "false");
+        burger.setAttribute("aria-label", "Open menu");
+        drawer.setAttribute("aria-hidden", "true");
       }
 
-      burger.addEventListener('click', () => isOpen ? closeDrawer() : openDrawer());
+      burger.addEventListener("click", () =>
+        isOpen ? closeDrawer() : openDrawer()
+      );
 
       /* Escape key closes drawer */
-      document.addEventListener('keydown', e => {
-        if (e.key === 'Escape' && isOpen) {
+      document.addEventListener("keydown", e => {
+        if (e.key === "Escape" && isOpen) {
           closeDrawer();
           burger.focus();
         }
       });
 
       /* Click outside closes drawer */
-      document.addEventListener('click', e => {
+      document.addEventListener("click", e => {
         if (isOpen && !nav.contains(e.target) && !drawer.contains(e.target)) {
           closeDrawer();
         }
@@ -463,36 +473,44 @@
      */
     upgradeAll() {
       injectStyles();
-      document.querySelectorAll('[data-cradle-navbar]').forEach(el => {
+      document.querySelectorAll("[data-cradle-navbar]").forEach(el => {
         if (el.dataset.cradleUpgraded) return;
-        el.dataset.cradleUpgraded = 'true';
+        el.dataset.cradleUpgraded = "true";
 
         let links = [];
-        try { links = JSON.parse(el.dataset.links || '[]'); } catch { links = []; }
+        try {
+          links = JSON.parse(el.dataset.links || "[]");
+        } catch {
+          links = [];
+        }
 
-        const logoText  = el.dataset.logoText  || el.dataset.logotext || '';
-        const logoHref  = el.dataset.logoHref  || el.dataset.logohref || '/';
-        const logoImg   = el.dataset.logoImg   || el.dataset.logoimg  || '';
-        const current   = el.dataset.currentRoute || el.dataset.currentroute || window.location.pathname;
+        const logoText = el.dataset.logoText || el.dataset.logotext || "";
+        const logoHref = el.dataset.logoHref || el.dataset.logohref || "/";
+        const logoImg = el.dataset.logoImg || el.dataset.logoimg || "";
+        const current =
+          el.dataset.currentRoute ||
+          el.dataset.currentroute ||
+          window.location.pathname;
 
         const nav = CradleNavbar.create({
-          logo:         { text: logoText, href: logoHref, imgSrc: logoImg },
+          logo: { text: logoText, href: logoHref, imgSrc: logoImg },
           links,
           currentRoute: current,
         });
 
         el.replaceWith(nav);
-        nav.insertAdjacentElement('afterend', nav._drawer);
+        nav.insertAdjacentElement("afterend", nav._drawer);
       });
     },
   };
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => CradleNavbar.upgradeAll());
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () =>
+      CradleNavbar.upgradeAll()
+    );
   } else {
     CradleNavbar.upgradeAll();
   }
 
   global.CradleNavbar = CradleNavbar;
-
 })(window);

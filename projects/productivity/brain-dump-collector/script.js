@@ -3,31 +3,103 @@ const STORAGE_KEY = "cradle:brain-dump-collector";
 const CATEGORY_RULES = [
   {
     name: "Work",
-    keywords: ["work", "client", "meeting", "email", "project", "deadline", "task", "bug", "fix", "deploy", "code", "review"],
+    keywords: [
+      "work",
+      "client",
+      "meeting",
+      "email",
+      "project",
+      "deadline",
+      "task",
+      "bug",
+      "fix",
+      "deploy",
+      "code",
+      "review",
+    ],
   },
   {
     name: "Study",
-    keywords: ["study", "learn", "assignment", "exam", "class", "course", "notes", "research", "practice", "interview"],
+    keywords: [
+      "study",
+      "learn",
+      "assignment",
+      "exam",
+      "class",
+      "course",
+      "notes",
+      "research",
+      "practice",
+      "interview",
+    ],
   },
   {
     name: "Ideas",
-    keywords: ["idea", "build", "create", "startup", "feature", "design", "brainstorm", "experiment", "prototype"],
+    keywords: [
+      "idea",
+      "build",
+      "create",
+      "startup",
+      "feature",
+      "design",
+      "brainstorm",
+      "experiment",
+      "prototype",
+    ],
   },
   {
     name: "Health",
-    keywords: ["health", "gym", "walk", "doctor", "sleep", "water", "medicine", "exercise", "meal"],
+    keywords: [
+      "health",
+      "gym",
+      "walk",
+      "doctor",
+      "sleep",
+      "water",
+      "medicine",
+      "exercise",
+      "meal",
+    ],
   },
   {
     name: "Finance",
-    keywords: ["money", "bill", "budget", "pay", "fee", "invoice", "bank", "salary", "expense"],
+    keywords: [
+      "money",
+      "bill",
+      "budget",
+      "pay",
+      "fee",
+      "invoice",
+      "bank",
+      "salary",
+      "expense",
+    ],
   },
   {
     name: "Errands",
-    keywords: ["buy", "shop", "call", "send", "pick", "book", "clean", "visit", "renew"],
+    keywords: [
+      "buy",
+      "shop",
+      "call",
+      "send",
+      "pick",
+      "book",
+      "clean",
+      "visit",
+      "renew",
+    ],
   },
   {
     name: "Personal",
-    keywords: ["family", "friend", "home", "birthday", "plan", "travel", "personal"],
+    keywords: [
+      "family",
+      "friend",
+      "home",
+      "birthday",
+      "plan",
+      "travel",
+      "personal",
+    ],
   },
 ];
 
@@ -76,7 +148,7 @@ function initializeApp() {
   elements.clearBtn.addEventListener("click", clearAllNotes);
   elements.sortBtn.addEventListener("click", toggleSortOrder);
 
-  elements.thoughtInput.addEventListener("keydown", (event) => {
+  elements.thoughtInput.addEventListener("keydown", event => {
     if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
       elements.captureForm.requestSubmit();
     }
@@ -94,14 +166,16 @@ function handleCapture(event) {
   const overrideCategory = elements.categoryOverride.value;
   const lines = rawText
     .split(/\n+/)
-    .map((line) => line.trim())
+    .map(line => line.trim())
     .filter(Boolean);
 
   const createdAt = new Date().toISOString();
-  const newNotes = lines.map((text) => {
+  const newNotes = lines.map(text => {
     const category = overrideCategory || detectCategory(text);
     return {
-      id: crypto.randomUUID ? crypto.randomUUID() : `note-${Date.now()}-${Math.random()}`,
+      id: crypto.randomUUID
+        ? crypto.randomUUID()
+        : `note-${Date.now()}-${Math.random()}`,
       text,
       category,
       tags: extractTags(text, category),
@@ -121,7 +195,7 @@ function handleCapture(event) {
 
 function detectCategory(text) {
   const normalized = text.toLowerCase();
-  const scores = CATEGORY_RULES.map((rule) => {
+  const scores = CATEGORY_RULES.map(rule => {
     const score = rule.keywords.reduce((total, keyword) => {
       return total + (normalized.includes(keyword) ? 1 : 0);
     }, 0);
@@ -132,15 +206,19 @@ function detectCategory(text) {
 }
 
 function extractTags(text, category) {
-  const hashTags = Array.from(text.matchAll(/#([\w-]+)/g)).map((match) => match[1].toLowerCase());
+  const hashTags = Array.from(text.matchAll(/#([\w-]+)/g)).map(match =>
+    match[1].toLowerCase()
+  );
   const words = text
     .toLowerCase()
     .replace(/[^a-z0-9\s-]/g, " ")
     .split(/\s+/)
-    .filter((word) => word.length > 4)
+    .filter(word => word.length > 4)
     .slice(0, 4);
 
-  return Array.from(new Set([category.toLowerCase(), ...hashTags, ...words])).slice(0, 6);
+  return Array.from(
+    new Set([category.toLowerCase(), ...hashTags, ...words])
+  ).slice(0, 6);
 }
 
 function render() {
@@ -160,8 +238,9 @@ function getFilteredNotes() {
   const status = elements.statusFilter.value;
 
   return state.notes
-    .filter((note) => {
-      const searchableText = `${note.text} ${note.category} ${note.tags.join(" ")}`.toLowerCase();
+    .filter(note => {
+      const searchableText =
+        `${note.text} ${note.category} ${note.tags.join(" ")}`.toLowerCase();
       const matchesQuery = !query || searchableText.includes(query);
       const matchesCategory = !category || note.category === category;
       const matchesStatus =
@@ -217,7 +296,7 @@ function renderBoard(groupedNotes, filteredCount) {
       `;
 
       const list = column.querySelector(".note-list");
-      notes.forEach((note) => list.appendChild(createNoteCard(note)));
+      notes.forEach(note => list.appendChild(createNoteCard(note)));
       elements.board.appendChild(column);
     });
 }
@@ -228,19 +307,33 @@ function createNoteCard(note) {
   card.classList.toggle("pinned", note.pinned);
 
   card.querySelector(".note-category").textContent = note.category;
-  card.querySelector(".note-time").textContent = formatRelativeTime(note.createdAt);
+  card.querySelector(".note-time").textContent = formatRelativeTime(
+    note.createdAt
+  );
   card.querySelector(".note-text").textContent = note.text;
   card.querySelector(".note-tags").innerHTML = note.tags
-    .map((tag) => `<span class="tag">#${escapeHtml(tag)}</span>`)
+    .map(tag => `<span class="tag">#${escapeHtml(tag)}</span>`)
     .join("");
 
-  card.querySelector('[data-action="pin"]').textContent = note.pinned ? "Unpin" : "Pin";
-  card.querySelector('[data-action="done"]').textContent = note.done ? "Reopen" : "Done";
+  card.querySelector('[data-action="pin"]').textContent = note.pinned
+    ? "Unpin"
+    : "Pin";
+  card.querySelector('[data-action="done"]').textContent = note.done
+    ? "Reopen"
+    : "Done";
 
-  card.querySelector('[data-action="pin"]').addEventListener("click", () => toggleNote(note.id, "pinned"));
-  card.querySelector('[data-action="done"]').addEventListener("click", () => toggleNote(note.id, "done"));
-  card.querySelector('[data-action="edit"]').addEventListener("click", () => editNote(note.id));
-  card.querySelector('[data-action="delete"]').addEventListener("click", () => deleteNote(note.id));
+  card
+    .querySelector('[data-action="pin"]')
+    .addEventListener("click", () => toggleNote(note.id, "pinned"));
+  card
+    .querySelector('[data-action="done"]')
+    .addEventListener("click", () => toggleNote(note.id, "done"));
+  card
+    .querySelector('[data-action="edit"]')
+    .addEventListener("click", () => editNote(note.id));
+  card
+    .querySelector('[data-action="delete"]')
+    .addEventListener("click", () => deleteNote(note.id));
 
   return card;
 }
@@ -250,38 +343,46 @@ function renderCategoryFilters() {
   const currentValue = elements.filterCategory.value;
   elements.filterCategory.innerHTML = '<option value="">All groups</option>';
 
-  categories.forEach((category) => {
+  categories.forEach(category => {
     const option = document.createElement("option");
     option.value = category;
     option.textContent = category;
     elements.filterCategory.appendChild(option);
   });
 
-  elements.filterCategory.value = categories.includes(currentValue) ? currentValue : "";
+  elements.filterCategory.value = categories.includes(currentValue)
+    ? currentValue
+    : "";
 }
 
 function renderStats() {
   const categories = getCategories();
   elements.counts.total.textContent = state.notes.length;
-  elements.counts.open.textContent = state.notes.filter((note) => !note.done).length;
-  elements.counts.done.textContent = state.notes.filter((note) => note.done).length;
+  elements.counts.open.textContent = state.notes.filter(
+    note => !note.done
+  ).length;
+  elements.counts.done.textContent = state.notes.filter(
+    note => note.done
+  ).length;
   elements.counts.category.textContent = categories.length;
 }
 
 function renderFocusList() {
   const focusNotes = state.notes
-    .filter((note) => !note.done)
+    .filter(note => !note.done)
     .sort(sortNotes)
     .slice(0, 4);
 
   elements.focusList.innerHTML = focusNotes.length
     ? focusNotes
-        .map((note) => `
+        .map(
+          note => `
           <div class="focus-item">
             <strong>${escapeHtml(note.text)}</strong>
             <small>${escapeHtml(note.category)} - ${formatRelativeTime(note.createdAt)}</small>
           </div>
-        `)
+        `
+        )
         .join("")
     : '<div class="empty-state">Your focus queue is clear.</div>';
 }
@@ -295,18 +396,20 @@ function renderCategorySummary() {
   const entries = Object.entries(totals).sort((a, b) => b[1] - a[1]);
   elements.categorySummary.innerHTML = entries.length
     ? entries
-        .map(([category, count]) => `
+        .map(
+          ([category, count]) => `
           <div class="category-pill">
             <strong>${escapeHtml(category)}</strong>
             <span>${count} captured thought${count === 1 ? "" : "s"}</span>
           </div>
-        `)
+        `
+        )
         .join("")
     : '<div class="empty-state">Categories will appear after you capture thoughts.</div>';
 }
 
 function toggleNote(id, field) {
-  state.notes = state.notes.map((note) => {
+  state.notes = state.notes.map(note => {
     if (note.id !== id) return note;
     return {
       ...note,
@@ -319,7 +422,7 @@ function toggleNote(id, field) {
 }
 
 function editNote(id) {
-  const note = state.notes.find((item) => item.id === id);
+  const note = state.notes.find(item => item.id === id);
   if (!note) return;
 
   const nextText = window.prompt("Edit thought", note.text);
@@ -329,11 +432,12 @@ function editNote(id) {
   if (!trimmedText) return;
 
   const nextCategory = window.prompt("Edit category", note.category);
-  const category = nextCategory && nextCategory.trim()
-    ? titleCase(nextCategory.trim())
-    : detectCategory(trimmedText);
+  const category =
+    nextCategory && nextCategory.trim()
+      ? titleCase(nextCategory.trim())
+      : detectCategory(trimmedText);
 
-  state.notes = state.notes.map((item) => {
+  state.notes = state.notes.map(item => {
     if (item.id !== id) return item;
     return {
       ...item,
@@ -349,7 +453,7 @@ function editNote(id) {
 }
 
 function deleteNote(id) {
-  state.notes = state.notes.filter((note) => note.id !== id);
+  state.notes = state.notes.filter(note => note.id !== id);
   persistNotes();
   render();
 }
@@ -363,7 +467,9 @@ function clearAllNotes() {
 
 function toggleSortOrder() {
   state.sortNewestFirst = !state.sortNewestFirst;
-  elements.sortBtn.textContent = state.sortNewestFirst ? "Newest First" : "Oldest First";
+  elements.sortBtn.textContent = state.sortNewestFirst
+    ? "Newest First"
+    : "Oldest First";
   render();
 }
 
@@ -407,12 +513,21 @@ function importNotes(event) {
       if (!Array.isArray(importedNotes)) throw new Error("Invalid notes file.");
 
       state.notes = importedNotes
-        .filter((note) => note.text)
-        .map((note) => ({
-          id: note.id || (crypto.randomUUID ? crypto.randomUUID() : `note-${Date.now()}-${Math.random()}`),
+        .filter(note => note.text)
+        .map(note => ({
+          id:
+            note.id ||
+            (crypto.randomUUID
+              ? crypto.randomUUID()
+              : `note-${Date.now()}-${Math.random()}`),
           text: String(note.text),
           category: note.category || detectCategory(note.text),
-          tags: Array.isArray(note.tags) ? note.tags : extractTags(note.text, note.category || detectCategory(note.text)),
+          tags: Array.isArray(note.tags)
+            ? note.tags
+            : extractTags(
+                note.text,
+                note.category || detectCategory(note.text)
+              ),
           createdAt: note.createdAt || new Date().toISOString(),
           updatedAt: note.updatedAt || new Date().toISOString(),
           done: Boolean(note.done),
@@ -431,7 +546,9 @@ function importNotes(event) {
 }
 
 function getCategories() {
-  return Array.from(new Set(state.notes.map((note) => note.category))).sort((a, b) => a.localeCompare(b));
+  return Array.from(new Set(state.notes.map(note => note.category))).sort(
+    (a, b) => a.localeCompare(b)
+  );
 }
 
 function loadNotes() {
@@ -462,7 +579,7 @@ function titleCase(value) {
   return value
     .toLowerCase()
     .split(/\s+/)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }
 

@@ -7,7 +7,12 @@
     "generate": "node scripts/generate-projects.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npm run generate && npx live-server",
-    "build": "npm run generate"
+    "build": "npm run generate",
+    "format": "prettier --write .",
+    "check-format": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "^3.0.0"
   },
   "repository": {
     "type": "git",

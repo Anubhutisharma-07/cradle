@@ -1,92 +1,122 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Meme Generator Studio</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meme Generator Studio</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-<body>
-  <div class="meme-studio-container">
-    <header class="studio-header">
-      <h2>Meme Generator Studio</h2>
-      <p>Create, customize, and export high-quality custom memes</p>
-    </header>
+  <body>
+    <div class="meme-studio-container">
+      <header class="studio-header">
+        <h2>Meme Generator Studio</h2>
+        <p>Create, customize, and export high-quality custom memes</p>
+      </header>
 
-    <main class="studio-workspace">
-      <!-- Control Panel -->
-      <section class="controls-card">
-        <h3>Meme Customization Controls</h3>
+      <main class="studio-workspace">
+        <!-- Control Panel -->
+        <section class="controls-card">
+          <h3>Meme Customization Controls</h3>
 
-        <div class="form-group">
-          <label for="inputTopText">Top Header Text</label>
-          <input type="text" id="inputTopText" placeholder="WHEN THE CODE BUILDS..." value="WHEN THE BUILD PASSES" />
-        </div>
-
-        <div class="form-group">
-          <label for="inputBottomText">Bottom Footer Text</label>
-          <input type="text" id="inputBottomText" placeholder="FIRST TRY WITHOUT BUGS" value="FIRST TRY WITHOUT BUGS" />
-        </div>
-
-        <div class="form-row">
-          <div class="form-group flex-1">
-            <label for="inputFontSize">Font Size (<span id="fontSizeVal">36</span>px)</label>
-            <input type="range" id="inputFontSize" min="16" max="72" value="36" />
+          <div class="form-group">
+            <label for="inputTopText">Top Header Text</label>
+            <input
+              type="text"
+              id="inputTopText"
+              placeholder="WHEN THE CODE BUILDS..."
+              value="WHEN THE BUILD PASSES"
+            />
           </div>
 
-          <div class="form-group flex-1">
-            <label for="inputTextColor">Text Fill Color</label>
-            <input type="color" id="inputTextColor" value="#FFFFFF" />
+          <div class="form-group">
+            <label for="inputBottomText">Bottom Footer Text</label>
+            <input
+              type="text"
+              id="inputBottomText"
+              placeholder="FIRST TRY WITHOUT BUGS"
+              value="FIRST TRY WITHOUT BUGS"
+            />
           </div>
 
-          <div class="form-group flex-1">
-            <label for="inputStrokeColor">Outline Color</label>
-            <input type="color" id="inputStrokeColor" value="#000000" />
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="inputFontSize"
+                >Font Size (<span id="fontSizeVal">36</span>px)</label
+              >
+              <input
+                type="range"
+                id="inputFontSize"
+                min="16"
+                max="72"
+                value="36"
+              />
+            </div>
+
+            <div class="form-group flex-1">
+              <label for="inputTextColor">Text Fill Color</label>
+              <input type="color" id="inputTextColor" value="#FFFFFF" />
+            </div>
+
+            <div class="form-group flex-1">
+              <label for="inputStrokeColor">Outline Color</label>
+              <input type="color" id="inputStrokeColor" value="#000000" />
+            </div>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label for="fileUpload">Upload Custom Background Image</label>
-          <input type="file" id="fileUpload" accept="image/*" />
-        </div>
+          <div class="form-group">
+            <label for="fileUpload">Upload Custom Background Image</label>
+            <input type="file" id="fileUpload" accept="image/*" />
+          </div>
 
-        <div class="actions-grid">
-          <button id="loadBtn" type="button" class="btn btn-secondary">
-            <span>Get Random Meme</span>
-          </button>
-          <button id="savePresetBtn" type="button" class="btn btn-outline">
-            <span>Save Preset</span>
-          </button>
-          <button id="downloadBtn" type="button" class="btn btn-primary">
-            <span>Download Meme</span>
-          </button>
+          <div class="actions-grid">
+            <button id="loadBtn" type="button" class="btn btn-secondary">
+              <span>Get Random Meme</span>
+            </button>
+            <button id="savePresetBtn" type="button" class="btn btn-outline">
+              <span>Save Preset</span>
+            </button>
+            <button id="downloadBtn" type="button" class="btn btn-primary">
+              <span>Download Meme</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Canvas Preview Area -->
+        <section class="preview-card">
+          <h3>Live Canvas Preview</h3>
+          <div class="canvas-wrapper">
+            <canvas id="memeCanvas"></canvas>
+            <img
+              id="memeHiddenImg"
+              alt="Hidden Source Image"
+              style="display: none"
+            />
+          </div>
+        </section>
+      </main>
+
+      <!-- Saved Presets Gallery -->
+      <section class="presets-section">
+        <h3>Saved Meme Presets</h3>
+        <div id="presetsList" class="presets-grid">
+          <p class="empty-presets">
+            No saved presets yet. Customize text and click "Save Preset".
+          </p>
         </div>
       </section>
+    </div>
 
-      <!-- Canvas Preview Area -->
-      <section class="preview-card">
-        <h3>Live Canvas Preview</h3>
-        <div class="canvas-wrapper">
-          <canvas id="memeCanvas"></canvas>
-          <img id="memeHiddenImg" alt="Hidden Source Image" style="display: none;" />
-        </div>
-      </section>
-    </main>
-
-    <!-- Saved Presets Gallery -->
-    <section class="presets-section">
-      <h3>Saved Meme Presets</h3>
-      <div id="presetsList" class="presets-grid">
-        <p class="empty-presets">No saved presets yet. Customize text and click "Save Preset".</p>
-      </div>
-    </section>
-  </div>
-
-  <script src="../../../src/components/ui/BackToHome/BackToHome.js" defer></script>
-  <script src="memeEngine.js"></script>
-  <script src="memeStorage.js"></script>
-  <script src="script.js"></script>
-</body>
+    <script
+      src="../../../src/components/ui/BackToHome/BackToHome.js"
+      defer
+    ></script>
+    <script src="memeEngine.js"></script>
+    <script src="memeStorage.js"></script>
+    <script src="script.js"></script>
+  </body>
 </html>

@@ -23,7 +23,6 @@ Please take a few minutes to read these guidelines before getting started.
 - [Need Help?](#need-help)
 - [Thank You](#thank-you)
 
-
 ## Ways to Contribute
 
 You can contribute in many ways, including:
@@ -155,7 +154,7 @@ Before opening a Pull Request, review the following checklist:
 
 ## Coding Guidelines
 
-Please follow the existing coding style throughout the repository.
+Please follow the existing coding style throughout the repository. Code formatting is enforced using **Prettier**.
 
 - Write clean, readable, and maintainable code.
 - Use meaningful variable and file names.
@@ -163,6 +162,13 @@ Please follow the existing coding style throughout the repository.
 - Avoid unrelated changes in the same Pull Request.
 - Remove unused code before submitting.
 - Update documentation whenever your changes affect functionality.
+
+### Code Formatting
+
+We use Prettier to maintain a consistent style across the codebase. Before submitting a pull request, please ensure your changes are formatted:
+
+- **Format Code**: Run `npm run format` to auto-format your changes.
+- **Check Formatting**: Run `npm run check-format` to verify all files are formatted correctly.
 
 ---
 

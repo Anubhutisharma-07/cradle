@@ -16,7 +16,7 @@ The project is intentionally self-contained: no build tools, no frameworks, no e
 ├── logic.js     # Pure game rules (no DOM access)
 ├── storage.js   # State and high score saving/loading per grid size
 ├── script.js    # UI layer — renders the board and handles input
-└── styles.css   # Layout and tile colour theming
+└── style.css   # Layout and tile colour theming
 ```
 
 **`logic.js`** and **`script.js`** are deliberately separated. `logic.js` contains every rule (tile merging, board traversal, win/loss detection) and exposes a small public API. `script.js` knows nothing about game rules — it only reads state and updates the DOM. This separation allows `logic.js` to be imported in a test environment without a browser.
@@ -54,23 +54,26 @@ Win / loss status is checked and displayed
 ## Core Components
 
 ### `index.html`
+
 Defines the static page structure: title, score cards (`#scoreValue`, `#bestScoreValue`), the board container (`#board`), a status message (`#status`), and a Restart button. The board cells are created dynamically by JavaScript.
 
 ### `logic.js`
+
 Contains all game rules. It is wrapped in a UMD (Universal Module Definition) pattern so it works both in a browser (via `window.__2048Logic`) and in Node.js (via `module.exports`), which enables unit testing without a browser.
 
 Key functions exported:
 
-| Function | Purpose |
-|---|---|
-| `createInitialState()` | Returns a fresh 4×4 board with two starting tiles |
-| `moveGameState(state, direction)` | Returns a new immutable state after applying a move |
-| `addRandomTile(state)` | Places a 2 (90% chance) or 4 (10% chance) on a random empty cell |
-| `collapseLine(line)` | Merges a single row or column in one direction; returns the merged line and the score gained |
-| `hasWon(board)` | Returns `true` if any tile is ≥ 2048 |
-| `canMove(board)` | Returns `true` if at least one valid move exists |
+| Function                          | Purpose                                                                                      |
+| --------------------------------- | -------------------------------------------------------------------------------------------- |
+| `createInitialState()`            | Returns a fresh 4×4 board with two starting tiles                                            |
+| `moveGameState(state, direction)` | Returns a new immutable state after applying a move                                          |
+| `addRandomTile(state)`            | Places a 2 (90% chance) or 4 (10% chance) on a random empty cell                             |
+| `collapseLine(line)`              | Merges a single row or column in one direction; returns the merged line and the score gained |
+| `hasWon(board)`                   | Returns `true` if any tile is ≥ 2048                                                         |
+| `canMove(board)`                  | Returns `true` if at least one valid move exists                                             |
 
 ### `script.js`
+
 The UI layer. Reads the public API from `window.__2048Logic`, handles keyboard events, and writes to the DOM.
 
 Key responsibilities:
@@ -81,6 +84,7 @@ Key responsibilities:
 - **`restartGame()`** — creates a fresh state and re-renders.
 
 ### `style.css`
+
 Handles all visual presentation. Tile colours are assigned through CSS classes named after tile values (`.tile--2`, `.tile--4`, … `.tile--2048`). Layout uses CSS Grid for the 4×4 board.
 
 ---

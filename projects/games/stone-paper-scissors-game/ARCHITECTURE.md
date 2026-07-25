@@ -13,7 +13,7 @@ stone-paper-scissors-game/
 ├── index.html   # Full page: navbar, game box, how-to section, footer, modal
 ├── game-engine.js # Rules matrix for classic and Lizard-Spock modes
 ├── script.js    # All game logic, animations, and event handling
-└── styles.css   # Cyberpunk visual theme, animations, responsive layout
+└── style.css   # Cyberpunk visual theme, animations, responsive layout
 ```
 
 ---
@@ -57,6 +57,7 @@ Buttons re-enabled for the next round
 ## Core Components
 
 ### `index.html`
+
 Structured as a full single-page layout with four visible sections:
 
 - **Navbar** — logo and navigation links to the game, how-to section, and footer.
@@ -72,32 +73,34 @@ Structured as a full single-page layout with four visible sections:
 - **Victory modal** — shown at the end of a Best of 3 / Best of 5 tournament.
 
 ### `script.js`
+
 All game logic lives in this file. No separate modules are used.
 
 Key variables:
 
-| Variable | Purpose |
-|---|---|
-| `playerScore` / `computerScore` | Cumulative scores for the current session |
-| `streak` | Consecutive player wins (resets on any non-win) |
-| `gameMode` | Active mode: `1`, `3`, or `5` |
-| `targetWins` | Wins needed to claim the tournament (`Math.ceil(gameMode / 2)`) |
-| `playerTournamentWins` / `computerTournamentWins` | Wins within the current tournament |
+| Variable                                          | Purpose                                                         |
+| ------------------------------------------------- | --------------------------------------------------------------- |
+| `playerScore` / `computerScore`                   | Cumulative scores for the current session                       |
+| `streak`                                          | Consecutive player wins (resets on any non-win)                 |
+| `gameMode`                                        | Active mode: `1`, `3`, or `5`                                   |
+| `targetWins`                                      | Wins needed to claim the tournament (`Math.ceil(gameMode / 2)`) |
+| `playerTournamentWins` / `computerTournamentWins` | Wins within the current tournament                              |
 
 Key functions:
 
-| Function | Purpose |
-|---|---|
-| `startCountdown(playerChoice)` | Disables buttons and runs the four-step animated countdown using `setInterval` |
-| `playGame(player, computer)` | Determines the winner, updates all scores and visual states |
-| `renderTally()` | Rebuilds the tally dot indicators for tournament modes |
-| `resetTournament()` | Resets tournament wins and tally, then triggers a full score reset |
-| `showVictoryModal(winner)` | Displays the result modal with appropriate messaging and colour |
-| `launchConfetti()` | Creates 40 randomly-sized and -coloured `div.confetti-piece` elements that fall off-screen via CSS animation |
-| `triggerShake()` | Forces a CSS reflow and re-adds the `.shake` class to both fighter displays |
-| `toggleButtons(disabled)` | Enables or disables all three choice buttons |
+| Function                       | Purpose                                                                                                      |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| `startCountdown(playerChoice)` | Disables buttons and runs the four-step animated countdown using `setInterval`                               |
+| `playGame(player, computer)`   | Determines the winner, updates all scores and visual states                                                  |
+| `renderTally()`                | Rebuilds the tally dot indicators for tournament modes                                                       |
+| `resetTournament()`            | Resets tournament wins and tally, then triggers a full score reset                                           |
+| `showVictoryModal(winner)`     | Displays the result modal with appropriate messaging and colour                                              |
+| `launchConfetti()`             | Creates 40 randomly-sized and -coloured `div.confetti-piece` elements that fall off-screen via CSS animation |
+| `triggerShake()`               | Forces a CSS reflow and re-adds the `.shake` class to both fighter displays                                  |
+| `toggleButtons(disabled)`      | Enables or disables all three choice buttons                                                                 |
 
 ### `style.css`
+
 Implements the cyberpunk aesthetic:
 
 - Dark navy background (`#0b0e1a`) with two blurred radial gradient orbs (cyan and pink) creating ambient light.
@@ -115,12 +118,12 @@ Implements the cyberpunk aesthetic:
 
 State is held in six module-level variables. There is no state object or persistence — everything resets on page reload.
 
-| Variable | Type | Resets on |
-|---|---|---|
-| `playerScore` / `computerScore` | `number` | Reset button click |
-| `streak` | `number` | Any non-win result |
-| `gameMode` | `number` | Mode button click |
-| `targetWins` | `number` | Mode button click |
+| Variable                                          | Type     | Resets on                 |
+| ------------------------------------------------- | -------- | ------------------------- |
+| `playerScore` / `computerScore`                   | `number` | Reset button click        |
+| `streak`                                          | `number` | Any non-win result        |
+| `gameMode`                                        | `number` | Mode button click         |
+| `targetWins`                                      | `number` | Mode button click         |
 | `playerTournamentWins` / `computerTournamentWins` | `number` | Mode change or Play Again |
 
 ---
@@ -165,10 +168,10 @@ toggleButtons(false) → game ready for next round
 
 ## Assets
 
-| Asset | Source | Purpose |
-|---|---|---|
+| Asset         | Source             | Purpose                       |
+| ------------- | ------------------ | ----------------------------- |
 | Orbitron font | Google Fonts (CDN) | Headings, scores, result text |
-| Rajdhani font | Google Fonts (CDN) | Body text, buttons, labels |
+| Rajdhani font | Google Fonts (CDN) | Body text, buttons, labels    |
 
 No image or audio files are used. Choices are represented by Unicode emoji (`🪨`, `📄`, `✂️`). The confetti animation is entirely CSS-driven.
 
@@ -176,10 +179,10 @@ No image or audio files are used. Choices are represented by Unicode emoji (`�
 
 ## Dependencies
 
-| Library | Source | Purpose |
-|---|---|---|
+| Library         | Source           | Purpose      |
+| --------------- | ---------------- | ------------ |
 | Orbitron (font) | Google Fonts CDN | Display font |
-| Rajdhani (font) | Google Fonts CDN | UI font |
+| Rajdhani (font) | Google Fonts CDN | UI font      |
 
 No JavaScript libraries are used.
 

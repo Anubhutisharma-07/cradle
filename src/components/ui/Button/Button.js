@@ -30,14 +30,14 @@
  */
 
 (function (global) {
-  'use strict';
+  "use strict";
 
   /* ── Inject styles once ───────────────────────────────── */
-  const STYLE_ID = 'cradle-btn-styles';
+  const STYLE_ID = "cradle-btn-styles";
 
   function injectStyles() {
     if (document.getElementById(STYLE_ID)) return;
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.id = STYLE_ID;
     style.textContent = `
       /* Base */
@@ -237,85 +237,85 @@
       injectStyles();
 
       const {
-        variant   = 'primary',
-        size      = 'md',
-        disabled  = false,
-        loading   = false,
+        variant = "primary",
+        size = "md",
+        disabled = false,
+        loading = false,
         fullWidth = false,
-        leftIcon  = null,
+        leftIcon = null,
         rightIcon = null,
-        className = '',
-        children  = '',
-        onClick   = null,
-        href      = null,
-        target    = null,
-        rel       = null,
+        className = "",
+        children = "",
+        onClick = null,
+        href = null,
+        target = null,
+        rel = null,
         ariaLabel = null,
-        type      = 'button',
+        type = "button",
       } = options;
 
-      const tag = href ? 'a' : 'button';
-      const el  = document.createElement(tag);
+      const tag = href ? "a" : "button";
+      const el = document.createElement(tag);
 
       /* Classes */
       const classes = [
-        'cradle-btn',
+        "cradle-btn",
         `cradle-btn--${variant}`,
         `cradle-btn--${size}`,
-        fullWidth  ? 'cradle-btn--full-width'  : '',
-        loading    ? 'cradle-btn--loading'     : '',
+        fullWidth ? "cradle-btn--full-width" : "",
+        loading ? "cradle-btn--loading" : "",
         className,
       ].filter(Boolean);
-      el.className = classes.join(' ');
+      el.className = classes.join(" ");
 
       /* Attributes */
-      if (tag === 'button') {
+      if (tag === "button") {
         el.type = type;
         if (disabled || loading) el.disabled = true;
       } else {
         el.href = href;
         if (target) el.target = target;
-        if (rel)   el.rel = rel;
-        if (disabled) el.setAttribute('aria-disabled', 'true');
+        if (rel) el.rel = rel;
+        if (disabled) el.setAttribute("aria-disabled", "true");
       }
-      if (ariaLabel) el.setAttribute('aria-label', ariaLabel);
-      if (loading)   el.setAttribute('aria-busy', 'true');
+      if (ariaLabel) el.setAttribute("aria-label", ariaLabel);
+      if (loading) el.setAttribute("aria-busy", "true");
 
       /* Content */
-      el.innerHTML = '';
+      el.innerHTML = "";
 
       if (loading) {
-        const spinner = document.createElement('span');
-        spinner.className = 'cradle-btn__spinner';
-        spinner.setAttribute('aria-hidden', 'true');
+        const spinner = document.createElement("span");
+        spinner.className = "cradle-btn__spinner";
+        spinner.setAttribute("aria-hidden", "true");
         el.appendChild(spinner);
       }
 
       if (leftIcon && !loading) {
-        const icon = document.createElement('span');
-        icon.className = 'cradle-btn__icon cradle-btn__icon--left';
-        icon.setAttribute('aria-hidden', 'true');
+        const icon = document.createElement("span");
+        icon.className = "cradle-btn__icon cradle-btn__icon--left";
+        icon.setAttribute("aria-hidden", "true");
         icon.innerHTML = leftIcon;
         el.appendChild(icon);
       }
 
-      if (children && variant !== 'icon') {
-        const label = document.createElement('span');
+      if (children && variant !== "icon") {
+        const label = document.createElement("span");
         label.textContent = children;
         el.appendChild(label);
       }
 
       if (rightIcon && !loading) {
-        const icon = document.createElement('span');
-        icon.className = 'cradle-btn__icon cradle-btn__icon--right';
-        icon.setAttribute('aria-hidden', 'true');
+        const icon = document.createElement("span");
+        icon.className = "cradle-btn__icon cradle-btn__icon--right";
+        icon.setAttribute("aria-hidden", "true");
         icon.innerHTML = rightIcon;
         el.appendChild(icon);
       }
 
       /* Event listener */
       if (onClick && !disabled && !loading) {
-        el.addEventListener('click', onClick);
+        el.addEventListener("click", onClick);
       }
 
       return el;
@@ -327,18 +327,18 @@
      */
     upgradeAll() {
       injectStyles();
-      document.querySelectorAll('[data-cradle-btn]').forEach(el => {
-        const variant   = el.dataset.variant   || 'primary';
-        const size      = el.dataset.size      || 'md';
-        const leftIcon  = el.dataset.leftIcon  || null;
+      document.querySelectorAll("[data-cradle-btn]").forEach(el => {
+        const variant = el.dataset.variant || "primary";
+        const size = el.dataset.size || "md";
+        const leftIcon = el.dataset.leftIcon || null;
         const rightIcon = el.dataset.rightIcon || null;
-        const fullWidth = el.dataset.fullWidth === 'true';
+        const fullWidth = el.dataset.fullWidth === "true";
 
         const classes = [
-          'cradle-btn',
+          "cradle-btn",
           `cradle-btn--${variant}`,
           `cradle-btn--${size}`,
-          fullWidth ? 'cradle-btn--full-width' : '',
+          fullWidth ? "cradle-btn--full-width" : "",
         ].filter(Boolean);
 
         el.classList.add(...classes);
@@ -349,24 +349,24 @@
             n => n.nodeType === Node.TEXT_NODE && n.textContent.trim()
           );
           textNodes.forEach(node => {
-            const span = document.createElement('span');
+            const span = document.createElement("span");
             span.textContent = node.textContent;
             el.replaceChild(span, node);
           });
         }
 
         if (leftIcon) {
-          const icon = document.createElement('span');
-          icon.className = 'cradle-btn__icon cradle-btn__icon--left';
-          icon.setAttribute('aria-hidden', 'true');
+          const icon = document.createElement("span");
+          icon.className = "cradle-btn__icon cradle-btn__icon--left";
+          icon.setAttribute("aria-hidden", "true");
           icon.innerHTML = leftIcon;
           el.insertBefore(icon, el.firstChild);
         }
 
         if (rightIcon) {
-          const icon = document.createElement('span');
-          icon.className = 'cradle-btn__icon cradle-btn__icon--right';
-          icon.setAttribute('aria-hidden', 'true');
+          const icon = document.createElement("span");
+          icon.className = "cradle-btn__icon cradle-btn__icon--right";
+          icon.setAttribute("aria-hidden", "true");
           icon.innerHTML = rightIcon;
           el.appendChild(icon);
         }
@@ -375,13 +375,14 @@
   };
 
   /* Auto-upgrade on ready */
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => CradleButton.upgradeAll());
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () =>
+      CradleButton.upgradeAll()
+    );
   } else {
     CradleButton.upgradeAll();
   }
 
   /* Expose globally */
   global.CradleButton = CradleButton;
-
 })(window);

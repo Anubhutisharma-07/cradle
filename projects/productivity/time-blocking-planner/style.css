@@ -25,7 +25,11 @@
 }
 
 body {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    "Outfit",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   background-color: var(--bg-dark);
   color: var(--text-main);
   min-height: 100vh;
@@ -118,7 +122,8 @@ body {
   gap: 1rem;
 }
 
-.toolbar-left, .toolbar-right {
+.toolbar-left,
+.toolbar-right {
   display: flex;
   align-items: center;
   gap: 0.65rem;
@@ -207,7 +212,8 @@ body {
   display: none !important;
 }
 
-.dropdown-content button, .dropdown-file-label {
+.dropdown-content button,
+.dropdown-file-label {
   background: none;
   border: none;
   color: var(--text-main);
@@ -219,7 +225,8 @@ body {
   transition: background 0.15s;
 }
 
-.dropdown-content button:hover, .dropdown-file-label:hover {
+.dropdown-content button:hover,
+.dropdown-file-label:hover {
   background: var(--bg-hover);
 }
 
@@ -244,7 +251,7 @@ body {
 }
 
 .stat-chip strong {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   color: var(--text-main);
 }
 
@@ -327,7 +334,7 @@ body {
 .preset-duration {
   font-size: 0.75rem;
   color: var(--text-muted);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
 }
 
 .legend-card {
@@ -398,7 +405,7 @@ body {
 .time-scale-hour {
   height: var(--hour-height);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   font-size: 0.75rem;
   color: var(--text-muted);
   text-align: center;
@@ -436,7 +443,7 @@ body {
   top: -10px;
   background: #f43f5e;
   color: #fff;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   font-size: 0.7rem;
   font-weight: 700;
   padding: 2px 6px;
@@ -455,7 +462,9 @@ body {
   cursor: move;
   user-select: none;
   z-index: 10;
-  transition: box-shadow 0.15s, transform 0.15s;
+  transition:
+    box-shadow 0.15s,
+    transform 0.15s;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -489,7 +498,7 @@ body {
 }
 
 .block-time {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   font-size: 0.72rem;
   opacity: 0.9;
   white-space: nowrap;
@@ -529,7 +538,10 @@ body {
 /* Modal */
 .modal-backdrop {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(4px);
   display: flex;
@@ -555,8 +567,14 @@ body {
 }
 
 @keyframes modalIn {
-  from { opacity: 0; transform: scale(0.95) translateY(10px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .modal-header {
@@ -595,7 +613,9 @@ body {
   font-weight: 500;
 }
 
-.form-group input, .form-group select, .form-group textarea {
+.form-group input,
+.form-group select,
+.form-group textarea {
   background: var(--bg-dark);
   border: 1px solid var(--border-color);
   border-radius: 8px;
@@ -606,7 +626,9 @@ body {
   outline: none;
 }
 
-.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
   border-color: var(--accent-primary);
 }
 

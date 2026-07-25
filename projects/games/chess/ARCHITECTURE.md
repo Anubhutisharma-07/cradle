@@ -70,25 +70,28 @@ render() redraws the board
 ## Core Components
 
 ### `index.html`
+
 Defines the static page skeleton: the board grid (`#board`), player strips, game status card, control buttons (New Game, Undo, Redo, Copy PGN, Flip Board), game-mode and difficulty selectors, captured piece displays, and a scrollable move list.
 
 ### `chessLogic.js`
+
 The rules engine. It is a plain script (not a module) so it can be loaded both by `index.html` via a `<script>` tag and by `aiWorker.js` via `importScripts()`.
 
 Key functions:
 
-| Function | Purpose |
-|---|---|
-| `startPosition()` | Returns an 8×8 array representing the standard chess opening |
+| Function                                          | Purpose                                                                               |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `startPosition()`                                 | Returns an 8×8 array representing the standard chess opening                          |
 | `getLegalMoves(board, row, col, color, epTarget)` | Returns all legal moves for a piece, filtering out moves that leave the king in check |
-| `getAllLegalMoves(board, color, epTarget)` | Returns every legal move for a given colour |
-| `getPseudoMoves(board, row, col, epTarget)` | Returns moves without the legality filter (used internally) |
-| `applyMove(board, move)` | Mutates the board to apply a move (castling, en passant, promotion handled here) |
-| `isSquareAttacked(board, row, col, byColor)` | Returns `true` if a square is under attack |
-| `findKing(board, color)` | Locates the king of a given colour |
-| `cloneBoard(board)` | Deep copies the board (used before simulating moves) |
+| `getAllLegalMoves(board, color, epTarget)`        | Returns every legal move for a given colour                                           |
+| `getPseudoMoves(board, row, col, epTarget)`       | Returns moves without the legality filter (used internally)                           |
+| `applyMove(board, move)`                          | Mutates the board to apply a move (castling, en passant, promotion handled here)      |
+| `isSquareAttacked(board, row, col, byColor)`      | Returns `true` if a square is under attack                                            |
+| `findKing(board, color)`                          | Locates the king of a given colour                                                    |
+| `cloneBoard(board)`                               | Deep copies the board (used before simulating moves)                                  |
 
 ### `ai-worker.js`
+
 Runs the computer opponent. It imports `chessLogic.js` for move generation and board manipulation, then implements:
 
 - **`evaluateBoard(board, color)`** — scores a position using piece values and a piece-square table (PST) that rewards central control.
@@ -98,6 +101,7 @@ Runs the computer opponent. It imports `chessLogic.js` for move generation and b
 Difficulty levels map to search depths: Easy = 1, Medium = 3, Hard = 4.
 
 ### `script.js`
+
 The UI controller. It owns all DOM references and application state variables.
 
 Key responsibilities:
@@ -111,6 +115,7 @@ Key responsibilities:
 - **`generatePGN()`** — assembles the full game record in PGN format for clipboard export.
 
 ### `style.css`
+
 Provides the full visual design: board colours, piece glyphs (Unicode chess symbols), square highlight colours (selected, legal move, capture ring, check), side-panel layout, responsive breakpoints, and a pawn promotion modal.
 
 ---
@@ -119,20 +124,20 @@ Provides the full visual design: board colours, piece glyphs (Unicode chess symb
 
 Game state is held in module-level variables inside `script.js`:
 
-| Variable | Type | Purpose |
-|---|---|---|
-| `board` | `Object[][]` | 8×8 matrix; each cell is `{ type, color, moved }` or `null` |
-| `turn` | `string` | `"white"` or `"black"` |
-| `selected` | `Object \| null` | `{ row, col }` of the currently selected piece |
-| `legalTargets` | `Object[]` | Move objects for the selected piece |
-| `history` | `Object[]` | Stack of previous states (for undo) |
-| `redoStack` | `Object[]` | Stack of undone states (for redo) |
-| `capturedByWhite` | `Object[]` | Pieces captured by White |
-| `capturedByBlack` | `Object[]` | Pieces captured by Black |
-| `enPassantTarget` | `Object \| null` | Square eligible for en passant capture |
-| `flipped` | `boolean` | Whether the board is displayed from Black's perspective |
-| `gameOver` | `boolean` | Set to `true` on checkmate or stalemate |
-| `isComputerThinking` | `boolean` | Blocks user input while the AI Worker is running |
+| Variable             | Type             | Purpose                                                     |
+| -------------------- | ---------------- | ----------------------------------------------------------- |
+| `board`              | `Object[][]`     | 8×8 matrix; each cell is `{ type, color, moved }` or `null` |
+| `turn`               | `string`         | `"white"` or `"black"`                                      |
+| `selected`           | `Object \| null` | `{ row, col }` of the currently selected piece              |
+| `legalTargets`       | `Object[]`       | Move objects for the selected piece                         |
+| `history`            | `Object[]`       | Stack of previous states (for undo)                         |
+| `redoStack`          | `Object[]`       | Stack of undone states (for redo)                           |
+| `capturedByWhite`    | `Object[]`       | Pieces captured by White                                    |
+| `capturedByBlack`    | `Object[]`       | Pieces captured by Black                                    |
+| `enPassantTarget`    | `Object \| null` | Square eligible for en passant capture                      |
+| `flipped`            | `boolean`        | Whether the board is displayed from Black's perspective     |
+| `gameOver`           | `boolean`        | Set to `true` on checkmate or stalemate                     |
+| `isComputerThinking` | `boolean`        | Blocks user input while the AI Worker is running            |
 
 State is snapshotted (deep-cloned) on every move and pushed to `history`, which enables undo without any special diff logic.
 
