@@ -80,14 +80,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Calculate State of Matter at temperature T (Kelvin)
   function getElementState(elem, tempK) {
-    if (elem.phaseAtSTP === "Synthetic" && !elem.meltingPoint) {
-      return "Synthetic";
+    if (typeof PeriodicEngine !== "undefined") {
+      return PeriodicEngine.calculatePhaseState(elem.meltingPoint, elem.boilingPoint, tempK, elem.phaseAtSTP);
     }
+    if (elem.phaseAtSTP === "Synthetic" && !elem.meltingPoint) return "Synthetic";
     const melt = elem.meltingPoint;
     const boil = elem.boilingPoint;
-
     if (!melt && !boil) return elem.phaseAtSTP || "Solid";
-
     if (melt && tempK < melt) return "Solid";
     if (melt && boil && tempK >= melt && tempK < boil) return "Liquid";
     if (boil && tempK >= boil) return "Gas";
