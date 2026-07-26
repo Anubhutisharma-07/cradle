@@ -1,6 +1,6 @@
 ## Overview
 
-Reading Progress Tracker is a browser-based tool for tracking books, reading sessions, and personal reading analytics. It stores all data in `localStorage` so records persist between sessions without a backend.
+Reading Progress Tracker makes it easy to keep track of the books you're reading without needing a notebook or spreadsheet. You can log each reading session, see your progress with simple visualizations, and get an estimate of when you'll ginish a book - everything running in your browser , and your data stays stored locally on your device!!
 
 ---
 
