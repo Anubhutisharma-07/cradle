@@ -143,6 +143,7 @@ html.light-theme .hero h1 {
   display: flex;
   align-items: center;
   flex: 1;
+  z-index: 10;
 }
 
 .search-icon {
@@ -203,6 +204,64 @@ html.light-theme .hero h1 {
   font-family: inherit;
   font-size: 0.75rem;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.search-suggestions {
+  position: absolute;
+  top: calc(100% + 0.55rem);
+  left: 0;
+  right: 0;
+  z-index: 20;
+
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.5rem;
+
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 18px 40px var(--shadow);
+}
+
+.search-suggestion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  width: 100%;
+  padding: 0.72rem 0.85rem;
+
+  color: var(--text);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.search-suggestion:hover,
+.search-suggestion.is-active {
+  background: var(--card-hover);
+  border-color: var(--accent-hover);
+}
+
+.search-suggestion:focus-visible {
+  outline: 2px solid var(--accent-hover);
+  outline-offset: 2px;
+}
+
+.search-suggestion-label {
+  font-weight: 700;
+}
+
+.search-suggestion-detail {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 main {
