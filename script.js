@@ -72,7 +72,27 @@ async function fetchAndCacheProjects(db) {
   return data;
 }
 
+function renderSkeleton(count = 6) {
+  projectsGrid.innerHTML = "";
+  for (let i = 0; i < count; i++) {
+    const skeleton = document.createElement("div");
+    skeleton.className = "skeleton-card";
+    skeleton.setAttribute("aria-hidden", "true");
+    skeleton.innerHTML = `
+      <div class="skeleton-card-image"></div>
+      <div class="skeleton-card-body">
+        <div class="skeleton-line skeleton-line-title"></div>
+        <div class="skeleton-line skeleton-line-subtitle"></div>
+        <div class="skeleton-badge"></div>
+        <div class="skeleton-line skeleton-line-button"></div>
+      </div>
+    `;
+    projectsGrid.appendChild(skeleton);
+  }
+}
+
 async function loadProjects() {
+  renderSkeleton();
   try {
     let db;
 
