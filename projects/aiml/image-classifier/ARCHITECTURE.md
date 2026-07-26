@@ -49,22 +49,14 @@ There is no build step — the browser loads files directly. The project can be 
 
 ## Data Flow / Execution Flow
 
-User opens index.html
-        ↓
-User decides on the mode of model
-
-        ↓                                       ---------------------------                             ↓
-
-User decided on basic model                                                                User decided on custom model
-
-        ↓                                                                                               ↓
-
-User uploads image they want to classify                                                    User adds custom classes 
-
-        ↓                                                                                               ↓
-
-Model predicts the image class and outputs the prediction                                  Model trained on custom classes and can now predict images
-
+```mermaid
+flowchart TD
+A[User opens index.html] --> B{User decides on the mode of model}
+B -- basic model --> C[User uploads image they want to classify  ]
+B -- custom model --> D[User adds custom classes to train model]
+C --> E[Model predicts image]
+D --> E
+```
 
 ---
 
@@ -108,7 +100,7 @@ Model predicts the image class and outputs the prediction                       
 
 ---
 
-<!-- ## Design Decisions -->
+<!-- ## Design Decisions 
 
 <!--
 Explain non-obvious choices made during development.
@@ -123,10 +115,10 @@ Example:
   and avoid a build step.
 -->
 
-- <!-- Decision 1 and the reason for it -->
-- <!-- Decision 2 and the reason for it -->
+<!-- -  Decision 1 and the reason for it -->
+<!-- -  Decision 2 and the reason for it -->
 
-<!-- --- -->
+<!-- ---   -->
 
 ## Dependencies
 
