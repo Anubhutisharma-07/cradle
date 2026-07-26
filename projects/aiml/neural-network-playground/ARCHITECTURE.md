@@ -45,7 +45,7 @@ projects/aiml/neural-network-playground/
                                ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                   Canvas Rendering Engines                  │
-│   • Decision Boundary Contour Canvas (2D grid interpolation) │
+│   • Decision Boundary Contour Canvas (2D grid interpolation)│
 │   • Network Graph Canvas (Weighted connections & Nodes)     │
 │   • Loss History Canvas (Chart trend line)                  │
 └─────────────────────────────────────────────────────────────┘
@@ -76,7 +76,7 @@ projects/aiml/neural-network-playground/
 
 User opens Neural Network Playground
 
-↓
+        ↓
 
 User decides on the type of dataset to be used
 
@@ -87,6 +87,7 @@ Number of hidden layers customised by the user
         ↓
 
 Hyperparameters defined
+
          ↓
 
 Model starts training
@@ -190,7 +191,7 @@ None. This project uses only native browser APIs — no external libraries are r
 
 | Dependency | Version | How loaded | Purpose |
 |---|---|---|---|
-| Outfit (font) | - | Google Fonts CDN | UI typography |
+| Outfit (font) | NA | Google Fonts CDN | UI typography |
 
 ---
 
