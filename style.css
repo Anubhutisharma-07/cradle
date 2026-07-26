@@ -72,6 +72,18 @@ footer {
     box-shadow var(--transition);
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .hero {
   position: relative;
   text-align: center;
@@ -234,6 +246,22 @@ main {
 
 .projects-grid p {
   color: var(--muted);
+}
+
+.project-grid-card {
+  outline: none;
+}
+
+.project-grid-card--active {
+  border-color: rgba(37, 99, 235, 0.55);
+}
+
+.project-grid-card:focus-visible {
+  border-color: var(--accent-hover);
+  box-shadow:
+    0 0 0 4px rgba(37, 99, 235, 0.24),
+    var(--cradle-shadow-lg, 0 24px 60px rgba(0, 0, 0, 0.45));
+  transform: translateY(-4px);
 }
 
 footer {

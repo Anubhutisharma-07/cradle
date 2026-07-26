@@ -6,6 +6,7 @@ const clearFiltersBtn = document.getElementById("clear-filters");
 
 let allProjects = [];
 let selectedCategory = "all";
+let activeProjectIndex = 0;
 
 let filterWorker;
 if (window.Worker) {
@@ -17,16 +18,13 @@ if (window.Worker) {
 
 function openDB() {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(
-      "CradleDB",
-      1
-    );
+    const request = indexedDB.open("CradleDB", 1);
 
     request.onerror = () => reject(request.error);
 
     request.onsuccess = () => resolve(request.result);
 
-    request.onupgradeneeded = (event) => {
+    request.onupgradeneeded = event => {
       const db = event.target.result;
 
       if (!db.objectStoreNames.contains("projectsStore")) {
@@ -152,12 +150,14 @@ function renderProjects(projects) {
 
   if (!projects.length) {
     projectsGrid.innerHTML = "<p>No projects found.</p>";
+    activeProjectIndex = 0;
     return;
   }
 
   projectsGrid.innerHTML = "";
+  activeProjectIndex = Math.min(activeProjectIndex, projects.length - 1);
 
-  projects.forEach(project => {
+  projects.forEach((project, index) => {
     const card = CradleCard.create({
       title: project.title,
       subtitle: project.path,
@@ -176,8 +176,117 @@ function renderProjects(projects) {
       footerAlign: "left",
     });
 
+    prepareProjectCard(card, project, index);
     projectsGrid.appendChild(card);
   });
+
+  updateProjectCardFocusState();
+}
+
+function prepareProjectCard(card, project, index) {
+  const label = `${project.title}, ${project.category} project`;
+
+  card.classList.add("project-grid-card");
+  card.dataset.projectIndex = String(index);
+  card.dataset.projectPath = project.path;
+  card.setAttribute("role", "link");
+  card.setAttribute("tabindex", index === activeProjectIndex ? "0" : "-1");
+  card.setAttribute("aria-label", `${label}. Press Enter to open.`);
+
+  const footerLink = card.querySelector("a[href]");
+  if (footerLink) {
+    footerLink.setAttribute("tabindex", "-1");
+  }
+
+  card.addEventListener("focus", () => {
+    activeProjectIndex = index;
+    updateProjectCardFocusState();
+  });
+
+  card.addEventListener("keydown", handleProjectCardKeydown);
+}
+
+function getProjectCards() {
+  return Array.from(projectsGrid.querySelectorAll(".project-grid-card"));
+}
+
+function updateProjectCardFocusState() {
+  const cards = getProjectCards();
+
+  cards.forEach((card, index) => {
+    const isActive = index === activeProjectIndex;
+    card.setAttribute("tabindex", isActive ? "0" : "-1");
+    card.classList.toggle("project-grid-card--active", isActive);
+  });
+}
+
+function focusProjectCard(index) {
+  const cards = getProjectCards();
+  if (!cards.length) return;
+
+  activeProjectIndex = Math.max(0, Math.min(index, cards.length - 1));
+  updateProjectCardFocusState();
+  cards[activeProjectIndex].focus();
+}
+
+function getProjectGridColumnCount(cards) {
+  if (cards.length <= 1) return 1;
+
+  const firstRowTop = cards[0].offsetTop;
+  const firstRowCards = cards.filter(
+    card => Math.abs(card.offsetTop - firstRowTop) < 4
+  );
+
+  return Math.max(1, firstRowCards.length);
+}
+
+function openFocusedProject(card) {
+  const link = card.querySelector("a[href]");
+  const destination = link?.getAttribute("href") || card.dataset.projectPath;
+
+  if (destination) {
+    window.location.href = destination;
+  }
+}
+
+function handleProjectCardKeydown(event) {
+  const cards = getProjectCards();
+  if (!cards.length) return;
+
+  const columnCount = getProjectGridColumnCount(cards);
+  const currentIndex = cards.indexOf(event.currentTarget);
+  let nextIndex = currentIndex;
+
+  switch (event.key) {
+    case "ArrowRight":
+      nextIndex = currentIndex + 1;
+      break;
+    case "ArrowLeft":
+      nextIndex = currentIndex - 1;
+      break;
+    case "ArrowDown":
+      nextIndex = currentIndex + columnCount;
+      break;
+    case "ArrowUp":
+      nextIndex = currentIndex - columnCount;
+      break;
+    case "Home":
+      nextIndex = 0;
+      break;
+    case "End":
+      nextIndex = cards.length - 1;
+      break;
+    case "Enter":
+    case " ":
+      event.preventDefault();
+      openFocusedProject(event.currentTarget);
+      return;
+    default:
+      return;
+  }
+
+  event.preventDefault();
+  focusProjectCard(nextIndex);
 }
 
 function applyFilters() {
@@ -299,7 +408,11 @@ document.addEventListener("keydown", e => {
 
   // Close Modal or Clear search
   if (e.key === "Escape") {
-    if (shortcutsModal && (shortcutsModal.classList.contains("visible") || shortcutsModal.getAttribute("aria-hidden") === "false")) {
+    if (
+      shortcutsModal &&
+      (shortcutsModal.classList.contains("visible") ||
+        shortcutsModal.getAttribute("aria-hidden") === "false")
+    ) {
       closeShortcutsModal();
     } else {
       clearFilters();
@@ -331,7 +444,9 @@ document.addEventListener("keydown", e => {
   if (e.key === "?" && !isInputActive) {
     e.preventDefault();
     if (shortcutsModal) {
-      const isVisible = shortcutsModal.classList.contains("visible") || shortcutsModal.getAttribute("aria-hidden") === "false";
+      const isVisible =
+        shortcutsModal.classList.contains("visible") ||
+        shortcutsModal.getAttribute("aria-hidden") === "false";
       if (isVisible) {
         closeShortcutsModal();
       } else {
@@ -344,4 +459,3 @@ document.addEventListener("keydown", e => {
 document.addEventListener("DOMContentLoaded", () => {
   loadProjects();
 });
-

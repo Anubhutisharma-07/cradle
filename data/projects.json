@@ -5,6 +5,11 @@
     "path": "projects/games/2048-game/"
   },
   {
+    "title": "Advanced Qr Code Generator",
+    "category": "productivity",
+    "path": "projects/productivity/advanced-qr-code-generator/"
+  },
+  {
     "title": "AI Circuit Builder",
     "category": "aiml",
     "path": "projects/aiml/ai-circuit-builder/"
@@ -25,6 +30,11 @@
     "path": "projects/productivity/brain-dump-collector/"
   },
   {
+    "title": "Browser Storage Inspector",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/browser-storage-inspector/"
+  },
+  {
     "title": "Cannon Shooting",
     "category": "games",
     "path": "projects/games/cannon-shooting/"
@@ -40,9 +50,19 @@
     "path": "projects/dev-tools/cpu-emulator/"
   },
   {
+    "title": "Css Shape Designer",
+    "category": "editor",
+    "path": "projects/editor/css-shape-designer/"
+  },
+  {
     "title": "Dot Game",
     "category": "games",
     "path": "projects/games/dot-game/"
+  },
+  {
+    "title": "Encoding Toolkit",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/encoding-toolkit/"
   },
   {
     "title": "File Difference Visualizer",
@@ -58,6 +78,16 @@
     "title": "Ludo Game",
     "category": "games",
     "path": "projects/games/ludo-game/"
+  },
+  {
+    "title": "Markdown Resume Generator",
+    "category": "editor",
+    "path": "projects/editor/markdown-resume-generator/"
+  },
+  {
+    "title": "Matrix Playground",
+    "category": "math",
+    "path": "projects/math/matrix-playground/"
   },
   {
     "title": "Meme Generator",
