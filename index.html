@@ -77,7 +77,8 @@
             aria-label="Search projects"
           />
           <span class="search-kbd-hint" title="Press '/' or Ctrl+K to search"
-            ><kbd>/</kbd></span>
+            ><kbd>/</kbd></span
+          >
         </div>
 
         <button
@@ -139,6 +140,16 @@
               <span class="shortcut-desc">Toggle Theme</span>
             </div>
             <div class="shortcut-item">
+              <span class="shortcut-keys"><kbd>Arrow Keys</kbd></span>
+              <span class="shortcut-desc">Navigate Project Cards</span>
+            </div>
+            <div class="shortcut-item">
+              <span class="shortcut-keys"
+                ><kbd>Enter</kbd> or <kbd>Space</kbd></span
+              >
+              <span class="shortcut-desc">Open Focused Project</span>
+            </div>
+            <div class="shortcut-item">
               <span class="shortcut-keys"><kbd>?</kbd></span>
               <span class="shortcut-desc">Toggle Shortcuts Helper</span>
             </div>
@@ -160,9 +171,17 @@
         <div
           id="projects-grid"
           class="projects-grid"
+          role="list"
+          aria-label="Projects"
+          aria-describedby="project-grid-instructions"
           aria-live="polite"
           aria-atomic="true"
         ></div>
+        <p id="project-grid-instructions" class="sr-only">
+          Use arrow keys to move between project cards. Press Enter or Space to
+          open the focused project. Press Home to move to the first project and
+          End to move to the last project.
+        </p>
       </section>
     </main>
 
@@ -177,7 +196,7 @@
       <svg
         width="20"
         height="20"
-        viewBox="0 0 24 24"x
+        viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
         stroke-width="2.5"
