@@ -3,10 +3,14 @@ const searchInput = document.getElementById("search");
 const categoriesContainer = document.getElementById("categories");
 const projectCount = document.getElementById("project-count");
 const clearFiltersBtn = document.getElementById("clear-filters");
-const copyStatus = document.getElementById("copy-status");
+const searchSuggestions = document.getElementById("search-suggestions");
 
 let allProjects = [];
 let selectedCategory = "all";
+let activeProjectIndex = 0;
+let activeSuggestionIndex = -1;
+let currentSuggestions = [];
+const copyStatus = document.getElementById("copy-status");
 
 let filterWorker;
 if (window.Worker) {
@@ -139,6 +143,10 @@ function renderCategories() {
   });
 }
 
+function formatCategoryLabel(category) {
+  return category.toUpperCase().replace("-", " ");
+}
+
 function isNewProject(dateAdded) {
   if (!dateAdded) return false;
   const diffDays = (Date.now() - new Date(dateAdded)) / 86400000;
@@ -188,6 +196,146 @@ function renderProjects(projects) {
   });
 }
 
+function getSearchableCategory(category) {
+  return `${category} ${formatCategoryLabel(category)}`.toLowerCase();
+}
+
+function getSearchSuggestions(query) {
+  const normalizedQuery = query.toLowerCase().trim();
+  if (!normalizedQuery) return [];
+
+  const categories = [...new Set(allProjects.map(project => project.category))];
+  const categorySuggestions = categories
+    .filter(category =>
+      getSearchableCategory(category).includes(normalizedQuery)
+    )
+    .slice(0, 3)
+    .map(category => ({
+      type: "category",
+      label: formatCategoryLabel(category),
+      detail: "Category",
+      category,
+    }));
+
+  const projectSuggestions = allProjects
+    .filter(project => project.title.toLowerCase().includes(normalizedQuery))
+    .slice(0, 6)
+    .map(project => ({
+      type: "project",
+      label: project.title,
+      detail: formatCategoryLabel(project.category),
+      project,
+    }));
+
+  return [...categorySuggestions, ...projectSuggestions].slice(0, 7);
+}
+
+function hideSearchSuggestions() {
+  currentSuggestions = [];
+  activeSuggestionIndex = -1;
+
+  if (searchSuggestions) {
+    searchSuggestions.hidden = true;
+    searchSuggestions.innerHTML = "";
+  }
+
+  if (searchInput) {
+    searchInput.setAttribute("aria-expanded", "false");
+    searchInput.removeAttribute("aria-activedescendant");
+  }
+}
+
+function updateSuggestionActiveState() {
+  if (!searchSuggestions) return;
+
+  const options = Array.from(
+    searchSuggestions.querySelectorAll(".search-suggestion")
+  );
+
+  options.forEach((option, index) => {
+    const isActive = index === activeSuggestionIndex;
+    option.classList.toggle("is-active", isActive);
+    option.setAttribute("aria-selected", isActive ? "true" : "false");
+  });
+
+  if (activeSuggestionIndex >= 0 && options[activeSuggestionIndex]) {
+    searchInput.setAttribute(
+      "aria-activedescendant",
+      options[activeSuggestionIndex].id
+    );
+  } else {
+    searchInput.removeAttribute("aria-activedescendant");
+  }
+}
+
+function renderSearchSuggestions() {
+  if (!searchSuggestions) return;
+
+  const query = searchInput.value.trim();
+  currentSuggestions = getSearchSuggestions(query);
+  activeSuggestionIndex = -1;
+
+  if (!query || !currentSuggestions.length) {
+    hideSearchSuggestions();
+    return;
+  }
+
+  searchSuggestions.innerHTML = "";
+
+  currentSuggestions.forEach((suggestion, index) => {
+    const option = document.createElement("button");
+    option.type = "button";
+    option.id = `search-suggestion-${index}`;
+    option.className = "search-suggestion";
+    option.setAttribute("role", "option");
+    option.setAttribute("aria-selected", "false");
+
+    const label = document.createElement("span");
+    label.className = "search-suggestion-label";
+    label.textContent = suggestion.label;
+
+    const detail = document.createElement("span");
+    detail.className = "search-suggestion-detail";
+    detail.textContent = suggestion.detail;
+
+    option.append(label, detail);
+    option.addEventListener("mousedown", event => event.preventDefault());
+    option.addEventListener("click", () => selectSearchSuggestion(index));
+
+    searchSuggestions.appendChild(option);
+  });
+
+  searchSuggestions.hidden = false;
+  searchInput.setAttribute("aria-expanded", "true");
+}
+
+function selectSearchSuggestion(index) {
+  const suggestion = currentSuggestions[index];
+  if (!suggestion) return;
+
+  if (suggestion.type === "category") {
+    selectedCategory = suggestion.category;
+    searchInput.value = "";
+  } else {
+    selectedCategory = "all";
+    searchInput.value = suggestion.label;
+  }
+
+  renderCategories();
+  applyFilters();
+  hideSearchSuggestions();
+  searchInput.focus();
+}
+
+function prepareProjectCard(card, project, index) {
+  const label = `${project.title}, ${project.category} project`;
+
+  card.classList.add("project-grid-card");
+  card.dataset.projectIndex = String(index);
+  card.dataset.projectPath = project.path;
+  card.setAttribute("role", "link");
+  card.setAttribute("tabindex", index === activeProjectIndex ? "0" : "-1");
+  card.setAttribute("aria-label", `${label}. Press Enter to open.`);
 function getProjectUrl(projectPath) {
   return new URL(projectPath, window.location.href).href;
 }
@@ -259,7 +407,8 @@ function applyFilters() {
     const filtered = allProjects.filter(
       project =>
         (selectedCategory === "all" || project.category === selectedCategory) &&
-        project.title.toLowerCase().includes(query)
+        (project.title.toLowerCase().includes(query) ||
+          getSearchableCategory(project.category).includes(query))
     );
 
     renderProjects(filtered);
@@ -282,10 +431,49 @@ function clearFilters() {
 
   applyFilters();
   renderCategories();
+  hideSearchSuggestions();
   searchInput.focus();
 }
 
-searchInput.addEventListener("input", applyFilters);
+searchInput.addEventListener("input", () => {
+  applyFilters();
+  renderSearchSuggestions();
+});
+
+searchInput.addEventListener("focus", renderSearchSuggestions);
+
+searchInput.addEventListener("blur", () => {
+  window.setTimeout(hideSearchSuggestions, 120);
+});
+
+searchInput.addEventListener("keydown", event => {
+  if (searchSuggestions?.hidden || !currentSuggestions.length) return;
+
+  if (event.key === "ArrowDown") {
+    event.preventDefault();
+    activeSuggestionIndex =
+      (activeSuggestionIndex + 1) % currentSuggestions.length;
+    updateSuggestionActiveState();
+  }
+
+  if (event.key === "ArrowUp") {
+    event.preventDefault();
+    activeSuggestionIndex =
+      (activeSuggestionIndex - 1 + currentSuggestions.length) %
+      currentSuggestions.length;
+    updateSuggestionActiveState();
+  }
+
+  if (event.key === "Enter" && activeSuggestionIndex >= 0) {
+    event.preventDefault();
+    selectSearchSuggestion(activeSuggestionIndex);
+  }
+
+  if (event.key === "Escape") {
+    event.stopPropagation();
+    hideSearchSuggestions();
+  }
+});
 
 if (clearFiltersBtn) {
   clearFiltersBtn.addEventListener("click", clearFilters);
