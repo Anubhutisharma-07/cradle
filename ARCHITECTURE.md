@@ -251,7 +251,7 @@ None at runtime. The site uses only native browser APIs (DOM, `fetch`, IndexedDB
 
 - `data/projects.json` can drift from the actual `projects/` folder tree if `npm run generate` is not re-run after adding/removing a project
 - Category display names are derived mechanically from folder names (e.g. `dev-tools` → "DEV TOOLS"), which can look inconsistent for multi-word categories
-- `resolveBase()` in `src/components/ui/index.js` relies on path heuristics (looking for a `projects/` segment) to locate itself; unusual hosting setups could break it
+- ~~`resolveBase()` in `src/components/ui/index.js` relied on path heuristics (looking for a `projects/` segment) to locate itself; unusual hosting setups could break it~~ **Fixed** — now uses `<meta name="cradle-ui-base">` tag (Strategy 1), script-src scanning (Strategy 2), `document.currentScript` (Strategy 3), with a clean fallback to the repo root
 
 ---
 
