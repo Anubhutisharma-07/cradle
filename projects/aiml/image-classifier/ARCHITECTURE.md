@@ -92,22 +92,23 @@ Model predicts the image class and outputs the prediction                       
 
 ### `index.html`
 
-- <!-- key element or section 1 -->
-- <!-- key element or section 2 -->
+- User interface for image classification
+- Displays prediction
 
 ### `script.js`
 
-- <!-- function/variable 1 -->
-- <!-- function/variable 2 -->
+- Load image classification model
+- Logic to upload image
+- Create custom image classes
+- Logic for prediction of image class
 
 ### `style.css`
 
-- <!-- key rule or pattern 1 -->
-- <!-- key rule or pattern 2 -->
+- Adding style to the webpage
 
 ---
 
-## Design Decisions
+<!-- ## Design Decisions -->
 
 <!--
 Explain non-obvious choices made during development.
@@ -125,64 +126,25 @@ Example:
 - <!-- Decision 1 and the reason for it -->
 - <!-- Decision 2 and the reason for it -->
 
----
+<!-- --- -->
 
 ## Dependencies
 
-<!--
-List external dependencies. For projects with none, say so explicitly.
-
-Example with dependencies:
-| Dependency | Version | How loaded | Purpose |
-|---|---|---|---|
-| Chart.js | 4.x | CDN (`<script>` tag) | Pie chart rendering |
-| jQuery | 3.4.1 | CDN (`<script>` tag) | DOM events and animation |
-| Outfit (font) | — | Google Fonts CDN | UI typography |
-
-Example with no dependencies:
-None. This project uses only native browser APIs — no external libraries are required.
--->
-
-| Dependency | Version | How loaded | Purpose |
-|---|---|---|---|
-| <!-- name --> | <!-- version --> | <!-- CDN / npm / local --> | <!-- purpose --> |
+No external dependencies used
 
 ---
 
 ## Future Improvements
 
-<!--
-List ideas for improvement without committing to any of them.
-Avoid touching the current implementation — this section is for inspiration only.
-
-Example:
-- Add touch/swipe support for mobile devices
-- Persist the full board to localStorage so a game survives a page reload
-- Add an undo stack — state is already immutable, so this would be straightforward
-- Animate tiles sliding before they settle to improve game feel
--->
-
-- <!-- Improvement 1 -->
-- <!-- Improvement 2 -->
-- <!-- Improvement 3 -->
+- Visualisation of the working of the model while training
+- Increased accuracy
 
 ---
 
 ## Known Limitations
 
-<!--
-Be honest about current shortcomings.
-This helps contributors understand the scope of the project
-and prevents duplicate bug reports.
-
-Example:
-- No mobile/touch support — keyboard only
-- Pawn auto-promotes to queen only; no promotion choice dialog
-- AI does not detect threefold repetition or the fifty-move rule
--->
-
-- <!-- Limitation 1 -->
-- <!-- Limitation 2 -->
+- The model has difficulties in analysing accurately the species of animals (e.g. predicting a bulldog as a boxer)
+- During custom modelling test image is not displayed on the webpage
 
 ---
 
