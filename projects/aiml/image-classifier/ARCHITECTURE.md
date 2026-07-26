@@ -20,11 +20,13 @@ Image classifier is a web based classification tool which helps user to classify
 
 ## Folder Structure
 
+```text
 image-classifier/
 ├── index.html          # Entry point and UI shell
 ├── script.js           # Core logic and event handling
 ├── style.css           # All visual styling
 └── Architecture.md     # Description of whole project
+```
 
 ---
 
