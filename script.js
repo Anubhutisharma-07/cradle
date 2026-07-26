@@ -10,6 +10,7 @@ let selectedCategory = "all";
 let activeProjectIndex = 0;
 let activeSuggestionIndex = -1;
 let currentSuggestions = [];
+const copyStatus = document.getElementById("copy-status");
 
 let filterWorker;
 if (window.Worker) {
@@ -75,27 +76,7 @@ async function fetchAndCacheProjects(db) {
   return data;
 }
 
-function renderSkeleton(count = 6) {
-  projectsGrid.innerHTML = "";
-  for (let i = 0; i < count; i++) {
-    const skeleton = document.createElement("div");
-    skeleton.className = "skeleton-card";
-    skeleton.setAttribute("aria-hidden", "true");
-    skeleton.innerHTML = `
-      <div class="skeleton-card-image"></div>
-      <div class="skeleton-card-body">
-        <div class="skeleton-line skeleton-line-title"></div>
-        <div class="skeleton-line skeleton-line-subtitle"></div>
-        <div class="skeleton-badge"></div>
-        <div class="skeleton-line skeleton-line-button"></div>
-      </div>
-    `;
-    projectsGrid.appendChild(skeleton);
-  }
-}
-
 async function loadProjects() {
-  renderSkeleton();
   try {
     let db;
 
@@ -177,37 +158,42 @@ function renderProjects(projects) {
 
   if (!projects.length) {
     projectsGrid.innerHTML = "<p>No projects found.</p>";
-    activeProjectIndex = 0;
     return;
   }
 
   projectsGrid.innerHTML = "";
-  activeProjectIndex = Math.min(activeProjectIndex, projects.length - 1);
 
-  projects.forEach((project, index) => {
+  projects.forEach(project => {
+    const openButton = CradleButton.create({
+      variant: "outline",
+      size: "sm",
+      children: "Open Project",
+      rightIcon: "→",
+      href: project.path,
+      target: "_self",
+      rel: "noopener noreferrer",
+    });
+
+    const copyButton = CradleButton.create({
+      variant: "ghost",
+      size: "sm",
+      children: "Copy Link",
+      ariaLabel: `Copy direct link to ${project.title}`,
+      onClick: () => copyProjectUrl(project, copyButton),
+    });
+
     const card = CradleCard.create({
       title: project.title,
       subtitle: project.path,
       badge: project.category,
       isNew: isNewProject(project.dateAdded),
       image: `${project.path}thumbnail.svg`,
-      footer: CradleButton.create({
-        variant: "outline",
-        size: "sm",
-        children: "Open Project",
-        rightIcon: "→",
-        href: project.path,
-        target: "_self",
-        rel: "noopener noreferrer",
-      }),
+      footer: [openButton, copyButton],
       footerAlign: "left",
     });
 
-    prepareProjectCard(card, project, index);
     projectsGrid.appendChild(card);
   });
-
-  updateProjectCardFocusState();
 }
 
 function getSearchableCategory(category) {
@@ -350,101 +336,62 @@ function prepareProjectCard(card, project, index) {
   card.setAttribute("role", "link");
   card.setAttribute("tabindex", index === activeProjectIndex ? "0" : "-1");
   card.setAttribute("aria-label", `${label}. Press Enter to open.`);
+function getProjectUrl(projectPath) {
+  return new URL(projectPath, window.location.href).href;
+}
 
-  const footerLink = card.querySelector("a[href]");
-  if (footerLink) {
-    footerLink.setAttribute("tabindex", "-1");
+async function copyTextToClipboard(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(text);
+    return;
   }
 
-  card.addEventListener("focus", () => {
-    activeProjectIndex = index;
-    updateProjectCardFocusState();
-  });
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.top = "-999px";
+  textarea.style.left = "-999px";
+  document.body.appendChild(textarea);
+  textarea.select();
 
-  card.addEventListener("keydown", handleProjectCardKeydown);
-}
+  const copied = document.execCommand("copy");
+  textarea.remove();
 
-function getProjectCards() {
-  return Array.from(projectsGrid.querySelectorAll(".project-grid-card"));
-}
-
-function updateProjectCardFocusState() {
-  const cards = getProjectCards();
-
-  cards.forEach((card, index) => {
-    const isActive = index === activeProjectIndex;
-    card.setAttribute("tabindex", isActive ? "0" : "-1");
-    card.classList.toggle("project-grid-card--active", isActive);
-  });
-}
-
-function focusProjectCard(index) {
-  const cards = getProjectCards();
-  if (!cards.length) return;
-
-  activeProjectIndex = Math.max(0, Math.min(index, cards.length - 1));
-  updateProjectCardFocusState();
-  cards[activeProjectIndex].focus();
-}
-
-function getProjectGridColumnCount(cards) {
-  if (cards.length <= 1) return 1;
-
-  const firstRowTop = cards[0].offsetTop;
-  const firstRowCards = cards.filter(
-    card => Math.abs(card.offsetTop - firstRowTop) < 4
-  );
-
-  return Math.max(1, firstRowCards.length);
-}
-
-function openFocusedProject(card) {
-  const link = card.querySelector("a[href]");
-  const destination = link?.getAttribute("href") || card.dataset.projectPath;
-
-  if (destination) {
-    window.location.href = destination;
+  if (!copied) {
+    throw new Error("Copy command failed");
   }
 }
 
-function handleProjectCardKeydown(event) {
-  const cards = getProjectCards();
-  if (!cards.length) return;
-
-  const columnCount = getProjectGridColumnCount(cards);
-  const currentIndex = cards.indexOf(event.currentTarget);
-  let nextIndex = currentIndex;
-
-  switch (event.key) {
-    case "ArrowRight":
-      nextIndex = currentIndex + 1;
-      break;
-    case "ArrowLeft":
-      nextIndex = currentIndex - 1;
-      break;
-    case "ArrowDown":
-      nextIndex = currentIndex + columnCount;
-      break;
-    case "ArrowUp":
-      nextIndex = currentIndex - columnCount;
-      break;
-    case "Home":
-      nextIndex = 0;
-      break;
-    case "End":
-      nextIndex = cards.length - 1;
-      break;
-    case "Enter":
-    case " ":
-      event.preventDefault();
-      openFocusedProject(event.currentTarget);
-      return;
-    default:
-      return;
+function setCopyStatus(message) {
+  if (copyStatus) {
+    copyStatus.textContent = message;
   }
+}
 
-  event.preventDefault();
-  focusProjectCard(nextIndex);
+function resetCopyButton(button) {
+  window.setTimeout(() => {
+    button.textContent = "Copy Link";
+    button.disabled = false;
+  }, 1800);
+}
+
+async function copyProjectUrl(project, button) {
+  const projectUrl = getProjectUrl(project.path);
+
+  button.disabled = true;
+  button.textContent = "Copying...";
+
+  try {
+    await copyTextToClipboard(projectUrl);
+    button.textContent = "Copied";
+    setCopyStatus(`Copied direct link to ${project.title}.`);
+  } catch (error) {
+    button.textContent = "Copy Failed";
+    setCopyStatus(`Could not copy direct link to ${project.title}.`);
+  } finally {
+    resetCopyButton(button);
+  }
 }
 
 function applyFilters() {
