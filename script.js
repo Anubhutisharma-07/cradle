@@ -13,8 +13,10 @@ let currentSuggestions = [];
 const copyStatus = document.getElementById("copy-status");
 
 let filterWorker;
+
 if (window.Worker) {
   filterWorker = new Worker("./scripts/worker.js");
+
   filterWorker.onmessage = function (e) {
     renderProjects(e.data);
   };
@@ -336,6 +338,8 @@ function prepareProjectCard(card, project, index) {
   card.setAttribute("role", "link");
   card.setAttribute("tabindex", index === activeProjectIndex ? "0" : "-1");
   card.setAttribute("aria-label", `${label}. Press Enter to open.`);
+}
+
 function getProjectUrl(projectPath) {
   return new URL(projectPath, window.location.href).href;
 }
