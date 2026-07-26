@@ -10,6 +10,11 @@
     "path": "projects/aiml/ai-circuit-builder/"
   },
   {
+    "title": "ASCII Camera",
+    "category": "misc",
+    "path": "projects/misc/ascii-camera/"
+  },
+  {
     "title": "Attendance Tracker",
     "category": "productivity",
     "path": "projects/productivity/attendance-tracker/"
