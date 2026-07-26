@@ -150,6 +150,16 @@ function escapeXml(unsafe) {
 }
 
 function generateSvgThumbnail(title, categoryName, projectAbsPath) {
+  const thumbnailPath = path.join(projectAbsPath, "thumbnail.svg");
+
+  if (fs.existsSync(thumbnailPath)) {
+    const thumbMtime = fs.statSync(thumbnailPath).mtimeMs;
+    const projMtime = fs.statSync(projectAbsPath).mtimeMs;
+    if (thumbMtime >= projMtime) {
+      return;
+    }
+  }
+
   const style = CATEGORY_STYLES[categoryName] || defaultStyle;
   
   // Word wrap for title
@@ -269,14 +279,19 @@ function generateProjects() {
     a.title.localeCompare(b.title)
   );
 
-  fs.writeFileSync(
-    OUTPUT_FILE,
-    JSON.stringify(projects, null, 2)
-  );
+  const output = JSON.stringify(projects, null, 2);
+  const force = process.argv.includes("--force");
 
-  console.log(
-    `Generated ${projects.length} projects & thumbnails → data/projects.json`
-  );
+  if (force || !fs.existsSync(OUTPUT_FILE) || fs.readFileSync(OUTPUT_FILE, "utf-8") !== output) {
+    fs.writeFileSync(OUTPUT_FILE, output);
+    console.log(
+      `Generated ${projects.length} projects & thumbnails → data/projects.json`
+    );
+  } else {
+    console.log(
+      `No changes — ${projects.length} projects up to date`
+    );
+  }
 }
 
 generateProjects();
