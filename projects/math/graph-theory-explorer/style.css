@@ -248,6 +248,12 @@ body {
     color: var(--cradle-danger);
 }
 
+.btn-flash {
+    background: var(--theme-accent-light) !important;
+    border-color: var(--theme-accent) !important;
+    color: var(--theme-accent) !important;
+}
+
 .btn-icon {
     background: var(--cradle-surface-2);
     border: 1px solid var(--cradle-border);

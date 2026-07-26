@@ -261,7 +261,13 @@
 
     // ===================== RANDOM / CLEAR =====================
 
+    function flashButton(button) {
+        button.classList.add("btn-flash");
+        setTimeout(() => button.classList.remove("btn-flash"), 200);
+    }
+
     document.getElementById("btn-random").addEventListener("click", () => {
+        flashButton(document.getElementById("btn-random"));
         nodes = [];
         edges = [];
         nextNodeCharCode = 65;
@@ -289,6 +295,7 @@
     });
 
     document.getElementById("btn-clear").addEventListener("click", () => {
+        flashButton(document.getElementById("btn-clear"));
         nodes = [];
         edges = [];
         nextNodeCharCode = 65;
