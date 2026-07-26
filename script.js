@@ -3,13 +3,20 @@ const searchInput = document.getElementById("search");
 const categoriesContainer = document.getElementById("categories");
 const projectCount = document.getElementById("project-count");
 const clearFiltersBtn = document.getElementById("clear-filters");
+const searchSuggestions = document.getElementById("search-suggestions");
 
 let allProjects = [];
 let selectedCategory = "all";
+let activeProjectIndex = 0;
+let activeSuggestionIndex = -1;
+let currentSuggestions = [];
+const copyStatus = document.getElementById("copy-status");
 
 let filterWorker;
+
 if (window.Worker) {
   filterWorker = new Worker("./scripts/worker.js");
+
   filterWorker.onmessage = function (e) {
     renderProjects(e.data);
   };
@@ -17,10 +24,7 @@ if (window.Worker) {
 
 function openDB() {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(
-      "Cradfunction renderProjects(projects)leDB",
-      1
-    );
+    const request = indexedDB.open("CradleDB", 1);
 
     request.onerror = () => reject(request.error);
 
@@ -141,6 +145,10 @@ function renderCategories() {
   });
 }
 
+function formatCategoryLabel(category) {
+  return category.toUpperCase().replace("-", " ");
+}
+
 function isNewProject(dateAdded) {
   if (!dateAdded) return false;
   const diffDays = (Date.now() - new Date(dateAdded)) / 86400000;
@@ -158,26 +166,236 @@ function renderProjects(projects) {
   projectsGrid.innerHTML = "";
 
   projects.forEach(project => {
+    const openButton = CradleButton.create({
+      variant: "outline",
+      size: "sm",
+      children: "Open Project",
+      rightIcon: "→",
+      href: project.path,
+      target: "_self",
+      rel: "noopener noreferrer",
+    });
+
+    const copyButton = CradleButton.create({
+      variant: "ghost",
+      size: "sm",
+      children: "Copy Link",
+      ariaLabel: `Copy direct link to ${project.title}`,
+      onClick: () => copyProjectUrl(project, copyButton),
+    });
+
     const card = CradleCard.create({
       title: project.title,
       subtitle: project.path,
       badge: project.category,
       isNew: isNewProject(project.dateAdded),
       image: `${project.path}thumbnail.svg`,
-      footer: CradleButton.create({
-        variant: "outline",
-        size: "sm",
-        children: "Open Project",
-        rightIcon: "→",
-        href: project.path,
-        target: "_self",
-        rel: "noopener noreferrer",
-      }),
+      footer: [openButton, copyButton],
       footerAlign: "left",
     });
 
     projectsGrid.appendChild(card);
   });
+}
+
+function getSearchableCategory(category) {
+  return `${category} ${formatCategoryLabel(category)}`.toLowerCase();
+}
+
+function getSearchSuggestions(query) {
+  const normalizedQuery = query.toLowerCase().trim();
+  if (!normalizedQuery) return [];
+
+  const categories = [...new Set(allProjects.map(project => project.category))];
+  const categorySuggestions = categories
+    .filter(category =>
+      getSearchableCategory(category).includes(normalizedQuery)
+    )
+    .slice(0, 3)
+    .map(category => ({
+      type: "category",
+      label: formatCategoryLabel(category),
+      detail: "Category",
+      category,
+    }));
+
+  const projectSuggestions = allProjects
+    .filter(project => project.title.toLowerCase().includes(normalizedQuery))
+    .slice(0, 6)
+    .map(project => ({
+      type: "project",
+      label: project.title,
+      detail: formatCategoryLabel(project.category),
+      project,
+    }));
+
+  return [...categorySuggestions, ...projectSuggestions].slice(0, 7);
+}
+
+function hideSearchSuggestions() {
+  currentSuggestions = [];
+  activeSuggestionIndex = -1;
+
+  if (searchSuggestions) {
+    searchSuggestions.hidden = true;
+    searchSuggestions.innerHTML = "";
+  }
+
+  if (searchInput) {
+    searchInput.setAttribute("aria-expanded", "false");
+    searchInput.removeAttribute("aria-activedescendant");
+  }
+}
+
+function updateSuggestionActiveState() {
+  if (!searchSuggestions) return;
+
+  const options = Array.from(
+    searchSuggestions.querySelectorAll(".search-suggestion")
+  );
+
+  options.forEach((option, index) => {
+    const isActive = index === activeSuggestionIndex;
+    option.classList.toggle("is-active", isActive);
+    option.setAttribute("aria-selected", isActive ? "true" : "false");
+  });
+
+  if (activeSuggestionIndex >= 0 && options[activeSuggestionIndex]) {
+    searchInput.setAttribute(
+      "aria-activedescendant",
+      options[activeSuggestionIndex].id
+    );
+  } else {
+    searchInput.removeAttribute("aria-activedescendant");
+  }
+}
+
+function renderSearchSuggestions() {
+  if (!searchSuggestions) return;
+
+  const query = searchInput.value.trim();
+  currentSuggestions = getSearchSuggestions(query);
+  activeSuggestionIndex = -1;
+
+  if (!query || !currentSuggestions.length) {
+    hideSearchSuggestions();
+    return;
+  }
+
+  searchSuggestions.innerHTML = "";
+
+  currentSuggestions.forEach((suggestion, index) => {
+    const option = document.createElement("button");
+    option.type = "button";
+    option.id = `search-suggestion-${index}`;
+    option.className = "search-suggestion";
+    option.setAttribute("role", "option");
+    option.setAttribute("aria-selected", "false");
+
+    const label = document.createElement("span");
+    label.className = "search-suggestion-label";
+    label.textContent = suggestion.label;
+
+    const detail = document.createElement("span");
+    detail.className = "search-suggestion-detail";
+    detail.textContent = suggestion.detail;
+
+    option.append(label, detail);
+    option.addEventListener("mousedown", event => event.preventDefault());
+    option.addEventListener("click", () => selectSearchSuggestion(index));
+
+    searchSuggestions.appendChild(option);
+  });
+
+  searchSuggestions.hidden = false;
+  searchInput.setAttribute("aria-expanded", "true");
+}
+
+function selectSearchSuggestion(index) {
+  const suggestion = currentSuggestions[index];
+  if (!suggestion) return;
+
+  if (suggestion.type === "category") {
+    selectedCategory = suggestion.category;
+    searchInput.value = "";
+  } else {
+    selectedCategory = "all";
+    searchInput.value = suggestion.label;
+  }
+
+  renderCategories();
+  applyFilters();
+  hideSearchSuggestions();
+  searchInput.focus();
+}
+
+function prepareProjectCard(card, project, index) {
+  const label = `${project.title}, ${project.category} project`;
+
+  card.classList.add("project-grid-card");
+  card.dataset.projectIndex = String(index);
+  card.dataset.projectPath = project.path;
+  card.setAttribute("role", "link");
+  card.setAttribute("tabindex", index === activeProjectIndex ? "0" : "-1");
+  card.setAttribute("aria-label", `${label}. Press Enter to open.`);
+}
+
+function getProjectUrl(projectPath) {
+  return new URL(projectPath, window.location.href).href;
+}
+
+async function copyTextToClipboard(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.top = "-999px";
+  textarea.style.left = "-999px";
+  document.body.appendChild(textarea);
+  textarea.select();
+
+  const copied = document.execCommand("copy");
+  textarea.remove();
+
+  if (!copied) {
+    throw new Error("Copy command failed");
+  }
+}
+
+function setCopyStatus(message) {
+  if (copyStatus) {
+    copyStatus.textContent = message;
+  }
+}
+
+function resetCopyButton(button) {
+  window.setTimeout(() => {
+    button.textContent = "Copy Link";
+    button.disabled = false;
+  }, 1800);
+}
+
+async function copyProjectUrl(project, button) {
+  const projectUrl = getProjectUrl(project.path);
+
+  button.disabled = true;
+  button.textContent = "Copying...";
+
+  try {
+    await copyTextToClipboard(projectUrl);
+    button.textContent = "Copied";
+    setCopyStatus(`Copied direct link to ${project.title}.`);
+  } catch (error) {
+    button.textContent = "Copy Failed";
+    setCopyStatus(`Could not copy direct link to ${project.title}.`);
+  } finally {
+    resetCopyButton(button);
+  }
 }
 
 function applyFilters() {
@@ -193,7 +411,8 @@ function applyFilters() {
     const filtered = allProjects.filter(
       project =>
         (selectedCategory === "all" || project.category === selectedCategory) &&
-        project.title.toLowerCase().includes(query)
+        (project.title.toLowerCase().includes(query) ||
+          getSearchableCategory(project.category).includes(query))
     );
 
     renderProjects(filtered);
@@ -216,10 +435,49 @@ function clearFilters() {
 
   applyFilters();
   renderCategories();
+  hideSearchSuggestions();
   searchInput.focus();
 }
 
-searchInput.addEventListener("input", applyFilters);
+searchInput.addEventListener("input", () => {
+  applyFilters();
+  renderSearchSuggestions();
+});
+
+searchInput.addEventListener("focus", renderSearchSuggestions);
+
+searchInput.addEventListener("blur", () => {
+  window.setTimeout(hideSearchSuggestions, 120);
+});
+
+searchInput.addEventListener("keydown", event => {
+  if (searchSuggestions?.hidden || !currentSuggestions.length) return;
+
+  if (event.key === "ArrowDown") {
+    event.preventDefault();
+    activeSuggestionIndex =
+      (activeSuggestionIndex + 1) % currentSuggestions.length;
+    updateSuggestionActiveState();
+  }
+
+  if (event.key === "ArrowUp") {
+    event.preventDefault();
+    activeSuggestionIndex =
+      (activeSuggestionIndex - 1 + currentSuggestions.length) %
+      currentSuggestions.length;
+    updateSuggestionActiveState();
+  }
+
+  if (event.key === "Enter" && activeSuggestionIndex >= 0) {
+    event.preventDefault();
+    selectSearchSuggestion(activeSuggestionIndex);
+  }
+
+  if (event.key === "Escape") {
+    event.stopPropagation();
+    hideSearchSuggestions();
+  }
+});
 
 if (clearFiltersBtn) {
   clearFiltersBtn.addEventListener("click", clearFilters);
@@ -299,7 +557,11 @@ document.addEventListener("keydown", e => {
 
   // Close Modal or Clear search
   if (e.key === "Escape") {
-    if (shortcutsModal && (shortcutsModal.classList.contains("visible") || shortcutsModal.getAttribute("aria-hidden") === "false")) {
+    if (
+      shortcutsModal &&
+      (shortcutsModal.classList.contains("visible") ||
+        shortcutsModal.getAttribute("aria-hidden") === "false")
+    ) {
       closeShortcutsModal();
     } else {
       clearFilters();
@@ -331,7 +593,9 @@ document.addEventListener("keydown", e => {
   if (e.key === "?" && !isInputActive) {
     e.preventDefault();
     if (shortcutsModal) {
-      const isVisible = shortcutsModal.classList.contains("visible") || shortcutsModal.getAttribute("aria-hidden") === "false";
+      const isVisible =
+        shortcutsModal.classList.contains("visible") ||
+        shortcutsModal.getAttribute("aria-hidden") === "false";
       if (isVisible) {
         closeShortcutsModal();
       } else {
@@ -343,81 +607,4 @@ document.addEventListener("keydown", e => {
 
 document.addEventListener("DOMContentLoaded", () => {
   loadProjects();
-});
-
-// Keyboard Shortcuts Modal Logic
-const shortcutsModal = document.getElementById("shortcuts-modal");
-const shortcutsToggleBtn = document.querySelector(
-  '[aria-label="Keyboard Shortcuts"]'
-);
-const closeShortcutsBtn = document.getElementById("close-shortcuts");
-const shortcutsOverlay = document.getElementById("shortcuts-overlay");
-const themeToggleBtn = document.getElementById("theme-toggle");
-
-function openShortcutsModal() {
-  if (shortcutsModal) {
-    shortcutsModal.setAttribute("aria-hidden", "false");
-  }
-}
-
-function closeShortcutsModal() {
-  if (shortcutsModal) {
-    shortcutsModal.setAttribute("aria-hidden", "true");
-  }
-}
-
-function toggleShortcutsModal() {
-  if (shortcutsModal) {
-    const isHidden = shortcutsModal.getAttribute("aria-hidden") === "true";
-    if (isHidden) {
-      openShortcutsModal();
-    } else {
-      closeShortcutsModal();
-    }
-  }
-}
-
-if (shortcutsToggleBtn) {
-  shortcutsToggleBtn.addEventListener("click", openShortcutsModal);
-}
-
-if (closeShortcutsBtn) {
-  closeShortcutsBtn.addEventListener("click", closeShortcutsModal);
-}
-
-if (shortcutsOverlay) {
-  shortcutsOverlay.addEventListener("click", closeShortcutsModal);
-}
-
-// Global Keyboard Shortcuts
-document.addEventListener("keydown", e => {
-  // Esc: Close modal or clear search
-  if (e.key === "Escape") {
-    if (
-      shortcutsModal &&
-      shortcutsModal.getAttribute("aria-hidden") === "false"
-    ) {
-      closeShortcutsModal();
-    } else if (document.activeElement === searchInput) {
-      clearFilters();
-    }
-    return;
-  }
-
-  // Ignore keyboard shortcuts if focus is inside input elements
-  if (
-    ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)
-  ) {
-    return;
-  }
-
-  if (e.key === "/" || (e.ctrlKey && e.key.toLowerCase() === "k")) {
-    e.preventDefault();
-    if (searchInput) searchInput.focus();
-  } else if (e.key === "?") {
-    e.preventDefault();
-    toggleShortcutsModal();
-  } else if (e.key.toLowerCase() === "t") {
-    if (themeToggleBtn) themeToggleBtn.click();
-  }
 });

@@ -275,18 +275,21 @@ function triggerAI() {
   const currentStatus = statusElement.textContent;
   setStatus(currentStatus + " Computer is thinking...");
 
-  if (aiWorker) {
-    aiWorker.terminate();
+  if (!aiWorker) {
+    aiWorker = new Worker("ai-worker.js");
+    aiWorker.onmessage = function (e) {
+      isComputerThinking = false;
+      const bestMove = e.data;
+      if (bestMove) {
+        makeMove(bestMove);
+      }
+    };
+    aiWorker.onerror = function () {
+      isComputerThinking = false;
+      setStatus("AI error. Switching to manual mode.");
+      document.getElementById("gameMode").value = "human";
+    };
   }
-
-  aiWorker = new Worker("ai-worker.js");
-  aiWorker.onmessage = function (e) {
-    isComputerThinking = false;
-    const bestMove = e.data;
-    if (bestMove) {
-      makeMove(bestMove);
-    }
-  };
 
   const depth = parseInt(document.getElementById("aiDifficulty").value, 10);
   aiWorker.postMessage({

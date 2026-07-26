@@ -2,19 +2,7 @@
   {
     "title": "2048 Game",
     "category": "games",
-    "path": "projects/games/2048-game/",
-    "dateAdded": "2026-07-17T19:22:24+05:30"
-  },
-  {
-    "title": "Advanced Qr Code Generator",
-    "category": "productivity",
-    "path": "projects/productivity/advanced-qr-code-generator/",
-    "dateAdded": "2026-07-23T23:01:17+05:30"
-  },
-  {
-    "title": "Advanced Qr Code Generator",
-    "category": "productivity",
-    "path": "projects/productivity/advanced-qr-code-generator/"
+    "path": "projects/games/2048-game/"
   },
   {
     "title": "Advanced Qr Code Generator",
@@ -24,25 +12,17 @@
   {
     "title": "AI Circuit Builder",
     "category": "aiml",
-    "path": "projects/aiml/ai-circuit-builder/",
-    "dateAdded": "2026-06-18T12:02:12+05:30"
+    "path": "projects/aiml/ai-circuit-builder/"
+  },
+  {
+    "title": "ASCII Camera",
+    "category": "misc",
+    "path": "projects/misc/ascii-camera/"
   },
   {
     "title": "Attendance Tracker",
     "category": "productivity",
-    "path": "projects/productivity/attendance-tracker/",
-    "dateAdded": "2026-06-18T12:02:12+05:30"
-  },
-  {
-    "title": "Brain Dump Collector",
-    "category": "productivity",
-    "path": "projects/productivity/brain-dump-collector/",
-    "dateAdded": "2026-07-23T22:27:35+05:30"
-  },
-  {
-    "title": "Brain Dump Collector",
-    "category": "productivity",
-    "path": "projects/productivity/brain-dump-collector/"
+    "path": "projects/productivity/attendance-tracker/"
   },
   {
     "title": "Brain Dump Collector",
@@ -52,26 +32,22 @@
   {
     "title": "Browser Storage Inspector",
     "category": "dev-tools",
-    "path": "projects/dev-tools/browser-storage-inspector/",
-    "dateAdded": "2026-07-23T22:19:33+05:30"
+    "path": "projects/dev-tools/browser-storage-inspector/"
   },
   {
     "title": "Cannon Shooting",
     "category": "games",
-    "path": "projects/games/cannon-shooting/",
-    "dateAdded": "2026-07-08T13:33:11+05:30"
+    "path": "projects/games/cannon-shooting/"
   },
   {
     "title": "Chess",
     "category": "games",
-    "path": "projects/games/chess/",
-    "dateAdded": "2026-06-18T12:02:12+05:30"
+    "path": "projects/games/chess/"
   },
   {
     "title": "CPU Emulator",
     "category": "dev-tools",
-    "path": "projects/dev-tools/cpu-emulator/",
-    "dateAdded": "2026-06-18T12:02:12+05:30"
+    "path": "projects/dev-tools/cpu-emulator/"
   },
   {
     "title": "Css Shape Designer",
@@ -81,19 +57,7 @@
   {
     "title": "Dot Game",
     "category": "games",
-    "path": "projects/games/dot-game/",
-    "dateAdded": "2026-06-19T14:31:47+05:30"
-  },
-  {
-    "title": "File Difference Visualizer",
-    "category": "file-tools",
-    "path": "projects/file-tools/file-difference-visualizer/",
-    "dateAdded": "2026-07-24T02:10:21+05:30"
-  },
-  {
-    "title": "File Difference Visualizer",
-    "category": "file-tools",
-    "path": "projects/file-tools/file-difference-visualizer/"
+    "path": "projects/games/dot-game/"
   },
   {
     "title": "Encoding Toolkit",
@@ -106,87 +70,83 @@
     "path": "projects/file-tools/file-difference-visualizer/"
   },
   {
+    "title": "Graph Theory Explorer",
+    "category": "math",
+    "path": "projects/math/graph-theory-explorer/"
+  },
+  {
     "title": "Image Classifier",
     "category": "aiml",
-    "path": "projects/aiml/image-classifier/",
-    "dateAdded": "2026-06-18T16:52:15+05:30"
+    "path": "projects/aiml/image-classifier/"
+  },
+  {
+    "title": "Invoice Generator",
+    "category": "productivity",
+    "path": "projects/productivity/invoice-generator/"
   },
   {
     "title": "Ludo Game",
     "category": "games",
-    "path": "projects/games/ludo-game/",
-    "dateAdded": "2026-06-19T14:31:47+05:30"
+    "path": "projects/games/ludo-game/"
   },
   {
     "title": "Markdown Resume Generator",
     "category": "editor",
-    "path": "projects/editor/markdown-resume-generator/",
-    "dateAdded": "2026-07-24T18:48:37+05:30"
+    "path": "projects/editor/markdown-resume-generator/"
   },
   {
     "title": "Matrix Playground",
     "category": "math",
-    "path": "projects/math/matrix-playground/",
-    "dateAdded": "2026-07-25T09:01:27+05:30"
+    "path": "projects/math/matrix-playground/"
   },
   {
     "title": "Meme Generator",
     "category": "misc",
-    "path": "projects/misc/meme-generator/",
-    "dateAdded": "2026-07-08T13:33:11+05:30"
+    "path": "projects/misc/meme-generator/"
   },
   {
     "title": "Memory Flip Game",
     "category": "games",
-    "path": "projects/games/memory-flip-game/",
-    "dateAdded": "2026-07-02T17:19:22+05:30"
+    "path": "projects/games/memory-flip-game/"
   },
   {
     "title": "Morse Code Studio",
     "category": "misc",
-    "path": "projects/misc/morse-code-studio/",
-    "dateAdded": "2026-07-22T09:29:24+05:30"
+    "path": "projects/misc/morse-code-studio/"
   },
   {
     "title": "Neural Network Playground",
     "category": "aiml",
-    "path": "projects/aiml/neural-network-playground/",
-    "dateAdded": "2026-06-18T16:52:15+05:30"
+    "path": "projects/aiml/neural-network-playground/"
   },
   {
     "title": "Periodic Table",
     "category": "misc",
-    "path": "projects/misc/periodic-table/",
-    "dateAdded": "2026-07-21T11:57:58+05:30"
+    "path": "projects/misc/periodic-table/"
   },
   {
     "title": "Reading Progress Tracker",
     "category": "productivity",
-    "path": "projects/productivity/reading-progress-tracker/",
-    "dateAdded": "2026-07-21T22:55:08+05:30"
+    "path": "projects/productivity/reading-progress-tracker/"
   },
   {
     "title": "Sound Wave Visualizer",
     "category": "misc",
-    "path": "projects/misc/sound-wave-visualizer/",
-    "dateAdded": "2026-07-21T22:59:49+05:30"
+    "path": "projects/misc/sound-wave-visualizer/"
   },
   {
     "title": "Stone Paper Scissors Game",
     "category": "games",
-    "path": "projects/games/stone-paper-scissors-game/",
-    "dateAdded": "2026-07-03T09:23:25+05:30"
+    "path": "projects/games/stone-paper-scissors-game/"
   },
   {
     "title": "Time Blocking Planner",
     "category": "productivity",
-    "path": "projects/productivity/time-blocking-planner/",
-    "dateAdded": "2026-07-21T11:59:15+05:30"
+    "path": "projects/productivity/time-blocking-planner/"
   },
   {
     "title": "Url Parser",
     "category": "dev-tools",
-    "path": "projects/dev-tools/url-parser/",
-    "dateAdded": "2026-07-21T12:52:03+05:30"
+    "path": "projects/dev-tools/url-parser/"
   }
 ]
