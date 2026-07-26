@@ -3,9 +3,9 @@
    ========================================================================== */
 
 :root {
-    --theme-accent: #22c55e;
-    --theme-accent-hover: #16a34a;
-    --theme-accent-light: rgba(34, 197, 94, 0.15);
+    --theme-accent: #3b82f6;
+    --theme-accent-hover: #2563eb;
+    --theme-accent-light: rgba(59, 130, 246, 0.15);
 
     --node-radius: 20px;
 }
@@ -53,7 +53,7 @@ body {
 }
 
 .brand-icon {
-    background: linear-gradient(135deg, var(--theme-accent), #10b981);
+    background: linear-gradient(135deg, var(--theme-accent), #6366f1);
     color: #fff;
     width: 42px;
     height: 42px;
@@ -62,7 +62,7 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 1.25rem;
-    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .brand-text h1 {
@@ -93,11 +93,12 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: border-color var(--cradle-transition-fast);
+    transition: all var(--cradle-transition-fast);
 }
 
 .theme-toggle:hover {
     border-color: var(--theme-accent);
+    transform: translateY(-1px);
 }
 
 /* ===================== MAIN LAYOUT ===================== */
@@ -124,12 +125,23 @@ body {
     gap: var(--cradle-space-4);
 }
 
+/* Card hover lift — matches .card-hover in ai-circuit-builder */
 .card {
     background: var(--cradle-surface);
     border: 1px solid var(--cradle-border);
     border-radius: var(--cradle-radius);
     padding: var(--cradle-space-5);
     box-shadow: var(--cradle-shadow-sm);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+    border-color: var(--cradle-border-hover);
 }
 
 .card-title {
@@ -172,12 +184,16 @@ body {
 .op-btn:hover {
     border-color: var(--theme-accent);
     color: var(--cradle-text);
+    transform: translateY(-1px);
 }
 
+/* Solid fill on active — matches .mode-btn.active (periodic-table) and the
+   CPU/NPU/GPU/ASIC selector in ai-circuit-builder, instead of a light tint */
 .op-btn.active {
-    background: var(--theme-accent-light);
+    background: var(--theme-accent);
     border-color: var(--theme-accent);
-    color: var(--theme-accent);
+    color: #fff;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.35);
 }
 
 /* ===================== FORM CONTROLS ===================== */
@@ -208,6 +224,13 @@ body {
     border-radius: var(--cradle-radius-sm);
     padding: var(--cradle-space-2) var(--cradle-space-3);
     font-size: var(--cradle-font-size-sm);
+    transition: border-color var(--cradle-transition-fast);
+}
+
+.select-input:focus {
+    border-color: var(--theme-accent);
+    outline: none;
+    box-shadow: 0 0 0 2px var(--theme-accent-light);
 }
 
 /* ===================== BUTTONS ===================== */
@@ -231,10 +254,20 @@ body {
     transition: all var(--cradle-transition-fast);
 }
 
+.btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+/* Solid accent fill — matches "Synthesize & Compute PPA" / "Export PNG" /
+   "Start Camera" treatment instead of a flat neutral-gray fill */
 .btn-secondary {
-    background: var(--cradle-surface-2);
-    border-color: var(--cradle-border);
-    color: var(--cradle-text);
+    background: linear-gradient(135deg, var(--theme-accent), var(--theme-accent-hover));
+    border-color: var(--theme-accent);
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
 }
 
 .btn-outline {
@@ -268,14 +301,18 @@ body {
     cursor: not-allowed;
 }
 
+/* Primary play/accent button — gradient fill + glow, matching the reference
+   projects' filled CTA treatment (was flat single color with dark text) */
 .btn-accent {
-    background: var(--theme-accent);
+    background: linear-gradient(135deg, var(--theme-accent), #6366f1);
     border-color: var(--theme-accent);
-    color: #05070d;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .btn-accent:hover {
-    background: var(--theme-accent-hover);
+    background: linear-gradient(135deg, var(--theme-accent-hover), var(--theme-accent));
+    box-shadow: 0 6px 18px rgba(59, 130, 246, 0.4);
 }
 
 /* ===================== PLAYER CONTROLS ===================== */
@@ -302,9 +339,32 @@ body {
     font-family: "JetBrains Mono", monospace;
 }
 
+/* Slider thumb matched to the accent-colored circular thumb used in
+   ai-circuit-builder and periodic-table's temperature slider */
 input[type="range"] {
     width: 100%;
     accent-color: var(--theme-accent);
+    cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--theme-accent);
+    cursor: pointer;
+    box-shadow: 0 0 6px rgba(59, 130, 246, 0.5);
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--theme-accent);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 6px rgba(59, 130, 246, 0.5);
 }
 
 .step-progress-row {
@@ -328,7 +388,7 @@ input[type="range"] {
 .step-progress-bar {
     height: 100%;
     width: 0%;
-    background: var(--theme-accent);
+    background: linear-gradient(to right, var(--theme-accent), #6366f1);
     transition: width var(--cradle-transition-fast);
 }
 
