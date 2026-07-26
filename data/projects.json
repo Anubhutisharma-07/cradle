@@ -55,6 +55,11 @@
     "path": "projects/aiml/image-classifier/"
   },
   {
+    "title": "Invoice Generator",
+    "category": "productivity",
+    "path": "projects/productivity/invoice-generator/"
+  },
+  {
     "title": "Ludo Game",
     "category": "games",
     "path": "projects/games/ludo-game/"
