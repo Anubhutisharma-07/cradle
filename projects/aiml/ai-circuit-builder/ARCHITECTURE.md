@@ -1,10 +1,5 @@
 # Project Architecture
 
-> **This is the standardized ARCHITECTURE.md template for the Cradle repository.**
-> Copy this file into your project folder, rename it `ARCHITECTURE.md`, and replace every placeholder with details specific to your project. Delete any section that does not apply and remove this notice block before submitting.
->
-> Template location: [`ARCHITECTURE_TEMPLATE.md`](../../ARCHITECTURE_TEMPLATE.md) at the repository root.
-
 ---
 
 ## Overview
