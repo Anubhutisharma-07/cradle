@@ -11,7 +11,6 @@
       name="description"
       content="Cradle — A curated archive of experiments."
     />
-    <meta name="cradle-ui-base" content="/src/components/ui/" />
 
     <link
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap"
@@ -141,16 +140,6 @@
               <span class="shortcut-desc">Toggle Theme</span>
             </div>
             <div class="shortcut-item">
-              <span class="shortcut-keys"><kbd>Arrow Keys</kbd></span>
-              <span class="shortcut-desc">Navigate Project Cards</span>
-            </div>
-            <div class="shortcut-item">
-              <span class="shortcut-keys"
-                ><kbd>Enter</kbd> or <kbd>Space</kbd></span
-              >
-              <span class="shortcut-desc">Open Focused Project</span>
-            </div>
-            <div class="shortcut-item">
               <span class="shortcut-keys"><kbd>?</kbd></span>
               <span class="shortcut-desc">Toggle Shortcuts Helper</span>
             </div>
@@ -172,17 +161,15 @@
         <div
           id="projects-grid"
           class="projects-grid"
-          role="list"
-          aria-label="Projects"
-          aria-describedby="project-grid-instructions"
           aria-live="polite"
           aria-atomic="true"
         ></div>
-        <p id="project-grid-instructions" class="sr-only">
-          Use arrow keys to move between project cards. Press Enter or Space to
-          open the focused project. Press Home to move to the first project and
-          End to move to the last project.
-        </p>
+        <p
+          id="copy-status"
+          class="sr-only"
+          role="status"
+          aria-live="polite"
+        ></p>
       </section>
     </main>
 
