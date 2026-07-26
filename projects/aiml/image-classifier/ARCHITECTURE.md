@@ -124,7 +124,9 @@ Example:
 
 ## Dependencies
 
-No external dependencies used
+| Dependency | Version | How loaded | Purpose |
+|---|---|---|---|
+| Outfit (font) | - | Google Fonts CDN | UI typography |
 
 ---
 
