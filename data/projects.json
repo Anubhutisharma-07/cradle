@@ -25,6 +25,16 @@
     "path": "projects/productivity/attendance-tracker/"
   },
   {
+    "title": "Audio Waveform Generator",
+    "category": "misc",
+    "path": "projects/misc/audio-waveform-generator/"
+  },
+  {
+    "title": "Avatar Creator",
+    "category": "misc",
+    "path": "projects/misc/avatar-creator/"
+  },
+  {
     "title": "Brain Dump Collector",
     "category": "productivity",
     "path": "projects/productivity/brain-dump-collector/"
@@ -70,6 +80,11 @@
     "path": "projects/file-tools/file-difference-visualizer/"
   },
   {
+    "title": "Fourier Series Visualizer",
+    "category": "math",
+    "path": "projects/math/fourier-series-visualizer/"
+  },
+  {
     "title": "Graph Theory Explorer",
     "category": "math",
     "path": "projects/math/graph-theory-explorer/"
@@ -83,6 +98,11 @@
     "title": "Invoice Generator",
     "category": "productivity",
     "path": "projects/productivity/invoice-generator/"
+  },
+  {
+    "title": "Json Converter",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/json-converter/"
   },
   {
     "title": "Ludo Game",
@@ -128,6 +148,11 @@
     "title": "Reading Progress Tracker",
     "category": "productivity",
     "path": "projects/productivity/reading-progress-tracker/"
+  },
+  {
+    "title": "Regex Visualizer",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/regex-visualizer/"
   },
   {
     "title": "Sound Wave Visualizer",

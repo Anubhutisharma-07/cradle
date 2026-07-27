@@ -124,6 +124,48 @@
       </section>
     </main>
 
+    <!-- ─── PAWN PROMOTION MODAL ─── -->
+    <div
+      id="promotionModal"
+      class="modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="promotionTitle"
+    >
+      <div class="modal-content">
+        <h2 id="promotionTitle">Choose Promotion</h2>
+        <p style="margin-bottom: 16px; color: var(--muted); font-size: 0.9rem">
+          Select a piece to promote your pawn to:
+        </p>
+        <div class="promotion-options" id="promotionOptions">
+          <button
+            type="button"
+            data-piece="queen"
+            aria-label="Promote to Queen"
+          >
+            ♛
+          </button>
+          <button type="button" data-piece="rook" aria-label="Promote to Rook">
+            ♜
+          </button>
+          <button
+            type="button"
+            data-piece="bishop"
+            aria-label="Promote to Bishop"
+          >
+            ♝
+          </button>
+          <button
+            type="button"
+            data-piece="knight"
+            aria-label="Promote to Knight"
+          >
+            ♞
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script
       src="../../../src/components/ui/BackToHome/BackToHome.js"
       defer
