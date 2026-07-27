@@ -4,158 +4,63 @@
 
 ## Overview
 
-<!--
-Write 2–4 sentences describing what this project does and why it exists.
-Keep it beginner-friendly — assume the reader has never seen this project before.
-
-Example (game):
-  Snake Game is a classic arcade game where the player controls a growing snake,
-  eating food to score points while avoiding walls and its own tail.
-  It runs entirely in the browser with no external dependencies.
-
-Example (productivity tool):
-  Attendance Tracker helps students monitor their class attendance across subjects.
-  It stores data in localStorage so records persist between sessions without a backend.
--->
+AI Circuit Builder is an AI based project to help user build circuit as per their needs. It provides various customizable parameters which can be used to create a circuit.
 
 ---
 
 ## Purpose & Goals
 
-<!--
-List the specific goals this project is trying to achieve.
-Use short bullet points.
-
-Example:
-- Demonstrate how to manage game state without a framework
-- Provide a reusable canvas rendering pattern for future projects
-- Keep the codebase small enough for a first-time contributor to read in under 30 minutes
--->
-
-- <!-- Goal 1 -->
-- <!-- Goal 2 -->
-- <!-- Goal 3 -->
+- Allow user to create custom circuit builder as per their need
+- Provide area to compare previous designs
+- Automatic creation of circuit from user need
 
 ---
 
 ## Folder Structure
 
-<!--
-Show the actual folder tree using a fenced code block.
-Add a short inline comment after each important file.
-Only include files that really exist — do not invent structure.
-
-Example:
-```
-project-name/
-├── index.html      # Entry point and UI shell
-├── script.js       # Core logic and event handling
-├── style.css       # All visual styling
-└── assets/
-    ├── images/     # Project images
-    └── icons/      # Icon files
-```
--->
-
-```
-project-name/
-├── index.html      # <!-- describe purpose -->
-├── script.js       # <!-- describe purpose -->
-├── style.css       # <!-- describe purpose -->
-└── <!-- add or remove files as needed -->
+```text
+ai-circuit-builder/
+├── index.html          # Entry point and UI shell
+├── script.js           # Core logic and event handling
+├── style.css           # All visual styling
+└── Architecture.md     # Description of whole project
 ```
 
 ---
 
 ## System / Project Architecture Overview
 
-<!--
-Describe the high-level architecture in plain language.
-Explain how the major parts fit together.
-Use a diagram only if it genuinely helps — Mermaid is supported on GitHub.
-
-Example (no diagram):
-  The project follows a simple separation of concerns: index.html defines the
-  structure, style.css handles all presentation, and script.js owns all behaviour.
-  There is no build step — the browser loads files directly.
-
-Example (with Mermaid):
-```mermaid
-graph TD
-    A[index.html] --> B[script.js]
-
-    B --> C[localStorage]
-    B --> D[DOM Updates]
-
-```
--->
+User decides on the various design parameters available via the UI. The circuit builder builds circuit as per the requirements and displays it on the webpage
 
 ---
 
 ## Component Breakdown
 
-<!--
-Explain the role of each major file or module.
-Use a table for quick scanning, then add detail below if needed.
-
-Example table:
 | File | Responsibility |
 |---|---|
-| `index.html` | Page shell, semantic structure, loads scripts |
-| `script.js` | Game loop, state management, event handling |
+| `index.html` | UI of the project and loads scripts |
+| `script.js` | Handles logic of the project and loading of the model |
 | `style.css` | Layout, colours, animations, responsive design |
-| `logic.js` | Pure game rules with no DOM dependency |
--->
-
-| File | Responsibility |
-|---|---|
-| `index.html` | <!-- describe --> |
-| `script.js` | <!-- describe --> |
-| `style.css` | <!-- describe --> |
 
 ---
 
 ## Data Flow / Execution Flow
 
-<!--
-Walk through what happens from the moment the user opens the page to
-the moment they interact with it. Use a simple arrow diagram.
-
-Example:
 ```
 
 User opens index.html
-↓
-Browser loads style.css → script.js
-↓
-Initialization runs — state is set up
-↓
-Event listeners are attached
-↓
-User interacts (click / keypress)
-↓
-Event handler fires
-↓
-State updates
-↓
-DOM re-renders
-
-```
--->
-
-```
-
-User opens index.html
-↓
-<!-- describe next step -->
 
         ↓
 
-<!-- describe next step -->
+User decides on the parameters of their circuit
 
         ↓
 
-<!-- describe next step -->
+PPA computed and circuit displayed
+
+        ↓
+
+User can compare it with their previous designs
 
 ```
 
@@ -163,88 +68,43 @@ User opens index.html
 
 ## Key Features
 
-<!--
-List the features a user or contributor would notice.
-Be specific — avoid vague statements like "it works well".
-
-Example:
-- 4×4 sliding tile grid with merge-on-collision logic
-- Score counter and persistent best score via localStorage
-- Keyboard (arrow keys) and WASD controls
-- Win detection at 2048 and loss detection when no moves remain
-- Restart button resets state without a page reload
--->
-
-- <!-- Feature 1 -->
-- <!-- Feature 2 -->
-- <!-- Feature 3 -->
+- Customizable design parameters
+- Comparision of previously designed circuits
+- Provides storage for chip storage
 
 ---
 
 ## Technologies Used
 
-<!--
-List every language, library, API, or tool used.
-Note the version if it matters.
-
-Example:
 | Technology | Purpose |
 |---|---|
 | HTML5 | Page structure and semantic markup |
-| CSS3 (Grid, Flexbox, Custom Properties) | Layout and responsive design |
-| Vanilla JavaScript (ES6+) | Game logic and DOM manipulation |
-| localStorage API | Persisting best score across sessions |
-| Chart.js 4.x (CDN) | Rendering the attendance pie chart |
--->
-
-| Technology | Purpose |
-|---|---|
-| HTML5 | <!-- describe --> |
-| CSS3 | <!-- describe --> |
-| JavaScript | <!-- describe --> |
+| CSS3 | Layout and responsive design |
+| JavaScript | Circuit metrics calculation and canvasing  |
 
 ---
 
 ## File Responsibilities
 
-<!--
-Go deeper than the component breakdown table.
-Describe specific functions, classes, or important variables in each file
-so a new contributor knows where to look when they want to change something.
-
-Example:
-### script.js
-- `render()` — clears and redraws the entire board from the current state object
-- `handleKeydown(event)` — maps arrow and WASD keys to direction strings
-- `handleMove(direction)` — calls logic, persists best score, triggers re-render
-- `restartGame()` — creates a fresh state and re-renders
-
-### logic.js
-- `createInitialState()` — returns a fresh 4×4 board with two starting tiles
-- `moveGameState(state, direction)` — returns a new immutable state after a move
-- `collapseLine(line)` — merges a single row or column; returns merged line + score
-- `hasWon(board)` — returns true if any tile value is ≥ 2048
-- `canMove(board)` — returns true if at least one valid move exists
--->
-
 ### `index.html`
 
-- <!-- key element or section 1 -->
-- <!-- key element or section 2 -->
+- User interface for image classification
+- Displays prediction
 
 ### `script.js`
 
-- <!-- function/variable 1 -->
-- <!-- function/variable 2 -->
+- Handles PPA calculation
+- Design generation
+- Storing of Circuit
+- Structural comparision of circuit
 
 ### `style.css`
 
-- <!-- key rule or pattern 1 -->
-- <!-- key rule or pattern 2 -->
+- Adding style to the webpage
 
 ---
 
-## Design Decisions
+<!-- ## Design Decisions -->
 
 <!--
 Explain non-obvious choices made during development.
@@ -259,53 +119,26 @@ Example:
   and avoid a build step.
 -->
 
-- <!-- Decision 1 and the reason for it -->
-- <!-- Decision 2 and the reason for it -->
+<!-- -  Decision 1 and the reason for it -->
+<!-- -  Decision 2 and the reason for it -->
 
----
+<!-- --- -->
 
 ## Dependencies
 
-<!--
-List external dependencies. For projects with none, say so explicitly.
-
-Example with dependencies:
 | Dependency | Version | How loaded | Purpose |
 |---|---|---|---|
-| Chart.js | 4.x | CDN (`<script>` tag) | Pie chart rendering |
-| jQuery | 3.4.1 | CDN (`<script>` tag) | DOM events and animation |
-| Outfit (font) | — | Google Fonts CDN | UI typography |
-
-Example with no dependencies:
-None. This project uses only native browser APIs — no external libraries are required.
--->
-
-| Dependency | Version | How loaded | Purpose |
-|---|---|---|---|
-| <!-- name --> | <!-- version --> | <!-- CDN / npm / local --> | <!-- purpose --> |
+| Outfit (font) | - | Google Fonts CDN | UI typography |
 
 ---
 
 ## Future Improvements
 
-<!--
-List ideas for improvement without committing to any of them.
-Avoid touching the current implementation — this section is for inspiration only.
+- User friendly guide on how to use this project and its various parameters
 
-Example:
-- Add touch/swipe support for mobile devices
-- Persist the full board to localStorage so a game survives a page reload
-- Add an undo stack — state is already immutable, so this would be straightforward
-- Animate tiles sliding before they settle to improve game feel
--->
+<!-- ---
 
-- <!-- Improvement 1 -->
-- <!-- Improvement 2 -->
-- <!-- Improvement 3 -->
-
----
-
-## Known Limitations
+## Known Limitations -->
 
 <!--
 Be honest about current shortcomings.
@@ -318,42 +151,14 @@ Example:
 - AI does not detect threefold repetition or the fifty-move rule
 -->
 
-- <!-- Limitation 1 -->
-- <!-- Limitation 2 -->
+<!-- - Limitation 1 -->
+<!-- -  Limitation 2 -->
 
 ---
 
 ## Development Notes
 
-<!--
-Practical notes for anyone who wants to run or modify this project locally.
-
-Example:
-- Open index.html through a local server (e.g. `python3 -m http.server 8000`),
-  not by double-clicking the file. The file:// protocol blocks Web Workers
-  and some fetch calls.
-- logic.js uses a UMD wrapper so it can be tested with Node.js:
-    node -e "const l = require('./logic.js'); console.log(l.createInitialState())"
-- No build step is required. Edit the files and refresh the browser.
--->
-
-- <!-- Note 1 -->
-- <!-- Note 2 -->
+- Open index.html through a local server (e.g. `python3 -m http.server 8000`), not by double-clicking the file. The file:// protocol blocks Web Workers and some fetch calls.
+- Visit (`http://localhost:8000`)
 
 ---
-
-## References
-
-<!--
-List any external resources that shaped the design or implementation.
-Delete this section if there are no references.
-
-Example:
-- [2048 by Gabriele Cirulli](https://github.com/gabrielecirulli/2048) — original game
-- [MDN Web Docs — Canvas API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)
-- [Minimax algorithm — Wikipedia](https://en.wikipedia.org/wiki/Minimax)
--->
-
-- <!-- Reference 1 -->
-- <!-- Reference 2 -->
-```
