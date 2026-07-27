@@ -70,25 +70,28 @@ render() redraws the board
 ## Core Components
 
 ### `index.html`
+
 Defines the static page skeleton: the board grid (`#board`), player strips, game status card, control buttons (New Game, Undo, Redo, Copy PGN, Flip Board), game-mode and difficulty selectors, captured piece displays, and a scrollable move list.
 
 ### `chessLogic.js`
+
 The rules engine. It is a plain script (not a module) so it can be loaded both by `index.html` via a `<script>` tag and by `aiWorker.js` via `importScripts()`.
 
 Key functions:
 
-| Function | Purpose |
-|---|---|
-| `startPosition()` | Returns an 8×8 array representing the standard chess opening |
+| Function                                          | Purpose                                                                               |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `startPosition()`                                 | Returns an 8×8 array representing the standard chess opening                          |
 | `getLegalMoves(board, row, col, color, epTarget)` | Returns all legal moves for a piece, filtering out moves that leave the king in check |
-| `getAllLegalMoves(board, color, epTarget)` | Returns every legal move for a given colour |
-| `getPseudoMoves(board, row, col, epTarget)` | Returns moves without the legality filter (used internally) |
-| `applyMove(board, move)` | Mutates the board to apply a move (castling, en passant, promotion handled here) |
-| `isSquareAttacked(board, row, col, byColor)` | Returns `true` if a square is under attack |
-| `findKing(board, color)` | Locates the king of a given colour |
-| `cloneBoard(board)` | Deep copies the board (used before simulating moves) |
+| `getAllLegalMoves(board, color, epTarget)`        | Returns every legal move for a given colour                                           |
+| `getPseudoMoves(board, row, col, epTarget)`       | Returns moves without the legality filter (used internally)                           |
+| `applyMove(board, move)`                          | Mutates the board to apply a move (castling, en passant, promotion handled here)      |
+| `isSquareAttacked(board, row, col, byColor)`      | Returns `true` if a square is under attack                                            |
+| `findKing(board, color)`                          | Locates the king of a given colour                                                    |
+| `cloneBoard(board)`                               | Deep copies the board (used before simulating moves)                                  |
 
 ### `ai-worker.js`
+
 Runs the computer opponent. It imports `chessLogic.js` for move generation and board manipulation, then implements:
 
 - **`evaluateBoard(board, color)`** — scores a position using piece values and a piece-square table (PST) that rewards central control.
@@ -98,19 +101,24 @@ Runs the computer opponent. It imports `chessLogic.js` for move generation and b
 Difficulty levels map to search depths: Easy = 1, Medium = 3, Hard = 4.
 
 ### `script.js`
+
 The UI controller. It owns all DOM references and application state variables.
 
 Key responsibilities:
 
 - **`render()`** — rebuilds the 64-square grid, applies CSS classes for selected, legal, capture, and check highlights.
 - **`handleSquareClick(row, col)`** — handles piece selection and move execution.
-- **`makeMove(move)`** — applies the move, tracks captures, updates en passant state, auto-promotes pawns to queens, switches turns, and records move notation.
+- **`makeMove(move)`** / **`completeMove(move, movingPiece)`** — applies the move, tracks captures, updates en passant state, detects pawn promotion (shows modal for user choice), switches turns, and records move notation.
+- **`showPromotionModal(move)`** / **`selectPromotion(pieceType)`** — manages the pawn promotion modal flow. Stores the pending move, displays piece options (queen, rook, bishop, knight), and resumes the move with the user's choice.
 - **`buildNotation(move)`** — generates algebraic notation (SAN) for the move list.
 - **`undoMove()` / `redoMove()`** — restore previous board states from the `history` and `redoStack` arrays.
+- **`boardToFEN()`** — exports the full game state (board, active color, castling rights, en passant target, half-move clock, full-move number) to FEN notation.
+- **`loadFEN(fenString)`** — imports a FEN string, restoring board position, active color, castling rights, en passant square, and move counters.
 - **`triggerAI()`** — creates a new Web Worker, sends the current board state, and awaits the response.
 - **`generatePGN()`** — assembles the full game record in PGN format for clipboard export.
 
 ### `style.css`
+
 Provides the full visual design: board colours, piece glyphs (Unicode chess symbols), square highlight colours (selected, legal move, capture ring, check), side-panel layout, responsive breakpoints, and a pawn promotion modal.
 
 ---
@@ -119,20 +127,23 @@ Provides the full visual design: board colours, piece glyphs (Unicode chess symb
 
 Game state is held in module-level variables inside `script.js`:
 
-| Variable | Type | Purpose |
-|---|---|---|
-| `board` | `Object[][]` | 8×8 matrix; each cell is `{ type, color, moved }` or `null` |
-| `turn` | `string` | `"white"` or `"black"` |
-| `selected` | `Object \| null` | `{ row, col }` of the currently selected piece |
-| `legalTargets` | `Object[]` | Move objects for the selected piece |
-| `history` | `Object[]` | Stack of previous states (for undo) |
-| `redoStack` | `Object[]` | Stack of undone states (for redo) |
-| `capturedByWhite` | `Object[]` | Pieces captured by White |
-| `capturedByBlack` | `Object[]` | Pieces captured by Black |
-| `enPassantTarget` | `Object \| null` | Square eligible for en passant capture |
-| `flipped` | `boolean` | Whether the board is displayed from Black's perspective |
-| `gameOver` | `boolean` | Set to `true` on checkmate or stalemate |
-| `isComputerThinking` | `boolean` | Blocks user input while the AI Worker is running |
+| Variable             | Type             | Purpose                                                      |
+| -------------------- | ---------------- | ------------------------------------------------------------ |
+| `board`              | `Object[][]`     | 8×8 matrix; each cell is `{ type, color, moved }` or `null`  |
+| `turn`               | `string`         | `"white"` or `"black"`                                       |
+| `selected`           | `Object \| null` | `{ row, col }` of the currently selected piece               |
+| `legalTargets`       | `Object[]`       | Move objects for the selected piece                          |
+| `history`            | `Object[]`       | Stack of previous states (for undo)                          |
+| `redoStack`          | `Object[]`       | Stack of undone states (for redo)                            |
+| `capturedByWhite`    | `Object[]`       | Pieces captured by White                                     |
+| `capturedByBlack`    | `Object[]`       | Pieces captured by Black                                     |
+| `enPassantTarget`    | `Object \| null` | Square eligible for en passant capture                       |
+| `halfMoveClock`      | `number`         | Half-moves since last capture/pawn advance (for FEN/50-move) |
+| `fullMoveNumber`     | `number`         | Full-move counter, increments after Black's move (for FEN)   |
+| `flipped`            | `boolean`        | Whether the board is displayed from Black's perspective      |
+| `gameOver`           | `boolean`        | Set to `true` on checkmate or stalemate                      |
+| `isComputerThinking` | `boolean`        | Blocks user input while the AI Worker is running             |
+| `pendingPromotion`   | `Object \| null` | Pending move awaiting user's promotion piece selection       |
 
 State is snapshotted (deep-cloned) on every move and pushed to `history`, which enables undo without any special diff logic.
 
@@ -189,7 +200,6 @@ None. The project uses only native browser APIs:
 
 ## Future Improvements
 
-- **Pawn promotion choice** — currently all pawns auto-promote to a queen. A modal to choose the promotion piece (queen, rook, bishop, knight) is partially scaffolded in the CSS.
 - **Board coordinates** — algebraic rank/file labels (a–h, 1–8) are styled in the CSS but not yet injected into the DOM.
 - **Move highlighting** — highlight the last move made (from/to squares) to make it easier to follow after the AI plays.
 - **Opening book** — adding a small set of known opening moves would make the AI's early game stronger and more varied.

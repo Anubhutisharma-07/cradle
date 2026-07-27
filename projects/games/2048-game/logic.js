@@ -3,14 +3,14 @@
 (function (root, factory) {
   const api = factory();
 
-  if (typeof module !== 'undefined' && module.exports) {
+  if (typeof module !== "undefined" && module.exports) {
     module.exports = api;
   }
 
   root.__2048Logic = api;
-}(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+})(typeof globalThis !== "undefined" ? globalThis : this, function () {
   function createInitialState(size = 4, random = Math.random) {
-    if (typeof size === 'function') {
+    if (typeof size === "function") {
       random = size;
       size = 4;
     }
@@ -22,7 +22,7 @@
       won: false,
       over: false,
       moved: false,
-      size: size
+      size: size,
     };
 
     addRandomTile(state, random);
@@ -50,11 +50,11 @@
   }
 
   function cloneBoard(board) {
-    return board.map((row) => [...row]);
+    return board.map(row => [...row]);
   }
 
   function collapseLine(line, size = 4) {
-    const compacted = line.filter((value) => value !== 0);
+    const compacted = line.filter(value => value !== 0);
     const merged = [];
     let scoreGain = 0;
 
@@ -86,14 +86,19 @@
     let scoreGain = 0;
     let moved = false;
 
-    if (direction === 'left' || direction === 'right') {
+    if (direction === "left" || direction === "right") {
       for (let row = 0; row < rows; row += 1) {
-        const sourceLine = direction === 'left' ? board[row] : [...board[row]].reverse();
-        const { line: mergedLine, scoreGain: lineScore } = collapseLine(sourceLine, cols);
+        const sourceLine =
+          direction === "left" ? board[row] : [...board[row]].reverse();
+        const { line: mergedLine, scoreGain: lineScore } = collapseLine(
+          sourceLine,
+          cols
+        );
         scoreGain += lineScore;
-        const targetLine = direction === 'left' ? mergedLine : mergedLine.reverse();
+        const targetLine =
+          direction === "left" ? mergedLine : mergedLine.reverse();
 
-        if (targetLine.join(',') !== board[row].join(',')) {
+        if (targetLine.join(",") !== board[row].join(",")) {
           moved = true;
         }
 
@@ -104,14 +109,21 @@
     }
 
     for (let col = 0; col < cols; col += 1) {
-      const sourceLine = direction === 'up'
-        ? board.map((currentRow) => currentRow[col])
-        : board.map((currentRow) => currentRow[col]).reverse();
-      const { line: mergedLine, scoreGain: lineScore } = collapseLine(sourceLine, rows);
+      const sourceLine =
+        direction === "up"
+          ? board.map(currentRow => currentRow[col])
+          : board.map(currentRow => currentRow[col]).reverse();
+      const { line: mergedLine, scoreGain: lineScore } = collapseLine(
+        sourceLine,
+        rows
+      );
       scoreGain += lineScore;
-      const targetLine = direction === 'up' ? mergedLine : mergedLine.reverse();
+      const targetLine = direction === "up" ? mergedLine : mergedLine.reverse();
 
-      if (targetLine.join(',') !== board.map((currentRow) => currentRow[col]).join(',')) {
+      if (
+        targetLine.join(",") !==
+        board.map(currentRow => currentRow[col]).join(",")
+      ) {
         moved = true;
       }
 
@@ -131,10 +143,14 @@
       won: state.won,
       over: state.over,
       moved: false,
-      size: state.size || state.board.length
+      size: state.size || state.board.length,
     };
 
-    const { board: movedBoard, scoreGain, moved } = moveBoard(next.board, direction);
+    const {
+      board: movedBoard,
+      scoreGain,
+      moved,
+    } = moveBoard(next.board, direction);
     next.board = movedBoard;
     next.score += scoreGain;
     next.bestScore = Math.max(next.bestScore, next.score);
@@ -150,7 +166,7 @@
   }
 
   function hasWon(board) {
-    return board.some((row) => row.some((value) => value >= 2048));
+    return board.some(row => row.some(value => value >= 2048));
   }
 
   function canMove(board) {
@@ -178,6 +194,6 @@
     addRandomTile,
     moveGameState,
     hasWon,
-    canMove
+    canMove,
   };
-}));
+});

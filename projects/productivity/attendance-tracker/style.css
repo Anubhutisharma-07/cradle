@@ -8,7 +8,7 @@
 }
 
 body {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
   background: var(--bg);
   margin: 20px;
   color: #1e293b;
@@ -219,7 +219,6 @@ td {
 }
 
 @media (max-width: 600px) {
-
   .header {
     flex-direction: column;
     align-items: flex-start;
@@ -269,4 +268,4 @@ td {
   font-size: 1.6rem;
   font-weight: 750;
   color: var(--text);
-}
+}

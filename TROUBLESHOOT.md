@@ -28,6 +28,7 @@ If your issue is not listed here, please check the [GitHub Issues page](https://
 **Symptom:** `git clone` hangs or returns a network error.
 
 **Fixes:**
+
 - Check your internet connection.
 - Make sure you are cloning your **fork**, not the upstream repo directly.
 - Use HTTPS if SSH is blocked on your network:
@@ -45,6 +46,7 @@ git clone https://github.com/<your-username>/cradle.git
 **Symptom:** Folders like `projects/` or `data/` are missing after cloning.
 
 **Fixes:**
+
 - Make sure you cloned the correct repository URL.
 - Run `ls` (macOS/Linux) or `dir` (Windows) inside the cloned folder to confirm you are in the right directory.
 - Re-clone if needed:
@@ -61,6 +63,7 @@ git clone https://github.com/<your-username>/cradle.git
 **Symptom:** A project fails to load or a script throws an error about a missing module.
 
 **Fixes:**
+
 - Most Cradle projects are dependency-free and run directly in the browser.
 - If a project includes a `package.json`, install dependencies with:
 
@@ -83,6 +86,7 @@ pip install -r requirements.txt
 **Symptom:** `python -m http.server` command not found or fails immediately.
 
 **Fixes:**
+
 - Make sure Python is installed:
 
 ```bash
@@ -114,6 +118,7 @@ python3 -m http.server 9000
 **Symptom:** The page opens but looks broken, or nothing renders at all.
 
 **Fixes:**
+
 - Open the browser developer console (`F12` → Console tab) and check for errors.
 - Make sure you opened the file through a local server (`http://localhost:8000`), not by double-clicking the file (`file://`). Some browser security rules block scripts loaded via `file://`.
 - Verify you opened the correct `index.html`. The root `index.html` is the landing page. Each project has its own `index.html` inside its folder.
@@ -125,6 +130,7 @@ python3 -m http.server 9000
 **Symptom:** You edited a file but the browser still shows the old version.
 
 **Fixes:**
+
 - Hard-refresh the browser:
   - **Mac:** `Cmd + Shift + R`
   - **Windows/Linux:** `Ctrl + Shift + R`
@@ -138,6 +144,7 @@ python3 -m http.server 9000
 **Symptom:** Old styles or scripts keep appearing even after changes.
 
 **Fix:** Clear the browser cache entirely:
+
 - **Chrome/Edge:** Settings → Privacy → Clear browsing data → Cached images and files
 - **Firefox:** Settings → Privacy → Clear Data → Cached Web Content
 - Or use DevTools → Application → Storage → Clear site data.
@@ -149,16 +156,20 @@ python3 -m http.server 9000
 **Symptom:** Images, stylesheets, or scripts return 404 errors in the console.
 
 **Fixes:**
+
 - Always run the project from the **repository root** using a local server, not from inside a project subfolder.
 - Check that asset paths in HTML files use paths relative to that file's location, not to the root.
 
 ```html
 <!-- Correct — relative to the project folder -->
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css" />
 <script src="script.js"></script>
 
 <!-- Incorrect — absolute path that breaks on different machines -->
-<link rel="stylesheet" href="/Users/yourname/cradle/projects/games/chess/style.css">
+<link
+  rel="stylesheet"
+  href="/Users/yourname/cradle/projects/games/chess/style.css"
+/>
 ```
 
 - The shared `back-to-home.js` script uses a path like `../../../projects/back-to-home.js` — make sure you haven't moved any files.
@@ -169,11 +180,11 @@ python3 -m http.server 9000
 
 ### Python HTTP server errors
 
-| Error | Cause | Fix |
-|---|---|---|
-| `command not found: python` | Python not installed or not on PATH | Install Python from [python.org](https://www.python.org) or use `python3` |
-| `Address already in use` | Port is occupied by another process | Use a different port: `python3 -m http.server 9000` |
-| `Permission denied` | Port below 1024 requires admin rights | Use a port above 1024 (e.g. 8000, 9000) |
+| Error                       | Cause                                 | Fix                                                                       |
+| --------------------------- | ------------------------------------- | ------------------------------------------------------------------------- |
+| `command not found: python` | Python not installed or not on PATH   | Install Python from [python.org](https://www.python.org) or use `python3` |
+| `Address already in use`    | Port is occupied by another process   | Use a different port: `python3 -m http.server 9000`                       |
+| `Permission denied`         | Port below 1024 requires admin rights | Use a port above 1024 (e.g. 8000, 9000)                                   |
 
 ---
 
@@ -206,6 +217,7 @@ python3 -m http.server 8080
 **Symptom:** Script or server fails with `Permission denied`.
 
 **Fixes:**
+
 - Do **not** use `sudo` to run a development server. Use a port above 1024 instead.
 - On macOS/Linux, check file permissions:
 
@@ -221,6 +233,7 @@ chmod 644 index.html
 **Symptom:** Images or icons are broken (show as blank or 404 in the console).
 
 **Fixes:**
+
 - Confirm the asset file actually exists in the expected folder.
 - Check the file name casing — `Logo.png` and `logo.png` are different files on Linux/macOS.
 - Some projects load assets from external CDN URLs. These require an active internet connection.
@@ -232,6 +245,7 @@ chmod 644 index.html
 **Symptom:** Clicking a project card on `index.html` goes to a 404 page.
 
 **Fixes:**
+
 - Make sure you are running the server from the **repository root**, not from inside a subfolder.
 - Check `data/projects.json` — the `path` value for each project must point to the correct `index.html` relative to the root.
 - Verify the project folder name matches exactly what is listed in `projects.json`.
@@ -245,6 +259,7 @@ chmod 644 index.html
 **Symptom:** `git pull` or `git merge` reports conflicts.
 
 **Fix:**
+
 1. Open the conflicting file(s) — Git marks conflicts with `<<<<<<<`, `=======`, `>>>>>>>`.
 2. Manually keep the correct version and remove the conflict markers.
 3. Stage the resolved file and commit:
@@ -297,6 +312,7 @@ git push origin main
 **Symptom:** `git push` asks for a password and then fails, or returns `403 Forbidden`.
 
 **Fixes:**
+
 - GitHub no longer accepts account passwords for Git operations. Use a **Personal Access Token (PAT)**.
 - Generate one at: GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token.
 - Select the `repo` scope, set an expiry, and copy the token.
@@ -315,13 +331,16 @@ git remote set-url origin https://<your-token>@github.com/<your-username>/cradle
 **Symptom:** Links inside `README.md` go to a 404 page on GitHub.
 
 **Fixes:**
+
 - Use **relative paths** for links within the repository:
 
 ```markdown
 <!-- Correct -->
+
 [Contributing Guide](CONTRIBUTING.md)
 
 <!-- Incorrect -->
+
 [Contributing Guide](https://github.com/Facelessism/cradle/blob/main/CONTRIBUTING.md)
 ```
 
@@ -338,6 +357,7 @@ git remote set-url origin https://<your-token>@github.com/<your-username>/cradle
 **Symptom:** A Markdown file looks fine in your editor but renders differently on GitHub.
 
 **Fixes:**
+
 - GitHub Markdown does not support all extended Markdown syntax (e.g. some custom containers or highlight blocks).
 - Stick to standard Markdown: headings, bold, italic, code blocks, tables, and lists.
 - Preview your Markdown on GitHub directly by pushing the branch and viewing the file there.
@@ -348,13 +368,13 @@ git remote set-url origin https://<your-token>@github.com/<your-username>/cradle
 
 All Cradle projects are designed to run in modern browsers. If something looks broken:
 
-| Issue | Likely Cause | Fix |
-|---|---|---|
-| Styles missing | Old browser not supporting CSS variables or Grid | Update to the latest version of Chrome, Firefox, Edge, or Safari |
-| Canvas not rendering | Browser does not support HTML5 Canvas | Use a modern browser |
-| Web Worker not working | `file://` protocol blocks workers | Run via a local server (`http://localhost:8000`) |
-| Clipboard API fails | `navigator.clipboard` requires HTTPS or localhost | Run via a local server |
-| Fonts not loading | External font CDN blocked | Check your internet connection or network settings |
+| Issue                  | Likely Cause                                      | Fix                                                              |
+| ---------------------- | ------------------------------------------------- | ---------------------------------------------------------------- |
+| Styles missing         | Old browser not supporting CSS variables or Grid  | Update to the latest version of Chrome, Firefox, Edge, or Safari |
+| Canvas not rendering   | Browser does not support HTML5 Canvas             | Use a modern browser                                             |
+| Web Worker not working | `file://` protocol blocks workers                 | Run via a local server (`http://localhost:8000`)                 |
+| Clipboard API fails    | `navigator.clipboard` requires HTTPS or localhost | Run via a local server                                           |
+| Fonts not loading      | External font CDN blocked                         | Check your internet connection or network settings               |
 
 **Recommended browsers for development:** Chrome (latest), Firefox (latest), Edge (latest).
 
@@ -373,6 +393,7 @@ Before filing a new issue, please go through these steps:
 7. **Reproduce on a clean clone** — clone the repo fresh to rule out local environment issues.
 
 If the issue persists after all the above, open a new issue and include:
+
 - A clear description of the problem
 - Steps to reproduce
 - Expected vs actual behaviour

@@ -55,12 +55,8 @@ body {
   font-family: Inter, system-ui, Arial, sans-serif;
 
   background:
-    radial-gradient(circle at top,
-      rgba(37, 99, 235, 0.1),
-      transparent 45%),
-    linear-gradient(180deg,
-      var(--bg) 0%,
-      var(--bg-secondary) 100%);
+    radial-gradient(circle at top, rgba(37, 99, 235, 0.1), transparent 45%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-secondary) 100%);
 
   color: var(--text);
   line-height: 1.6;
@@ -76,6 +72,18 @@ footer {
     box-shadow var(--transition);
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .hero {
   position: relative;
   text-align: center;
@@ -87,11 +95,7 @@ footer {
   font-size: clamp(4.8rem, 6vw, 5rem);
   font-weight: 800;
 
-  background:
-    linear-gradient(to right,
-      #ffffff,
-      #cbd5e1,
-      #93c5fd);
+  background: linear-gradient(to right, #ffffff, #cbd5e1, #93c5fd);
 
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -99,11 +103,7 @@ footer {
 }
 
 html.light-theme .hero h1 {
-  background:
-    linear-gradient(to right,
-      #0f172a,
-      #334155,
-      #2563eb);
+  background: linear-gradient(to right, #0f172a, #334155, #2563eb);
 
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -143,6 +143,7 @@ html.light-theme .hero h1 {
   display: flex;
   align-items: center;
   flex: 1;
+  z-index: 10;
 }
 
 .search-icon {
@@ -161,7 +162,7 @@ html.light-theme .hero h1 {
 
 #search {
   width: 100%;
-  padding: 1rem 1.25rem 1rem 3rem;
+  padding: 1rem 3.5rem 1rem 3rem;
 
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -181,8 +182,86 @@ html.light-theme .hero h1 {
 #search:focus {
   border-color: var(--accent-hover);
 
-  box-shadow:
-    0 0 0 4px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+}
+
+.search-kbd-hint {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.search-kbd-hint kbd {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.search-suggestions {
+  position: absolute;
+  top: calc(100% + 0.55rem);
+  left: 0;
+  right: 0;
+  z-index: 20;
+
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.5rem;
+
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 18px 40px var(--shadow);
+}
+
+.search-suggestion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  width: 100%;
+  padding: 0.72rem 0.85rem;
+
+  color: var(--text);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.search-suggestion:hover,
+.search-suggestion.is-active {
+  background: var(--card-hover);
+  border-color: var(--accent-hover);
+}
+
+.search-suggestion:focus-visible {
+  outline: 2px solid var(--accent-hover);
+  outline-offset: 2px;
+}
+
+.search-suggestion-label {
+  font-weight: 700;
+}
+
+.search-suggestion-detail {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 main {
@@ -219,9 +298,7 @@ main {
 .projects-grid {
   display: grid;
 
-  grid-template-columns:
-    repeat(auto-fill,
-      minmax(290px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
 
   gap: 1.25rem;
 }
@@ -236,8 +313,7 @@ footer {
 
   text-align: center;
 
-  border-top:
-    1px solid rgba(55, 65, 81, 0.3);
+  border-top: 1px solid rgba(55, 65, 81, 0.3);
 
   color: var(--muted);
 }
@@ -296,4 +372,184 @@ footer {
   .projects-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Floating Back to Top Button */
+.back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+
+  box-shadow:
+    0 10px 15px -3px var(--shadow),
+    0 4px 6px -4px var(--shadow);
+  cursor: pointer;
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px) scale(0.9);
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease,
+    transform 0.3s ease,
+    background-color var(--transition),
+    border-color var(--transition);
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.back-to-top:hover {
+  background: var(--card-hover);
+  border-color: var(--accent-hover);
+  color: var(--accent-hover);
+  transform: translateY(-3px) scale(1.05);
+}
+
+.back-to-top:active {
+  transform: translateY(0) scale(0.95);
+}
+
+@media (max-width: 768px) {
+  .back-to-top {
+    bottom: 1.25rem;
+    right: 1.25rem;
+    width: 42px;
+    height: 42px;
+  }
+}
+
+/* ==========================================================================
+   Keyboard Shortcuts Modal Styles
+   ========================================================================== */
+
+#shortcuts-modal[aria-hidden="true"] {
+  display: none;
+}
+
+.shortcuts-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.shortcuts-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(5, 7, 13, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.shortcuts-modal-content {
+  position: relative;
+  z-index: 1001;
+  width: 100%;
+  max-width: 480px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  box-shadow: 0 20px 40px var(--shadow);
+  color: var(--text);
+  animation: modalFadeIn 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.shortcuts-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.shortcuts-modal-header h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.shortcuts-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+}
+
+.shortcuts-close-btn:hover {
+  color: var(--text);
+  background-color: var(--card-hover);
+}
+
+.shortcuts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.shortcut-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.shortcut-keys kbd {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  font-family: monospace;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 2px 0 var(--border);
+  color: var(--text);
+}
+
+.shortcut-desc {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
 }

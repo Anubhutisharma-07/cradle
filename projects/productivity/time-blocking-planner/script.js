@@ -6,24 +6,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const CATEGORY_COLORS = {
     "deep-work": "#8b5cf6",
-    "work": "#3b82f6",
-    "meeting": "#f59e0b",
-    "study": "#06b6d4",
-    "exercise": "#10b981",
-    "break": "#ec4899",
-    "meal": "#f97316",
-    "personal": "#64748b"
+    work: "#3b82f6",
+    meeting: "#f59e0b",
+    study: "#06b6d4",
+    exercise: "#10b981",
+    break: "#ec4899",
+    meal: "#f97316",
+    personal: "#64748b",
   };
 
   const CATEGORY_NAMES = {
     "deep-work": "Deep Work",
-    "work": "General Work",
-    "meeting": "Meeting",
-    "study": "Study",
-    "exercise": "Exercise",
-    "break": "Break",
-    "meal": "Meal",
-    "personal": "Personal"
+    work: "General Work",
+    meeting: "Meeting",
+    study: "Study",
+    exercise: "Exercise",
+    break: "Break",
+    meal: "Meal",
+    personal: "Personal",
   };
 
   // DOM Elements
@@ -40,7 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnSample = document.getElementById("btn-sample");
   const btnClear = document.getElementById("btn-clear");
   const btnExportMenu = document.getElementById("btn-export-menu");
-  const exportDropdownContent = document.getElementById("export-dropdown-content");
+  const exportDropdownContent = document.getElementById(
+    "export-dropdown-content"
+  );
   const btnExportIcs = document.getElementById("btn-export-ics");
   const btnExportJson = document.getElementById("btn-export-json");
   const btnExportText = document.getElementById("btn-export-text");
@@ -85,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function timeStringToMinutes(timeStr) {
     if (!timeStr) return 0;
     const [hrs, mins] = timeStr.split(":").map(Number);
-    return (hrs * 60) + mins;
+    return hrs * 60 + mins;
   }
 
   function formatDuration(minutes) {
@@ -148,7 +150,8 @@ document.addEventListener("DOMContentLoaded", () => {
       blockEl.dataset.id = block.id;
       blockEl.style.top = `${topPx}px`;
       blockEl.style.height = `${heightPx}px`;
-      blockEl.style.backgroundColor = block.color || CATEGORY_COLORS[block.category] || "#8b5cf6";
+      blockEl.style.backgroundColor =
+        block.color || CATEGORY_COLORS[block.category] || "#8b5cf6";
 
       blockEl.innerHTML = `
         <div class="resize-handle top"></div>
@@ -156,7 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <span class="block-title">${escapeHtml(block.title)}</span>
           <span class="block-time">${minutesToTimeString(block.startMinutes)} - ${minutesToTimeString(block.endMinutes)}</span>
         </div>
-        ${block.notes ? `<div class="block-notes">📝 ${escapeHtml(block.notes)}</div>` : ''}
+        ${block.notes ? `<div class="block-notes">📝 ${escapeHtml(block.notes)}</div>` : ""}
         <div class="resize-handle bottom"></div>
       `;
 
@@ -168,13 +171,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function escapeHtml(str) {
-    return (str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    return (str || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   // Attach Drag & Resize Event Handlers
   function attachBlockInteractions(blockEl, block) {
     // Double click to edit
-    blockEl.addEventListener("dblclick", (e) => {
+    blockEl.addEventListener("dblclick", e => {
       e.stopPropagation();
       openBlockModal(block);
     });
@@ -183,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const bottomResizeHandle = blockEl.querySelector(".resize-handle.bottom");
 
     // Drag move or resize
-    blockEl.addEventListener("mousedown", (e) => {
+    blockEl.addEventListener("mousedown", e => {
       if (e.target === topResizeHandle) {
         initResize(e, block, "top");
       } else if (e.target === bottomResizeHandle) {
@@ -279,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Timeline Click to Add Block
-  timelineTrack.addEventListener("click", (e) => {
+  timelineTrack.addEventListener("click", e => {
     if (e.target !== timelineTrack) return;
     const rect = timelineTrack.getBoundingClientRect();
     const clickY = e.clientY - rect.top;
@@ -294,7 +301,7 @@ document.addEventListener("DOMContentLoaded", () => {
       color: CATEGORY_COLORS["work"],
       startMinutes: startMins,
       endMinutes: startMins + 60,
-      notes: ""
+      notes: "",
     });
   });
 
@@ -306,7 +313,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     blocks.forEach(block => {
       const duration = block.endMinutes - block.startMinutes;
-      categoryTotals[block.category] = (categoryTotals[block.category] || 0) + duration;
+      categoryTotals[block.category] =
+        (categoryTotals[block.category] || 0) + duration;
       totalPlannedMins += duration;
     });
 
@@ -334,7 +342,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const now = new Date();
-    const currentMins = (now.getHours() * 60) + now.getMinutes();
+    const currentMins = now.getHours() * 60 + now.getMinutes();
 
     currentTimeLine.hidden = false;
     currentTimeLine.style.top = `${currentMins}px`;
@@ -344,7 +352,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(updateCurrentTimeIndicator, 30000); // Check every 30s
 
   // Date Selector Change
-  dateInput.addEventListener("change", (e) => {
+  dateInput.addEventListener("change", e => {
     currentDate = e.target.value;
     loadBlocksForDate(currentDate);
     updateCurrentTimeIndicator();
@@ -368,8 +376,12 @@ document.addEventListener("DOMContentLoaded", () => {
       blockTitleInput.value = block ? block.title : "";
       blockCategoryInput.value = block ? block.category : "work";
       blockColorInput.value = block ? block.color : CATEGORY_COLORS["work"];
-      blockStartInput.value = block ? minutesToTimeString(block.startMinutes) : "09:00";
-      blockEndInput.value = block ? minutesToTimeString(block.endMinutes) : "10:00";
+      blockStartInput.value = block
+        ? minutesToTimeString(block.startMinutes)
+        : "09:00";
+      blockEndInput.value = block
+        ? minutesToTimeString(block.endMinutes)
+        : "10:00";
       blockNotesInput.value = "";
       btnDeleteBlock.hidden = true;
     }
@@ -380,14 +392,14 @@ document.addEventListener("DOMContentLoaded", () => {
     blockModal.hidden = true;
   }
 
-  blockCategoryInput.addEventListener("change", (e) => {
+  blockCategoryInput.addEventListener("change", e => {
     const cat = e.target.value;
     if (CATEGORY_COLORS[cat]) {
       blockColorInput.value = CATEGORY_COLORS[cat];
     }
   });
 
-  blockForm.addEventListener("submit", (e) => {
+  blockForm.addEventListener("submit", e => {
     e.preventDefault();
     const id = blockIdInput.value || Date.now().toString();
     const startMins = timeStringToMinutes(blockStartInput.value);
@@ -404,7 +416,7 @@ document.addEventListener("DOMContentLoaded", () => {
       color: blockColorInput.value,
       startMinutes: startMins,
       endMinutes: endMins,
-      notes: blockNotesInput.value.trim()
+      notes: blockNotesInput.value.trim(),
     };
 
     const existingIdx = blocks.findIndex(b => b.id === id);
@@ -432,9 +444,9 @@ document.addEventListener("DOMContentLoaded", () => {
   btnAddBlock.addEventListener("click", () => {
     openBlockModal({
       startMinutes: 540, // 09:00
-      endMinutes: 600,   // 10:00
+      endMinutes: 600, // 10:00
       category: "work",
-      color: CATEGORY_COLORS["work"]
+      color: CATEGORY_COLORS["work"],
     });
   });
 
@@ -459,7 +471,7 @@ document.addEventListener("DOMContentLoaded", () => {
         category: cat,
         color: preset.dataset.color,
         startMinutes: 540,
-        endMinutes: 600
+        endMinutes: 600,
       });
     });
   });
@@ -467,20 +479,76 @@ document.addEventListener("DOMContentLoaded", () => {
   // Load Sample Schedule
   btnSample.addEventListener("click", () => {
     blocks = [
-      { id: "s1", title: "Morning Routine & Coffee", category: "break", color: CATEGORY_COLORS["break"], startMinutes: 420, endMinutes: 480, notes: "Meditation & Review Day Goals" },
-      { id: "s2", title: "Deep Work: Core Feature Dev", category: "deep-work", color: CATEGORY_COLORS["deep-work"], startMinutes: 540, endMinutes: 660, notes: "Build architecture & code logic" },
-      { id: "s3", title: "Team Sync & Standup", category: "meeting", color: CATEGORY_COLORS["meeting"], startMinutes: 660, endMinutes: 720, notes: "Discuss progress & blockers" },
-      { id: "s4", title: "Lunch Break", category: "meal", color: CATEGORY_COLORS["meal"], startMinutes: 720, endMinutes: 780, notes: "Healthy meal & quick walk" },
-      { id: "s5", title: "Code Review & PRs", category: "work", color: CATEGORY_COLORS["work"], startMinutes: 780, endMinutes: 870, notes: "Review community PRs" },
-      { id: "s6", title: "Workout & Fitness", category: "exercise", color: CATEGORY_COLORS["exercise"], startMinutes: 1020, endMinutes: 1080, notes: "Gym / Run session" },
-      { id: "s7", title: "Learning & Reading", category: "study", color: CATEGORY_COLORS["study"], startMinutes: 1140, endMinutes: 1200, notes: "Read tech article or book" }
+      {
+        id: "s1",
+        title: "Morning Routine & Coffee",
+        category: "break",
+        color: CATEGORY_COLORS["break"],
+        startMinutes: 420,
+        endMinutes: 480,
+        notes: "Meditation & Review Day Goals",
+      },
+      {
+        id: "s2",
+        title: "Deep Work: Core Feature Dev",
+        category: "deep-work",
+        color: CATEGORY_COLORS["deep-work"],
+        startMinutes: 540,
+        endMinutes: 660,
+        notes: "Build architecture & code logic",
+      },
+      {
+        id: "s3",
+        title: "Team Sync & Standup",
+        category: "meeting",
+        color: CATEGORY_COLORS["meeting"],
+        startMinutes: 660,
+        endMinutes: 720,
+        notes: "Discuss progress & blockers",
+      },
+      {
+        id: "s4",
+        title: "Lunch Break",
+        category: "meal",
+        color: CATEGORY_COLORS["meal"],
+        startMinutes: 720,
+        endMinutes: 780,
+        notes: "Healthy meal & quick walk",
+      },
+      {
+        id: "s5",
+        title: "Code Review & PRs",
+        category: "work",
+        color: CATEGORY_COLORS["work"],
+        startMinutes: 780,
+        endMinutes: 870,
+        notes: "Review community PRs",
+      },
+      {
+        id: "s6",
+        title: "Workout & Fitness",
+        category: "exercise",
+        color: CATEGORY_COLORS["exercise"],
+        startMinutes: 1020,
+        endMinutes: 1080,
+        notes: "Gym / Run session",
+      },
+      {
+        id: "s7",
+        title: "Learning & Reading",
+        category: "study",
+        color: CATEGORY_COLORS["study"],
+        startMinutes: 1140,
+        endMinutes: 1200,
+        notes: "Read tech article or book",
+      },
     ];
     saveBlocksForDate();
     renderBlocks();
   });
 
   // Export Menu Toggle
-  btnExportMenu.addEventListener("click", (e) => {
+  btnExportMenu.addEventListener("click", e => {
     e.stopPropagation();
     exportDropdownContent.hidden = !exportDropdownContent.hidden;
   });
@@ -495,39 +563,11 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("No time blocks to export!");
       return;
     }
-    const cleanDate = currentDate.replace(/-/g, "");
+    const icsContent = typeof PlannerEngine !== "undefined"
+      ? PlannerEngine.generateICalendar(blocks, currentDate)
+      : "";
 
-    let icsContent = [
-      "BEGIN:VCALENDAR",
-      "VERSION:2.0",
-      "PRODID:-//Cradle//Time Blocking Planner//EN",
-      "CALSCALE:GREGORIAN"
-    ];
-
-    blocks.forEach(b => {
-      const startH = String(Math.floor(b.startMinutes / 60)).padStart(2, "0");
-      const startM = String(b.startMinutes % 60).padStart(2, "0");
-      const endH = String(Math.floor(b.endMinutes / 60)).padStart(2, "0");
-      const endM = String(b.endMinutes % 60).padStart(2, "0");
-
-      const dtStart = `${cleanDate}T${startH}${startM}00`;
-      const dtEnd = `${cleanDate}T${endH}${endM}00`;
-
-      icsContent.push(
-        "BEGIN:VEVENT",
-        `UID:${b.id}@cradle.local`,
-        `DTSTAMP:${cleanDate}T000000Z`,
-        `DTSTART:${dtStart}`,
-        `DTEND:${dtEnd}`,
-        `SUMMARY:${b.title}`,
-        `DESCRIPTION:${b.notes ? b.notes.replace(/\n/g, " ") : CATEGORY_NAMES[b.category]}`,
-        "END:VEVENT"
-      );
-    });
-
-    icsContent.push("END:VCALENDAR");
-
-    downloadFile(icsContent.join("\r\n"), `schedule_${currentDate}.ics`, "text/calendar");
+    downloadFile(icsContent, `schedule_${currentDate}.ics`, "text/calendar");
   });
 
   // Export JSON
@@ -550,12 +590,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Import JSON File
-  importJsonFile.addEventListener("change", (e) => {
+  importJsonFile.addEventListener("change", e => {
     const file = e.target.files[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = event => {
       try {
         const parsed = JSON.parse(event.target.result);
         if (Array.isArray(parsed.blocks)) {

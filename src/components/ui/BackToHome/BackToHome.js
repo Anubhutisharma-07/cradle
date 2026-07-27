@@ -36,14 +36,14 @@
  */
 
 (function (global) {
-  'use strict';
+  "use strict";
 
-  const STYLE_ID = 'cradle-back-home-styles';
+  const STYLE_ID = "cradle-back-home-styles";
 
   /* ── Styles ───────────────────────────────────────────── */
   function injectStyles() {
     if (document.getElementById(STYLE_ID)) return;
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.id = STYLE_ID;
     style.textContent = `
       /* ── Pill variant (default, matches existing design) ── */
@@ -163,23 +163,22 @@
 
     /* Count how many directory segments deep we are */
     const segments = path
-      .split('/')
-      .filter(Boolean);          /* remove empty strings from leading/trailing / */
+      .split("/")
+      .filter(Boolean); /* remove empty strings from leading/trailing / */
 
     /* We want to go back to the root index.html */
     /* e.g. /projects/games/chess/ → 3 segments → ../../../index.html */
     const depth = segments.length;
-    if (depth === 0) return './index.html';
+    if (depth === 0) return "./index.html";
 
-    return '../'.repeat(depth) + 'index.html';
+    return "../".repeat(depth) + "index.html";
   }
 
   /* ── Is homepage check ────────────────────────────────── */
   function isHomepage() {
     const p = window.location.pathname;
     return (
-      p === '/' ||
-      p.endsWith('/index.html') && !p.includes('/projects/')
+      p === "/" || (p.endsWith("/index.html") && !p.includes("/projects/"))
     );
   }
 
@@ -191,34 +190,36 @@
      * @returns {HTMLAnchorElement}
      */
     create({
-      to      = null,
-      label   = 'Back to Home',
-      icon    = DEFAULT_ICON,
-      variant = 'pill',
-      className = '',
+      to = null,
+      label = "Back to Home",
+      icon = DEFAULT_ICON,
+      variant = "pill",
+      className = "",
     } = {}) {
       injectStyles();
 
       const href = to || computeHomeUrl();
 
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.className = [
-        'cradle-back-home',
-        variant !== 'pill' ? `cradle-back-home--${variant}` : '',
+        "cradle-back-home",
+        variant !== "pill" ? `cradle-back-home--${variant}` : "",
         className,
-      ].filter(Boolean).join(' ');
+      ]
+        .filter(Boolean)
+        .join(" ");
 
-      link.href  = href;
+      link.href = href;
       link.title = label;
-      link.setAttribute('aria-label', label);
+      link.setAttribute("aria-label", label);
 
       /* Icon wrapper */
-      const iconWrapper = document.createElement('span');
-      iconWrapper.className = 'cradle-back-home__icon';
+      const iconWrapper = document.createElement("span");
+      iconWrapper.className = "cradle-back-home__icon";
       iconWrapper.innerHTML = icon;
 
       /* Label span */
-      const labelSpan = document.createElement('span');
+      const labelSpan = document.createElement("span");
       labelSpan.textContent = label;
 
       link.appendChild(iconWrapper);
@@ -241,7 +242,7 @@
       if (document.body) {
         attach();
       } else {
-        document.addEventListener('DOMContentLoaded', attach);
+        document.addEventListener("DOMContentLoaded", attach);
       }
     },
 
@@ -250,13 +251,13 @@
      */
     upgradeAll() {
       injectStyles();
-      document.querySelectorAll('[data-cradle-back-to-home]').forEach(el => {
+      document.querySelectorAll("[data-cradle-back-to-home]").forEach(el => {
         if (el.dataset.cradleUpgraded) return;
-        el.dataset.cradleUpgraded = 'true';
+        el.dataset.cradleUpgraded = "true";
 
-        const to      = el.dataset.to      || null;
-        const label   = el.dataset.label   || 'Back to Home';
-        const variant = el.dataset.variant || 'pill';
+        const to = el.dataset.to || null;
+        const label = el.dataset.label || "Back to Home";
+        const variant = el.dataset.variant || "pill";
 
         const btn = CradleBackToHome.create({ to, label, variant });
         el.replaceWith(btn);
@@ -265,8 +266,8 @@
   };
 
   /* Auto-inject (same behaviour as the existing back-to-home.js) */
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
       CradleBackToHome.autoInject();
       CradleBackToHome.upgradeAll();
     });
@@ -276,5 +277,4 @@
   }
 
   global.CradleBackToHome = CradleBackToHome;
-
 })(window);

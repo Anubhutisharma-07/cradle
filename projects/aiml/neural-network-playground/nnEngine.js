@@ -1,17 +1,17 @@
 // --- NEURAL NETWORK CORE ENGINE & MATHEMATICAL MATRIX PRIMITIVES ---
 const Activations = {
-  relu: { fn: (x) => Math.max(0, x), deriv: (x) => (x > 0 ? 1 : 0) },
+  relu: { fn: x => Math.max(0, x), deriv: x => (x > 0 ? 1 : 0) },
   sigmoid: {
-    fn: (x) => 1 / (1 + Math.exp(-Math.max(-500, Math.min(500, x)))),
-    deriv: (x) => {
+    fn: x => 1 / (1 + Math.exp(-Math.max(-500, Math.min(500, x)))),
+    deriv: x => {
       const s = 1 / (1 + Math.exp(-Math.max(-500, Math.min(500, x))));
       return s * (1 - s);
     },
   },
-  tanh: { fn: (x) => Math.tanh(x), deriv: (x) => 1 - Math.tanh(x) ** 2 },
+  tanh: { fn: x => Math.tanh(x), deriv: x => 1 - Math.tanh(x) ** 2 },
   leaky_relu: {
-    fn: (x) => (x > 0 ? x : 0.01 * x),
-    deriv: (x) => (x > 0 ? 1 : 0.01),
+    fn: x => (x > 0 ? x : 0.01 * x),
+    deriv: x => (x > 0 ? 1 : 0.01),
   },
 };
 
@@ -84,8 +84,11 @@ function generateDataset(type, n, noise) {
 
 function normalizeDataset(pts) {
   if (!pts || pts.length === 0) return [];
-  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-  pts.forEach((p) => {
+  let minX = Infinity,
+    maxX = -Infinity,
+    minY = Infinity,
+    maxY = -Infinity;
+  pts.forEach(p => {
     minX = Math.min(minX, p[0]);
     maxX = Math.max(maxX, p[0]);
     minY = Math.min(minY, p[1]);
@@ -93,7 +96,7 @@ function normalizeDataset(pts) {
   });
   const rx = maxX - minX || 1;
   const ry = maxY - minY || 1;
-  return pts.map((p) => [
+  return pts.map(p => [
     ((p[0] - minX) / rx) * 2 - 1,
     ((p[1] - minY) / ry) * 2 - 1,
     p[2],
@@ -146,7 +149,9 @@ class NeuralNetwork {
       }
       zs.push(z);
       const isLast = l === this.weights.length - 1;
-      a = z.map((v) => (isLast ? Activations.sigmoid.fn(v) : this.activation.fn(v)));
+      a = z.map(v =>
+        isLast ? Activations.sigmoid.fn(v) : this.activation.fn(v)
+      );
       as.push(a);
     }
     return { zs, as, output: a };
@@ -168,8 +173,10 @@ class NeuralNetwork {
 
     for (let bStart = 0; bStart < indices.length; bStart += bs) {
       const bEnd = Math.min(bStart + bs, indices.length);
-      const dW = this.weights.map((w) => w.map((row) => new Array(row.length).fill(0)));
-      const dB = this.biases.map((b) => new Array(b.length).fill(0));
+      const dW = this.weights.map(w =>
+        w.map(row => new Array(row.length).fill(0))
+      );
+      const dB = this.biases.map(b => new Array(b.length).fill(0));
       const batchLen = bEnd - bStart;
 
       for (let bi = bStart; bi < bEnd; bi++) {
@@ -226,11 +233,11 @@ class NeuralNetwork {
   }
 }
 
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== "undefined" && module.exports) {
   module.exports = {
     Activations,
     generateDataset,
     normalizeDataset,
-    NeuralNetwork
+    NeuralNetwork,
   };
 }

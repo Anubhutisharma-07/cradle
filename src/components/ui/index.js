@@ -40,7 +40,7 @@
 /* ─── Loading them individually is also supported                ─── */
 
 (function () {
-  'use strict';
+  "use strict";
 
   /**
    * Dynamically load a script relative to this file's location.
@@ -51,54 +51,47 @@
    */
   function resolveBase() {
     /*
-     * Strategy 1: scan all <script src> tags for our file name.
+     * Strategy 1: <meta name="cradle-ui-base" content="..."> tag.
+     * Explicit and works regardless of hosting setup.
+     * Add to any page: <meta name="cradle-ui-base" content="/src/components/ui/">
+     */
+    const meta = document.querySelector('meta[name="cradle-ui-base"]');
+    if (meta) {
+      const content = meta.getAttribute("content");
+      return content.endsWith("/") ? content : content + "/";
+    }
+
+    /*
+     * Strategy 2: scan all <script src> tags for our file name.
      * Works whether the script was loaded with defer, async, or inline.
      */
-    const scripts = document.querySelectorAll('script[src]');
+    const scripts = document.querySelectorAll("script[src]");
     for (const s of scripts) {
-      if (s.src && s.src.includes('components/ui/index.js')) {
-        return s.src.replace('index.js', '');
+      if (s.src && s.src.includes("components/ui/index.js")) {
+        return s.src.replace("index.js", "");
       }
     }
 
     /*
-     * Strategy 2: document.currentScript — only defined during initial
+     * Strategy 3: document.currentScript — only defined during initial
      * synchronous execution, so only works without defer/async.
-     * Keep as a secondary fallback.
      */
     if (document.currentScript && document.currentScript.src) {
-      return document.currentScript.src.replace('index.js', '');
+      return document.currentScript.src.replace("index.js", "");
     }
 
-    /*
-     * Strategy 3: derive from the page URL.
-     * Walk up until we find a path that ends at the repo root,
-     * then append the known relative path.
-     * e.g. http://127.0.0.1:8080/projects/games/chess/index.html
-     *   → http://127.0.0.1:8080/src/components/ui/
-     */
-    const origin = window.location.origin;
-    const segments = window.location.pathname.split('/').filter(Boolean);
-    /* Find 'projects' segment to determine depth */
-    const projectsIdx = segments.indexOf('projects');
-    if (projectsIdx >= 0) {
-      /* Root is everything before 'projects' */
-      const root = '/' + segments.slice(0, projectsIdx).join('/');
-      return origin + (root === '/' ? '' : root) + '/src/components/ui/';
-    }
-
-    /* Strategy 4: assume we're at the repo root */
-    return origin + '/src/components/ui/';
+    /* Fallback: assume the repo root */
+    return window.location.origin + "/src/components/ui/";
   }
 
   const BASE_URL = resolveBase();
 
   const COMPONENTS = [
-    'Button/Button.js',
-    'Card/Card.js',
-    'ThemeToggle/ThemeToggle.js',
-    'Navbar/Navbar.js',
-    'BackToHome/BackToHome.js',
+    "Button/Button.js",
+    "Card/Card.js",
+    "ThemeToggle/ThemeToggle.js",
+    "Navbar/Navbar.js",
+    "BackToHome/BackToHome.js",
   ];
 
   /**
@@ -115,11 +108,12 @@
         return;
       }
 
-      const script = document.createElement('script');
+      const script = document.createElement("script");
       script.src = fullUrl;
       script.async = false; /* Preserve load order */
-      script.onload  = () => resolve();
-      script.onerror = () => reject(new Error(`[CradleUI] Failed to load ${relativePath}`));
+      script.onload = () => resolve();
+      script.onerror = () =>
+        reject(new Error(`[CradleUI] Failed to load ${relativePath}`));
       document.head.appendChild(script);
     });
   }
@@ -132,11 +126,11 @@
    */
   const CradleUI = {
     _baseUrl: BASE_URL,
-    _loaded:  {},
+    _loaded: {},
 
     /** Load every component */
     loadAll() {
-      return Promise.all(COMPONENTS.map(p => this.load(p.split('/')[0])));
+      return Promise.all(COMPONENTS.map(p => this.load(p.split("/")[0])));
     },
 
     /**
@@ -147,7 +141,7 @@
     load(name) {
       if (this._loaded[name]) return Promise.resolve();
 
-      const found = COMPONENTS.find(p => p.startsWith(name + '/'));
+      const found = COMPONENTS.find(p => p.startsWith(name + "/"));
       if (!found) {
         console.warn(`[CradleUI] Unknown component: "${name}"`);
         return Promise.resolve();
@@ -163,5 +157,4 @@
 
   /* Auto-load all components when the bundle file itself is loaded */
   CradleUI.loadAll().catch(err => console.error(err));
-
 })();

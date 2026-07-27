@@ -1,4 +1,10 @@
-const emojis = { rock: "🪨", paper: "📄", scissors: "✂️", lizard: "🦎", spock: "🖖" };
+const emojis = {
+  rock: "🪨",
+  paper: "📄",
+  scissors: "✂️",
+  lizard: "🦎",
+  spock: "🖖",
+};
 const choicesList = ["rock", "paper", "scissors"];
 
 let playerScore = 0;
@@ -33,16 +39,16 @@ const playAgainBtn = document.getElementById("playAgainBtn");
 
 const rulesModeSelect = document.getElementById("rulesMode");
 if (rulesModeSelect) {
-  rulesModeSelect.addEventListener("change", (e) => {
+  rulesModeSelect.addEventListener("change", e => {
     currentRulesMode = e.target.value;
     updateModeUI();
   });
 }
 
 function updateModeUI() {
-  const isLizardSpock = (currentRulesMode === "lizard-spock");
+  const isLizardSpock = currentRulesMode === "lizard-spock";
   choicesList.length = 0;
-  
+
   const lizardBtn = document.getElementById("lizardBtn");
   const spockBtn = document.getElementById("spockBtn");
 
@@ -50,18 +56,34 @@ function updateModeUI() {
     choicesList.push("rock", "paper", "scissors", "lizard", "spock");
     if (lizardBtn) lizardBtn.style.display = "inline-flex";
     if (spockBtn) spockBtn.style.display = "inline-flex";
-    document.querySelectorAll(".lizard-stat").forEach(el => el.style.display = "block");
-    document.querySelectorAll(".spock-stat").forEach(el => el.style.display = "block");
-    document.querySelectorAll(".lizard-how").forEach(el => el.style.display = "block");
-    document.querySelectorAll(".spock-how").forEach(el => el.style.display = "block");
+    document
+      .querySelectorAll(".lizard-stat")
+      .forEach(el => (el.style.display = "block"));
+    document
+      .querySelectorAll(".spock-stat")
+      .forEach(el => (el.style.display = "block"));
+    document
+      .querySelectorAll(".lizard-how")
+      .forEach(el => (el.style.display = "block"));
+    document
+      .querySelectorAll(".spock-how")
+      .forEach(el => (el.style.display = "block"));
   } else {
     choicesList.push("rock", "paper", "scissors");
     if (lizardBtn) lizardBtn.style.display = "none";
     if (spockBtn) spockBtn.style.display = "none";
-    document.querySelectorAll(".lizard-stat").forEach(el => el.style.display = "none");
-    document.querySelectorAll(".spock-stat").forEach(el => el.style.display = "none");
-    document.querySelectorAll(".lizard-how").forEach(el => el.style.display = "none");
-    document.querySelectorAll(".spock-how").forEach(el => el.style.display = "none");
+    document
+      .querySelectorAll(".lizard-stat")
+      .forEach(el => (el.style.display = "none"));
+    document
+      .querySelectorAll(".spock-stat")
+      .forEach(el => (el.style.display = "none"));
+    document
+      .querySelectorAll(".lizard-how")
+      .forEach(el => (el.style.display = "none"));
+    document
+      .querySelectorAll(".spock-how")
+      .forEach(el => (el.style.display = "none"));
   }
   resetTournament();
 }
@@ -110,16 +132,16 @@ function renderTally() {
     if (computerTallyEl) computerTallyEl.innerHTML = "";
     return;
   }
-  
+
   if (playerTallyEl) playerTallyEl.innerHTML = "";
   if (computerTallyEl) computerTallyEl.innerHTML = "";
-  
+
   for (let i = 0; i < targetWins; i++) {
     const pDot = document.createElement("div");
     pDot.classList.add("dot");
     if (i < playerTournamentWins) pDot.classList.add("won");
     if (playerTallyEl) playerTallyEl.appendChild(pDot);
-    
+
     const cDot = document.createElement("div");
     cDot.classList.add("dot");
     if (i < computerTournamentWins) cDot.classList.add("won");
@@ -213,7 +235,7 @@ function playGame(player, computer) {
 
   streakEl.textContent = streak;
   renderTally();
-  
+
   if (gameMode > 1) {
     if (playerTournamentWins >= targetWins) {
       setTimeout(() => showVictoryModal("Player"), 500);
