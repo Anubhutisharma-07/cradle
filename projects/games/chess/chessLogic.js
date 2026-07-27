@@ -233,7 +233,7 @@ function move(fromRow, fromCol, toRow, toCol, extras = {}) {
   };
 }
 
-function applyMove(position, chosenMove) {
+function applyMove(position, chosenMove, promoteTo) {
   const piece = position[chosenMove.from.row][chosenMove.from.col];
   position[chosenMove.from.row][chosenMove.from.col] = null;
 
@@ -259,7 +259,7 @@ function applyMove(position, chosenMove) {
     piece.type === "pawn" &&
     (chosenMove.to.row === 0 || chosenMove.to.row === 7)
   ) {
-    newPiece.type = "queen"; // Simple auto-queen logic
+    newPiece.type = promoteTo || "queen";
   }
 
   position[chosenMove.to.row][chosenMove.to.col] = newPiece;
