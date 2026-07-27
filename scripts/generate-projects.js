@@ -83,6 +83,16 @@ const CATEGORY_STYLES = {
       <line x1="600" y1="37" x2="600" y2="637" stroke="#c084fc" stroke-width="1" opacity="0.3" />
       <line x1="300" y1="337" x2="900" y2="337" stroke="#c084fc" stroke-width="1" opacity="0.3" />
     </g>`
+  },
+  "file-tools": {
+    bgStart: "#060913",
+    bgEnd: "#1e1b4b",
+    accent: "#38bdf8",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />`,
+    pattern: `<g opacity="0.1" fill="none" stroke="#38bdf8" stroke-width="2">
+      <path d="M 0,150 L 1200,450 M 0,250 L 1200,550 M 0,50 L 1200,350" />
+      <circle cx="600" cy="337" r="150" stroke-dasharray="8 8" />
+    </g>`
   }
 };
 

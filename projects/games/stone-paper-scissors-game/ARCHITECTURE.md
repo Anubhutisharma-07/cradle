@@ -15,7 +15,7 @@ stone-paper-scissors-game/
 ├── rpsAiEngine.js   # Adaptive Markov chain opponent AI model
 ├── rpsStorage.js    # Local storage persistence for match stats and win streaks
 ├── script.js        # All game logic, animations, and event handling
-└── styles.css       # Cyberpunk visual theme, animations, responsive layout
+└── style.css       # Cyberpunk visual theme, animations, responsive layout
 ```
 
 ---

@@ -16,7 +16,7 @@ The project is intentionally self-contained: no build tools, no frameworks, no e
 ├── logic.js     # Pure game rules (no DOM access)
 ├── storage.js   # State and high score saving/loading per grid size
 ├── script.js    # UI layer — renders the board and handles input
-└── styles.css   # Layout and tile colour theming
+└── style.css   # Layout and tile colour theming
 ```
 
 **`logic.js`** and **`script.js`** are deliberately separated. `logic.js` contains every rule (tile merging, board traversal, win/loss detection) and exposes a small public API. `script.js` knows nothing about game rules — it only reads state and updates the DOM. This separation allows `logic.js` to be imported in a test environment without a browser.

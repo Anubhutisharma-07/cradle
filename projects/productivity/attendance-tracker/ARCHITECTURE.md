@@ -24,7 +24,7 @@ The application uses a standard decoupled **Frontend-First Architecture** where 
 ├── index.html        # Main dashboard layout and semantic structural DOM
 ├── data-handler.js   # Metrics calculations and CSV import/export handlers
 ├── script.js         # State tracking, DOM event listeners, and UI sync
-├── styles.css        # Scoped UI styles, themes, and dashboard layouts
+├── style.css        # Scoped UI styles, themes, and dashboard layouts
 └── ARCHITECTURE.md    # System design documentation (This file)
 ```
 
