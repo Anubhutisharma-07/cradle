@@ -60,7 +60,6 @@ header p {
   color: var(--text-muted);
 }
 
-
 .editor-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

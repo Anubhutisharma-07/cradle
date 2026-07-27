@@ -1,31 +1,31 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2048</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="../../../src/components/ui/tokens.css" />
-</head>
-<body>
-  <main class="game-shell">
-    <section class="panel" aria-labelledby="game-title">
-      <header class="panel__header">
-        <div>
-          <p class="eyebrow">Join the numbers and reach 2048</p>
-          <h1 id="game-title">2048</h1>
-        </div>
-        <div class="scores" aria-label="Game score">
-          <div class="score-card">
-            <span class="score-card__label">Score</span>
-            <strong id="scoreValue">0</strong>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2048</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../../../src/components/ui/tokens.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <section class="panel" aria-labelledby="game-title">
+        <header class="panel__header">
+          <div>
+            <p class="eyebrow">Join the numbers and reach 2048</p>
+            <h1 id="game-title">2048</h1>
           </div>
-          <div class="score-card">
-            <span class="score-card__label">Best</span>
-            <strong id="bestScoreValue">0</strong>
+          <div class="scores" aria-label="Game score">
+            <div class="score-card">
+              <span class="score-card__label">Score</span>
+              <strong id="scoreValue">0</strong>
+            </div>
+            <div class="score-card">
+              <span class="score-card__label">Best</span>
+              <strong id="bestScoreValue">0</strong>
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
 
       <section class="controls" aria-label="Game controls">
         <div class="grid-size-selector">
@@ -61,13 +61,13 @@
         >Restart</button>
       </section>
 
-      <section class="board" id="board" aria-label="2048 board"></section>
+        <section class="board" id="board" aria-label="2048 board"></section>
 
-      <section class="status" id="status" aria-live="polite">
-        Start moving to create a tile worth 2048.
+        <section class="status" id="status" aria-live="polite">
+          Start moving to create a tile worth 2048.
+        </section>
       </section>
-    </section>
-  </main>
+    </main>
 
   <script src="../../../src/components/ui/Button/Button.js"></script>
   <script src="../../../src/components/ui/BackToHome/BackToHome.js" defer></script>

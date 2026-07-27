@@ -1,10 +1,6 @@
-# Project Architecture
-
----
-
 ## Overview
 
-Time Blocking Planner is a client-side productivity web application designed to help users structure their daily schedules into discrete time blocks. It features a 24-hour interactive timeline with drag-to-move and drag-to-resize block controls, preset activity palettes, category breakdown analytics, and schedule export options including iCalendar (.ics), JSON, and Markdown summaries.
+Daily Productivity Planner is a tool for planning your daily activities and managing your time. You can create a schedule by placing tasks on a 24-hour timeline and adjust them whenever needed.It helps you stay organized and makes it easy to save or share your schedule.
 
 ---
 
@@ -21,11 +17,13 @@ Time Blocking Planner is a client-side productivity web application designed to 
 
 ```text
 projects/productivity/time-blocking-planner/
-├── index.html      # Entry point, layout grid, control bar, activity palette, modal structure
-├── style.css       # Visual styles, 24-hour timeline height tokens, block positioning, handles
-├── script.js       # Core logic, mouse drag & resize handling, storage persistence, iCal generator
-├── README.md       # Project overview and usage guidelines
-└── ARCHITECTURE.md # Project architecture documentation
+├── index.html        # Entry point, layout grid, control bar, activity palette, modal structure
+├── style.css         # Visual styles, 24-hour timeline height tokens, block positioning, handles
+├── plannerEngine.js  # Collision detection, category stats breakdown, and iCal generator
+├── plannerStorage.js # Local storage provider and JSON import/export sanitizer
+├── script.js         # Core logic, mouse drag & resize handling, storage persistence
+├── README.md         # Project overview and usage guidelines
+└── ARCHITECTURE.md   # Project architecture documentation
 ```
 
 ---
@@ -33,6 +31,7 @@ projects/productivity/time-blocking-planner/
 ## System / Project Architecture Overview
 
 The application is structured into three main modules:
+
 1. **View / Presentation (`index.html`, `style.css`)**: 24-hour timeline track with 60px/hour scaling (1px = 1min), activity palette sidebar, and modal dialog.
 2. **Interactive Engine (`script.js`)**: Mouse event listeners calculating Y-axis offsets for moving and resizing time blocks, enforcing grid snap logic.
 3. **Data & Storage Manager (`script.js`)**: Serializes time block data into `localStorage` keyed by date string (`YYYY-MM-DD`) and handles multi-format file exports.
@@ -51,11 +50,11 @@ User Interaction (Click Timeline / Drag Block / Resize Handle / Export)
 
 ## Component Breakdown
 
-| File | Responsibility |
-|---|---|
-| `index.html` | Header, date selector, action toolbar, activity palette, timeline track container, modal form |
-| `style.css` | 24-hour timeline scale styling, drag handles, category color tokens, glassmorphism modal |
-| `script.js` | Time block positioning logic, drag move/resize listeners, schedule stats calculation, file export/import |
+| File         | Responsibility                                                                                           |
+| ------------ | -------------------------------------------------------------------------------------------------------- |
+| `index.html` | Header, date selector, action toolbar, activity palette, timeline track container, modal form            |
+| `style.css`  | 24-hour timeline scale styling, drag handles, category color tokens, glassmorphism modal                 |
+| `script.js`  | Time block positioning logic, drag move/resize listeners, schedule stats calculation, file export/import |
 
 ---
 
@@ -91,21 +90,23 @@ Mouse position snapped to 15-minute steps → Block state updated → Saved to l
 
 ## Technologies Used
 
-| Technology | Purpose |
-|---|---|
-| HTML5 | Page structure, date inputs, file reader API, modal element |
-| CSS3 | Flexbox, CSS Grid, absolute positioning, custom property design tokens |
-| Vanilla JavaScript | Mouse drag event calculation, state management, iCal text generator |
-| localStorage API | Persisting daily schedules across browser sessions |
+| Technology         | Purpose                                                                |
+| ------------------ | ---------------------------------------------------------------------- |
+| HTML5              | Page structure, date inputs, file reader API, modal element            |
+| CSS3               | Flexbox, CSS Grid, absolute positioning, custom property design tokens |
+| Vanilla JavaScript | Mouse drag event calculation, state management, iCal text generator    |
+| localStorage API   | Persisting daily schedules across browser sessions                     |
 
 ---
 
 ## File Responsibilities
 
 ### `index.html`
+
 - Defines date selector, toolbar buttons, category palette, 24-hour timeline shell, and block editor modal.
 
 ### `script.js`
+
 - `renderBlocks()`: Computes `top` and `height` CSS properties for each time block based on `startMinutes` and `endMinutes`.
 - `initDragMove()` & `initResize()`: Handles `mousemove` and `mouseup` events for moving and resizing blocks.
 - `saveBlocksForDate()` / `loadBlocksForDate()`: Synchronizes array state with `localStorage`.

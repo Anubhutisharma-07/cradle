@@ -1,31 +1,80 @@
 # Brain Dump Collector Architecture
 
-## Overview
+Brain Dump Collector is a lightweight, privacy-first productivity mini-project designed to capture random thoughts rapidly before they disappear and organize them into meaningful categories using lightweight keyword matching, with zero external dependencies.
 
-Brain Dump Collector is a static browser productivity tool for quickly capturing random thoughts and organizing them into meaningful groups. It uses local browser storage for persistence and lightweight keyword rules for automatic categorization.
+---
 
-## Purpose & Goals
+## Table of Contents
 
-- Make it fast to capture one thought or many thoughts at once.
-- Automatically group notes without requiring a backend or AI service.
-- Keep search and filtering simple enough for quick review.
-- Provide export and import so notes can be backed up or moved.
-- Stay self-contained within the Cradle mini-project structure.
+- [Overview & Purpose](#overview--purpose)
+- [Key Features](#key-features)
+- [How to Run](#how-to-run)
+- [Keyboard Shortcuts](#keyboard-shortcuts)
+- [System Architecture Overview](#system-architecture-overview)
+- [Folder Structure](#folder-structure)
+- [Component Breakdown](#component-breakdown)
+- [Data Model & Persistence](#data-model--persistence)
+- [File Responsibilities](#file-responsibilities)
+- [Technologies Used](#technologies-used)
+- [Design Decisions](#design-decisions)
+- [Known Limitations](#known-limitations)
+- [Future Improvements](#future-improvements)
+- [Dependencies](#dependencies)
 
-## Folder Structure
+---
 
-```text
-brain-dump-collector/
-├── ARCHITECTURE.md  # Project structure and maintenance notes
-├── README.md        # Usage instructions and feature list
-├── index.html       # Semantic UI shell and templates
-├── script.js        # Capture, grouping, search, persistence, export/import
-└── style.css        # Responsive layout and visual design
+## Overview & Purpose
+
+Brain Dump Collector is a browser-based static application built within the Cradle mini-project collection. Its primary goal is to help users declutter their minds by rapidly dumping messy, unstructured thoughts and automatically categorizing them into Work, Study, Ideas, Personal, Health, Finance, Errands, or Later buckets.
+
+### Core Goals:
+- **Fast Multiline Capture:** Capture single or batch thoughts instantly.
+- **Automatic Keyword Categorization:** Group notes heuristics-based without requiring a remote AI backend or external API dependencies.
+- **Effortless Retrieval:** Enable search across notes, categories, and generated tags alongside multi-facet filtering.
+- **Data Mobility:** Provide seamless JSON import and export for backups and migration across devices.
+- **Zero-Build Ecosystem:** Remain fully self-contained as native HTML, CSS, and Vanilla JavaScript.
+
+---
+
+## Key Features
+
+- **Multiline Fast Capture:** Paste multiple lines of thoughts at once; each line creates a distinct, categorized note card.
+- **Keyword-based Auto Grouping:** Rule-scoring algorithm automatically assigns thoughts to appropriate category buckets.
+- **Manual Category Override:** Option to select a category manually during capture.
+- **Rich Search & Multi-Filtering:** Real-time search across text, category, and tags; filter by category, open, done, or pinned status.
+- **Note Lifecycle Management:** Pin, edit, mark done/reopen, or delete individual thoughts.
+- **Focus Queue Panel:** Quick summary displaying recent open thoughts for immediate attention.
+- **Category Summary Cards:** Visual insight breakdown of note counts per category.
+- **Local Persistence:** Data persists locally across sessions via browser `localStorage`.
+- **JSON Import & Export:** Download or upload notes via JSON backups.
+
+---
+
+## How to Run
+
+Open `index.html` directly in any web browser, or serve locally using Python:
+
+```bash
+python -m http.server 8000
 ```
 
-## System / Project Architecture Overview
+Then visit:
 
-The project follows a static three-file browser app pattern. `index.html` defines the capture form, controls, summary areas, and card template. `style.css` handles the responsive dashboard layout. `script.js` owns state, localStorage persistence, automatic grouping rules, search/filter logic, and DOM rendering.
+```text
+http://localhost:8000/projects/productivity/brain-dump-collector/
+```
+
+---
+
+## Keyboard Shortcuts
+
+- `Ctrl + Enter` or `Cmd + Enter`: Rapidly capture thoughts inside the text area.
+
+---
+
+## System Architecture Overview
+
+The application follows a static three-file web architecture. `index.html` provides the semantic markup, form inputs, and card templates; `style.css` defines responsive layouts and design tokens; `script.js` manages internal state, keyword detection heuristics, DOM rendering, `localStorage` synchronization, and JSON data import/export.
 
 ```text
 User opens index.html
@@ -41,18 +90,37 @@ State is saved and the dashboard re-renders
 User searches, filters, edits, pins, completes, exports, or imports notes
 ```
 
+---
+
+## Folder Structure
+
+```text
+brain-dump-collector/
+├── ARCHITECTURE.md  # Unified architecture document, component breakdown, and usage guide
+├── index.html       # Semantic UI shell and note templates
+├── script.js        # Note state, grouping engine, search, persistence, and export/import
+├── style.css        # Dashboard layout, theme variables, and card styling
+└── thumbnail.svg    # Project preview graphic
+```
+
+---
+
 ## Component Breakdown
 
-| File | Responsibility |
+| Component / File | Responsibility |
 |---|---|
-| `index.html` | Provides the app shell, capture form, filters, insight panels, board container, and note template. |
-| `script.js` | Manages notes, auto grouping, generated tags, persistence, rendering, export/import, and user actions. |
-| `style.css` | Defines colors, responsive grids, cards, forms, note states, and mobile behavior. |
-| `README.md` | Documents how to run and use the mini project. |
+| `index.html` | Provides the application shell, capture interface, filter controls, insight panels, board container, and reusable `<template>`. |
+| `script.js` | Manages application state, auto-grouping heuristics, tag generation, persistence, DOM updates, and backup export/import. |
+| `style.css` | Handles design system tokens, CSS grid/flexbox layouts, responsive states, card styles, and mobile behavior. |
+| `ARCHITECTURE.md` | Single authoritative documentation covering architecture, component roles, data schema, and usage. |
 
-## Data Model
+---
 
-Each note is stored as a plain object:
+## Data Model & Persistence
+
+### Note Object Schema
+
+Each thought is stored as a plain JavaScript object:
 
 ```js
 {
@@ -67,78 +135,80 @@ Each note is stored as a plain object:
 }
 ```
 
-The full notes array is persisted under:
+### Local Storage Key
+
+All notes are stored in `localStorage` under the key:
 
 ```text
 cradle:brain-dump-collector
 ```
 
-## Key Features
-
-- Multiline fast capture, with one thought created per line.
-- Keyword-based automatic category detection.
-- Category override for manual grouping.
-- Search across note text, categories, and generated tags.
-- Filters for category, status, done notes, and pinned notes.
-- Pin, done/reopen, edit, and delete controls.
-- Focus queue showing recent open thoughts.
-- Category summary cards.
-- JSON export and import.
-
-## Technologies Used
-
-| Technology | Purpose |
-|---|---|
-| HTML5 | Page structure, form controls, and card template. |
-| CSS3 | Responsive dashboard layout, card styling, states, and mobile behavior. |
-| Vanilla JavaScript | State management, keyword grouping, filtering, DOM rendering, export/import. |
-| localStorage API | Persists notes between browser sessions. |
-| FileReader API | Imports JSON note backups. |
-| Blob URL API | Generates downloadable JSON exports. |
+---
 
 ## File Responsibilities
 
 ### `index.html`
-
-- Defines the fast capture form and optional category override.
-- Provides search, group, and status filters.
-- Includes the stats cards, focus queue, category summary, and grouped board.
-- Stores reusable note markup in a `<template>`.
+- Form controls for multiline text input and category override selection.
+- Search input bar, category dropdown, and status filter buttons.
+- Stats summary cards, focus queue container, category summary panel, and note board container.
+- Includes reusable note card HTML structure inside a `<template>` tag.
 
 ### `script.js`
-
-- `handleCapture()` converts textarea lines into note objects.
-- `detectCategory()` scores text against keyword rules.
-- `extractTags()` creates searchable tags from category, hashtags, and important words.
-- `render()` coordinates stats, filters, focus queue, summaries, and grouped note cards.
-- `getFilteredNotes()` applies search, group, status, and sort rules.
-- `toggleNote()`, `editNote()`, and `deleteNote()` handle note actions.
-- `exportNotes()` and `importNotes()` handle JSON backup flows.
-- `persistNotes()` stores the state in localStorage.
+- `handleCapture()`: Converts text area lines into note objects.
+- `detectCategory()`: Scores text content against keyword rules to infer categories.
+- `extractTags()`: Generates searchable tags from category names, hashtags, and keywords.
+- `render()`: Updates stats, active filters, focus queue, summaries, and note cards in the DOM.
+- `getFilteredNotes()`: Filters notes based on search query, category selection, and note status (open/done/pinned).
+- `toggleNote()`, `editNote()`, `deleteNote()`: Performs mutations on notes.
+- `exportNotes()` & `importNotes()`: Generates Blob downloads and processes FileReader JSON uploads.
+- `persistNotes()`: Serializes state to `localStorage`.
 
 ### `style.css`
+- Defines CSS custom properties for color palette and layout tokens.
+- Constructs responsive grid containers for hero section, filter bar, and note board.
+- Provides interactive hover effects, state styling for pinned/completed items, and mobile responsiveness.
 
-- Uses CSS custom properties for the warm productivity theme.
-- Defines responsive grids for the hero, controls, insight cards, and note board.
-- Keeps controls usable on small screens.
-- Styles note states for pinned and completed thoughts.
+---
+
+## Technologies Used
+
+| Technology / API | Purpose |
+|---|---|
+| **HTML5** | Page structure, form controls, and card template. |
+| **CSS3** | Responsive dashboard layout, card styling, states, and mobile behavior. |
+| **Vanilla JavaScript** | State management, keyword grouping heuristics, DOM rendering, and export/import. |
+| **localStorage API** | Persists notes between browser sessions. |
+| **FileReader API** | Reading and parsing imported JSON note backups. |
+| **Blob & URL API** | Generating downloadable JSON note export files. |
+
+---
 
 ## Design Decisions
 
-- Keyword grouping is used instead of a remote AI service so the mini remains private, fast, and dependency-free.
-- Multiline capture supports real brain-dump behavior where thoughts arrive in batches.
-- Notes are grouped after filtering so search results stay easy to scan.
-- `localStorage` is used because the project is a lightweight frontend-only mini.
+- **Client-Side Keyword Heuristics:** Used instead of a remote AI service to guarantee zero runtime latency, complete privacy, and zero external infrastructure dependencies.
+- **Multiline Line-by-Line Capture:** Designed to match natural brain-dumping workflows where thoughts arrive in rapid batches.
+- **Post-Filter Categorized Board:** Grouping occurs after search filtering so search results remain organized by category context.
+- **Native Web APIs:** Built using standard `localStorage`, `FileReader`, and `Blob` APIs to maintain Cradle's zero-build requirement.
+
+---
 
 ## Known Limitations
 
-- Auto grouping is heuristic and may not classify every thought perfectly.
-- Data is stored in the current browser only unless exported manually.
-- Editing uses simple browser prompts to keep the app dependency-free.
+- **Heuristic Auto-Grouping:** Keyword-based classification may occasionally miscategorize complex or ambiguous thoughts.
+- **Single-Browser Persistence:** Data is stored within the specific browser instance unless manually exported to JSON.
+- **Native Prompt Editing:** Quick editing utilizes browser prompt dialogs to avoid external modal libraries.
+
+---
 
 ## Future Improvements
 
-- Add drag-and-drop category reassignment.
-- Add custom category rule editing.
-- Add markdown export.
-- Add recurring review reminders.
+- Drag-and-drop category reassignment for note cards.
+- Customizable keyword rule management.
+- Export options for Markdown (.md) and CSV formats.
+- Recurring review reminders and scheduled cleanups.
+
+---
+
+## Dependencies
+
+No third-party libraries or build tools are required. Built with standard HTML, CSS, Vanilla JavaScript, and native Web APIs.

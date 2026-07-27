@@ -5,9 +5,19 @@
     "path": "projects/games/2048-game/"
   },
   {
+    "title": "Advanced Qr Code Generator",
+    "category": "productivity",
+    "path": "projects/productivity/advanced-qr-code-generator/"
+  },
+  {
     "title": "AI Circuit Builder",
     "category": "aiml",
     "path": "projects/aiml/ai-circuit-builder/"
+  },
+  {
+    "title": "ASCII Camera",
+    "category": "misc",
+    "path": "projects/misc/ascii-camera/"
   },
   {
     "title": "Attendance Tracker",
@@ -15,9 +25,24 @@
     "path": "projects/productivity/attendance-tracker/"
   },
   {
+    "title": "Audio Waveform Generator",
+    "category": "misc",
+    "path": "projects/misc/audio-waveform-generator/"
+  },
+  {
+    "title": "Avatar Creator",
+    "category": "misc",
+    "path": "projects/misc/avatar-creator/"
+  },
+  {
     "title": "Brain Dump Collector",
     "category": "productivity",
     "path": "projects/productivity/brain-dump-collector/"
+  },
+  {
+    "title": "Browser Storage Inspector",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/browser-storage-inspector/"
   },
   {
     "title": "Cannon Shooting",
@@ -35,9 +60,19 @@
     "path": "projects/dev-tools/cpu-emulator/"
   },
   {
+    "title": "Css Shape Designer",
+    "category": "editor",
+    "path": "projects/editor/css-shape-designer/"
+  },
+  {
     "title": "Dot Game",
     "category": "games",
     "path": "projects/games/dot-game/"
+  },
+  {
+    "title": "Encoding Toolkit",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/encoding-toolkit/"
   },
   {
     "title": "File Difference Visualizer",
@@ -45,14 +80,44 @@
     "path": "projects/file-tools/file-difference-visualizer/"
   },
   {
+    "title": "Fourier Series Visualizer",
+    "category": "math",
+    "path": "projects/math/fourier-series-visualizer/"
+  },
+  {
+    "title": "Graph Theory Explorer",
+    "category": "math",
+    "path": "projects/math/graph-theory-explorer/"
+  },
+  {
     "title": "Image Classifier",
     "category": "aiml",
     "path": "projects/aiml/image-classifier/"
   },
   {
+    "title": "Invoice Generator",
+    "category": "productivity",
+    "path": "projects/productivity/invoice-generator/"
+  },
+  {
+    "title": "Json Converter",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/json-converter/"
+  },
+  {
     "title": "Ludo Game",
     "category": "games",
     "path": "projects/games/ludo-game/"
+  },
+  {
+    "title": "Markdown Resume Generator",
+    "category": "editor",
+    "path": "projects/editor/markdown-resume-generator/"
+  },
+  {
+    "title": "Matrix Playground",
+    "category": "math",
+    "path": "projects/math/matrix-playground/"
   },
   {
     "title": "Meme Generator",
@@ -83,6 +148,11 @@
     "title": "Reading Progress Tracker",
     "category": "productivity",
     "path": "projects/productivity/reading-progress-tracker/"
+  },
+  {
+    "title": "Regex Visualizer",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/regex-visualizer/"
   },
   {
     "title": "Sound Wave Visualizer",

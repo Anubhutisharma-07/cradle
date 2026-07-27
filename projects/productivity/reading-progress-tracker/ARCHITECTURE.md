@@ -1,6 +1,6 @@
 ## Overview
 
-Reading Progress Tracker is a browser-based tool for tracking books, reading sessions, and personal reading analytics. It stores all data in `localStorage` so records persist between sessions without a backend.
+Reading Progress Tracker makes it easy to keep track of the books you're reading without needing a notebook or spreadsheet. You can log each reading session, see your progress with simple visualizations, and get an estimate of when you'll ginish a book - everything running in your browser , and your data stays stored locally on your device!!
 
 ---
 
@@ -50,12 +50,12 @@ graph TD
 
 ## Component Breakdown
 
-| File | Responsibility |
-|---|---|
-| `index.html` | App shell, stats dashboard, tab navigation, filter bar, book grid, session list, analytics section, three modals |
+| File               | Responsibility                                                                                                                                 |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `index.html`       | App shell, stats dashboard, tab navigation, filter bar, book grid, session list, analytics section, three modals                               |
 | `tracker-logic.js` | `calculateBookProgress`, `estimateCompletionDate`, `calculateReadingStreak`, `calculateReadingStats`, `exportTrackerData`, `importTrackerData` |
-| `script.js` | State load/save, render functions, modal open/close, event wiring, export/import orchestration |
-| `style.css` | CSS custom properties design system, book cards, progress bars, bar charts, genre bars, modal animations |
+| `script.js`        | State load/save, render functions, modal open/close, event wiring, export/import orchestration                                                 |
+| `style.css`        | CSS custom properties design system, book cards, progress bars, bar charts, genre bars, modal animations                                       |
 
 ---
 
@@ -94,13 +94,13 @@ DOM re-renders from state (no partial patching)
 
 ## Technologies Used
 
-| Technology | Purpose |
-|---|---|
-| HTML5 | Semantic page structure and modal dialogs |
-| CSS3 (Custom Properties, Grid, Flexbox) | Dark-theme design system and responsive layout |
-| Vanilla JavaScript (ES6+) | State management, DOM rendering, business logic |
-| localStorage API | Persisting books and sessions across page reloads |
-| Google Fonts (Outfit, JetBrains Mono) | Typography |
+| Technology                              | Purpose                                           |
+| --------------------------------------- | ------------------------------------------------- |
+| HTML5                                   | Semantic page structure and modal dialogs         |
+| CSS3 (Custom Properties, Grid, Flexbox) | Dark-theme design system and responsive layout    |
+| Vanilla JavaScript (ES6+)               | State management, DOM rendering, business logic   |
+| localStorage API                        | Persisting books and sessions across page reloads |
+| Google Fonts (Outfit, JetBrains Mono)   | Typography                                        |
 
 ---
 

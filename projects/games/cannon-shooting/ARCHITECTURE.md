@@ -52,19 +52,24 @@ After fireTime − 2 s, shot fires:
 ## Core Modules
 
 ### `cannonEngine.js`
+
 Kinematics physics engine:
+
 - `degToRad(deg)`: Converts degrees to radians.
 - `calculateBallMileage(cmCanX, cmCanAngle)`: Computes trajectory mileage `(cmCanX + 4.23) / cos(angle)`.
 - `validateHit(userCanX, userCanY, comCanX, cmCanAngle, xTol, angleTol)`: Evaluates position and angle alignment against tolerance window.
 - `calculateScore(isHit, currentStreak)`: Computes score awards and streak multipliers.
 
 ### `cannonStorage.js`
+
 Persistence system:
+
 - `loadStats()`: Loads stats from `localStorage`.
 - `recordShot(stats, isHit, scoreAwarded, newStreak)`: Updates high score, current streak, best streak, accuracy, and saves back to `localStorage`.
 - `resetStats()`: Resets score data.
 
 ### `script.js`
+
 UI event bindings, HUD update controller, jQuery animation loops.
 
 ---
@@ -72,6 +77,7 @@ UI event bindings, HUD update controller, jQuery animation loops.
 ## Unit Testing
 
 Automated unit test suite is located in `tests/cannon-shooting.test.js` and can be executed via:
+
 ```bash
 node --test tests/cannon-shooting.test.js
 ```

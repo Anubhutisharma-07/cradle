@@ -80,7 +80,9 @@
 
         <!-- Dataset -->
         <section class="control-group">
-          <h3 class="control-title"><i aria-hidden="true" class="fas fa-database"></i> Dataset</h3>
+          <h3 class="control-title">
+            <i aria-hidden="true" class="fas fa-database"></i> Dataset
+          </h3>
           <div class="dataset-grid" id="datasetGrid">
             <button
               class="dataset-btn active"
@@ -186,13 +188,26 @@
             </button>
           </div>
           <!-- CSV Upload Status and Hidden File Input -->
-          <div class="csv-status-area" style="margin-top: 10px;">
-            <input type="file" id="csvFileInput" accept=".csv" style="display: none;" />
-            <div id="csvErrorContainer" class="error-container" style="display: none;">
+          <div class="csv-status-area" style="margin-top: 10px">
+            <input
+              type="file"
+              id="csvFileInput"
+              accept=".csv"
+              style="display: none"
+            />
+            <div
+              id="csvErrorContainer"
+              class="error-container"
+              style="display: none"
+            >
               <i aria-hidden="true" class="fas fa-exclamation-circle"></i>
               <span id="csvErrorMessage"></span>
             </div>
-            <div id="csvSuccessContainer" class="success-container" style="display: none;">
+            <div
+              id="csvSuccessContainer"
+              class="success-container"
+              style="display: none"
+            >
               <i aria-hidden="true" class="fas fa-check-circle"></i>
               <span id="csvSuccessMessage"></span>
             </div>
@@ -222,7 +237,8 @@
         <!-- Network Architecture -->
         <section class="control-group">
           <h3 class="control-title">
-            <i aria-hidden="true" class="fas fa-project-diagram"></i> Architecture
+            <i aria-hidden="true" class="fas fa-project-diagram"></i>
+            Architecture
           </h3>
           <div class="layer-config" id="layerConfig">
             <div class="layer-header">
@@ -288,11 +304,19 @@
           <h3 class="control-title">
             <i aria-hidden="true" class="fas fa-file-export"></i> Export Model
           </h3>
-          <div class="btn-row" style="margin-top: 10px;">
-            <button id="btnExportJS" class="btn btn-outline" title="Export as JavaScript">
+          <div class="btn-row" style="margin-top: 10px">
+            <button
+              id="btnExportJS"
+              class="btn btn-outline"
+              title="Export as JavaScript"
+            >
               <i aria-hidden="true" class="fab fa-js"></i> JS
             </button>
-            <button id="btnExportPy" class="btn btn-outline" title="Export as Python">
+            <button
+              id="btnExportPy"
+              class="btn btn-outline"
+              title="Export as Python"
+            >
               <i aria-hidden="true" class="fab fa-python"></i> Python
             </button>
           </div>
@@ -305,7 +329,10 @@
           <!-- Decision Boundary -->
           <div class="viz-card" id="boundaryCard">
             <div class="viz-card-header">
-              <h3><i aria-hidden="true" class="fas fa-border-all"></i> Decision Boundary</h3>
+              <h3>
+                <i aria-hidden="true" class="fas fa-border-all"></i> Decision
+                Boundary
+              </h3>
               <div class="viz-card-actions">
                 <label class="toggle-label">
                   <input type="checkbox" id="showDataToggle" checked />
@@ -322,7 +349,8 @@
           <div class="viz-card" id="networkCard">
             <div class="viz-card-header">
               <h3>
-                <i aria-hidden="true" class="fas fa-project-diagram"></i> Network Architecture
+                <i aria-hidden="true" class="fas fa-project-diagram"></i>
+                Network Architecture
               </h3>
               <div class="viz-card-actions">
                 <label class="toggle-label">
@@ -340,7 +368,9 @@
         <!-- Loss Chart -->
         <div class="viz-card viz-card-wide" id="lossCard">
           <div class="viz-card-header">
-            <h3><i aria-hidden="true" class="fas fa-chart-line"></i> Training Loss</h3>
+            <h3>
+              <i aria-hidden="true" class="fas fa-chart-line"></i> Training Loss
+            </h3>
           </div>
           <div class="canvas-wrap canvas-wrap-short">
             <canvas id="lossCanvas" width="900" height="180"></canvas>
@@ -351,9 +381,15 @@
 
     <!-- Footer -->
     <footer class="app-footer">
-      <span>Neural Network Playground — Built with vanilla JavaScript &amp; Canvas</span>
+      <span
+        >Neural Network Playground — Built with vanilla JavaScript &amp;
+        Canvas</span
+      >
     </footer>
-    <script src="../../../src/components/ui/BackToHome/BackToHome.js" defer></script>
+    <script
+      src="../../../src/components/ui/BackToHome/BackToHome.js"
+      defer
+    ></script>
     <script src="nnEngine.js"></script>
     <script src="script.js?v=1.0.2"></script>
   </body>
