@@ -25,6 +25,11 @@
     "path": "projects/productivity/attendance-tracker/"
   },
   {
+    "title": "Audio Waveform Generator",
+    "category": "misc",
+    "path": "projects/misc/audio-waveform-generator/"
+  },
+  {
     "title": "Brain Dump Collector",
     "category": "productivity",
     "path": "projects/productivity/brain-dump-collector/"
