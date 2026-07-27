@@ -1,10 +1,6 @@
-# Project Architecture
-
----
-
 ## Overview
 
-Time Blocking Planner is a client-side productivity web application designed to help users structure their daily schedules into discrete time blocks. It features a 24-hour interactive timeline with drag-to-move and drag-to-resize block controls, preset activity palettes, category breakdown analytics, and schedule export options including iCalendar (.ics), JSON, and Markdown summaries.
+Daily Productivity Planner is a tool for planning your daily activities and managing your time. You can create a schedule by placing tasks on a 24-hour timeline and adjust them whenever needed.It helps you stay organized and makes it easy to save or share your schedule.
 
 ---
 
