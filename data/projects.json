@@ -85,6 +85,11 @@
     "path": "projects/productivity/invoice-generator/"
   },
   {
+    "title": "Json Converter",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/json-converter/"
+  },
+  {
     "title": "Ludo Game",
     "category": "games",
     "path": "projects/games/ludo-game/"
