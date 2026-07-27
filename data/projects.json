@@ -30,6 +30,11 @@
     "path": "projects/misc/audio-waveform-generator/"
   },
   {
+    "title": "Avatar Creator",
+    "category": "misc",
+    "path": "projects/misc/avatar-creator/"
+  },
+  {
     "title": "Brain Dump Collector",
     "category": "productivity",
     "path": "projects/productivity/brain-dump-collector/"

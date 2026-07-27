@@ -48,11 +48,11 @@ graph TD
 
 ## Component Breakdown
 
-| File | Responsibility |
-|---|---|
-| `index.html` | Page shell; contains the empty SVG element and all input controls |
-| `script.js` | Builds the pixel grid, handles all user interaction, and exports the PNG |
-| `style.css` | Layout, sizing, and crisp pixel-edge rendering |
+| File         | Responsibility                                                           |
+| ------------ | ------------------------------------------------------------------------ |
+| `index.html` | Page shell; contains the empty SVG element and all input controls        |
+| `script.js`  | Builds the pixel grid, handles all user interaction, and exports the PNG |
+| `style.css`  | Layout, sizing, and crisp pixel-edge rendering                           |
 
 ---
 
@@ -88,11 +88,11 @@ User clicks Download → SVG is serialized, drawn onto a canvas, and exported as
 
 ## Technologies Used
 
-| Technology | Purpose |
-|---|---|
-| HTML5 | Page structure and SVG canvas container |
-| CSS3 | Layout (Flexbox), sizing, and `shape-rendering: crispEdges` for sharp pixels |
-| Vanilla JavaScript (ES6+) | Grid generation, rendering, randomize logic, and Canvas-based PNG export |
+| Technology                | Purpose                                                                      |
+| ------------------------- | ---------------------------------------------------------------------------- |
+| HTML5                     | Page structure and SVG canvas container                                      |
+| CSS3                      | Layout (Flexbox), sizing, and `shape-rendering: crispEdges` for sharp pixels |
+| Vanilla JavaScript (ES6+) | Grid generation, rendering, randomize logic, and Canvas-based PNG export     |
 
 ---
 
