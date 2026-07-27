@@ -18,7 +18,7 @@ The project is intentionally self-contained: no build tools, no frameworks, no e
 ├── gameUndoManager.js  # Move history stack manager with rollback support
 ├── gameThemeEngine.js  # Preset grid color themes (Classic, Dark Neon, Cyberpunk)
 ├── script.js           # UI layer — renders the board and handles input
-└── styles.css          # Layout and tile colour theming
+└── style.css          # Layout and tile colour theming
 ```
 
 **`logic.js`**, **`gameUndoManager.js`**, and **`script.js`** are deliberately separated into modular architecture. `logic.js` contains core rules, `gameUndoManager.js` handles move history stack, and `script.js` binds UI events and DOM updates.

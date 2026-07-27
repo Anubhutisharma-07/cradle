@@ -393,8 +393,6 @@ function nextTurn() {
     state.currentPlayer = next;
 }
 
-    state.currentPlayer = nextPlayer;
-}
 
 function renderStats() {
     playerStatsElement.innerHTML = "";

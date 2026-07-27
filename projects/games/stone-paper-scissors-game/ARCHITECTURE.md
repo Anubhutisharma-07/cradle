@@ -13,7 +13,7 @@ stone-paper-scissors-game/
 ├── index.html   # Full page: navbar, game box, how-to section, footer, modal
 ├── game-engine.js # Rules matrix for classic and Lizard-Spock modes
 ├── script.js    # All game logic, animations, and event handling
-└── styles.css   # Cyberpunk visual theme, animations, responsive layout
+└── style.css   # Cyberpunk visual theme, animations, responsive layout
 ```
 
 ---

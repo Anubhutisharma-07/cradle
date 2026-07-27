@@ -40,6 +40,11 @@
     "path": "projects/games/dot-game/"
   },
   {
+    "title": "File Difference Visualizer",
+    "category": "file-tools",
+    "path": "projects/file-tools/file-difference-visualizer/"
+  },
+  {
     "title": "Image Classifier",
     "category": "aiml",
     "path": "projects/aiml/image-classifier/"
