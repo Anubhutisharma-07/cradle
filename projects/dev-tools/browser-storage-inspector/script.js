@@ -1,22 +1,21 @@
+const engine = window.StorageEngine;
+const exporter = window.StorageExporter;
+
 const storageState = {
   local: [],
   session: [],
   cookies: [],
   indexed: [],
-  databases: [],
-  selectedDb: "",
-  selectedStore: "",
+  typeFilter: "all"
 };
 
 const elements = {
   searchInput: document.getElementById("searchInput"),
+  typeFilterSelect: document.getElementById("typeFilterSelect"),
   refreshBtn: document.getElementById("refreshBtn"),
   seedBtn: document.getElementById("seedBtn"),
-  exportAllBtn: document.getElementById("exportAllBtn"),
-  loadIndexedBtn: document.getElementById("loadIndexedBtn"),
-  deleteDbBtn: document.getElementById("deleteDbBtn"),
-  dbSelect: document.getElementById("dbSelect"),
-  storeSelect: document.getElementById("storeSelect"),
+  exportJsonBtn: document.getElementById("exportJsonBtn"),
+  exportCsvBtn: document.getElementById("exportCsvBtn"),
   statusMessage: document.getElementById("statusMessage"),
   counts: {
     local: document.getElementById("localCount"),
@@ -47,633 +46,40 @@ function initializeInspector() {
     button.addEventListener("click", () => clearStorage(button.dataset.clear));
   });
 
-  elements.refreshBtn.addEventListener("click", refreshAll);
-  elements.seedBtn.addEventListener("click", seedDemoData);
-  elements.exportAllBtn.addEventListener("click", exportAllData);
-  elements.loadIndexedBtn.addEventListener("click", refreshIndexedDB);
-  elements.deleteDbBtn.addEventListener("click", deleteSelectedDatabase);
-  elements.searchInput.addEventListener("input", renderAll);
-  elements.dbSelect.addEventListener("change", handleDatabaseChange);
-  elements.storeSelect.addEventListener("change", handleStoreChange);
+  if (elements.refreshBtn) elements.refreshBtn.addEventListener("click", refreshAll);
+  if (elements.seedBtn) elements.seedBtn.addEventListener("click", seedDemoData);
+  if (elements.exportJsonBtn) elements.exportJsonBtn.addEventListener("click", exportJSON);
+  if (elements.exportCsvBtn) elements.exportCsvBtn.addEventListener("click", exportCSV);
+
+  if (elements.searchInput) elements.searchInput.addEventListener("input", renderAll);
+  if (elements.typeFilterSelect) {
+    elements.typeFilterSelect.addEventListener("change", e => {
+      storageState.typeFilter = e.target.value;
+      renderAll();
+    });
+  }
 
   refreshAll();
 }
 
-async function refreshAll() {
-  readLocalStorage();
-  readSessionStorage();
-  readCookies();
-  await refreshIndexedDB();
+function refreshAll() {
+  if (engine) {
+    const localData = engine.readWebStorage("localStorage");
+    const sessionData = engine.readWebStorage("sessionStorage");
+    const cookieData = engine.readCookies();
+
+    storageState.local = localData.items;
+    storageState.session = sessionData.items;
+    storageState.cookies = cookieData.items;
+  }
   renderAll();
   setStatus("Storage data refreshed.");
 }
 
-function readLocalStorage() {
-  storageState.local = readWebStorage(localStorage);
-}
-
-function readSessionStorage() {
-  storageState.session = readWebStorage(sessionStorage);
-}
-
-function readWebStorage(storage) {
-  return Array.from({ length: storage.length }, (_, index) => {
-    const key = storage.key(index);
-    return {
-      key,
-      value: storage.getItem(key),
-    };
-  }).sort(sortByKey);
-}
-
-function readCookies() {
-  storageState.cookies = document.cookie
-    ? document.cookie
-        .split(";")
-        .map(cookie => {
-          const separatorIndex = cookie.indexOf("=");
-          const name = decodeURIComponent(
-            cookie.slice(0, separatorIndex).trim()
-          );
-          const value = decodeURIComponent(
-            cookie.slice(separatorIndex + 1).trim()
-          );
-          return { key: name, value };
-        })
-        .sort(sortByKey)
-    : [];
-}
-
-async function refreshIndexedDB() {
-  if (!("indexedDB" in window)) {
-    storageState.indexed = [];
-    setStatus("IndexedDB is not available in this browser.");
-    return;
+function setStatus(msg) {
+  if (elements.statusMessage) {
+    elements.statusMessage.textContent = msg;
   }
-
-  if (typeof indexedDB.databases !== "function") {
-    storageState.indexed = [];
-    populateDatabaseSelect();
-    setStatus(
-      "This browser does not expose IndexedDB database listing. Try Seed Demo Data."
-    );
-    return;
-  }
-
-  const databases = await indexedDB.databases();
-  storageState.databases = databases
-    .filter(database => database.name)
-    .map(database => ({
-      name: database.name,
-      version: database.version || 1,
-      stores: [],
-    }))
-    .sort((a, b) => a.name.localeCompare(b.name));
-
-  storageState.indexed = [];
-
-  for (const database of storageState.databases) {
-    try {
-      const db = await openDatabase(database.name);
-      database.stores = Array.from(db.objectStoreNames);
-
-      for (const storeName of database.stores) {
-        const records = await readObjectStore(db, storeName);
-        records.forEach(record => {
-          storageState.indexed.push({
-            database: database.name,
-            store: storeName,
-            key: record.key,
-            value: record.value,
-          });
-        });
-      }
-
-      db.close();
-    } catch (error) {
-      storageState.indexed.push({
-        database: database.name,
-        store: "unavailable",
-        key: "error",
-        value: error.message,
-      });
-    }
-  }
-
-  preserveIndexedSelection();
-  populateDatabaseSelect();
-}
-
-function openDatabase(name) {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(name);
-    request.onerror = () =>
-      reject(request.error || new Error("Could not open database."));
-    request.onsuccess = () => resolve(request.result);
-  });
-}
-
-function readObjectStore(db, storeName) {
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(storeName, "readonly");
-    const store = transaction.objectStore(storeName);
-    const request = store.openCursor();
-    const records = [];
-
-    request.onerror = () =>
-      reject(request.error || new Error("Could not read object store."));
-    request.onsuccess = () => {
-      const cursor = request.result;
-      if (!cursor) {
-        resolve(records);
-        return;
-      }
-
-      records.push({
-        key: cursor.primaryKey,
-        value: cursor.value,
-      });
-      cursor.continue();
-    };
-  });
-}
-
-function populateDatabaseSelect() {
-  const options = storageState.databases.map(database => {
-    return `<option value="${escapeHtml(database.name)}">${escapeHtml(database.name)}</option>`;
-  });
-
-  elements.dbSelect.innerHTML = options.length
-    ? options.join("")
-    : '<option value="">No databases found</option>';
-
-  if (storageState.selectedDb) {
-    elements.dbSelect.value = storageState.selectedDb;
-  }
-
-  populateStoreSelect();
-}
-
-function populateStoreSelect() {
-  const database = storageState.databases.find(
-    item => item.name === elements.dbSelect.value
-  );
-  const stores = database ? database.stores : [];
-
-  elements.storeSelect.innerHTML = stores.length
-    ? stores
-        .map(
-          store =>
-            `<option value="${escapeHtml(store)}">${escapeHtml(store)}</option>`
-        )
-        .join("")
-    : '<option value="">No object stores found</option>';
-
-  if (storageState.selectedStore) {
-    elements.storeSelect.value = storageState.selectedStore;
-  }
-}
-
-function preserveIndexedSelection() {
-  const previousDb = storageState.selectedDb || elements.dbSelect.value;
-  const previousStore =
-    storageState.selectedStore || elements.storeSelect.value;
-  const firstDb = storageState.databases[0];
-
-  storageState.selectedDb = storageState.databases.some(
-    db => db.name === previousDb
-  )
-    ? previousDb
-    : firstDb?.name || "";
-
-  const selectedDatabase = storageState.databases.find(
-    db => db.name === storageState.selectedDb
-  );
-  storageState.selectedStore = selectedDatabase?.stores.includes(previousStore)
-    ? previousStore
-    : selectedDatabase?.stores[0] || "";
-}
-
-function handleDatabaseChange() {
-  storageState.selectedDb = elements.dbSelect.value;
-  storageState.selectedStore = "";
-  populateStoreSelect();
-  renderAll();
-}
-
-function handleStoreChange() {
-  storageState.selectedStore = elements.storeSelect.value;
-  renderAll();
-}
-
-async function handleFormSubmit(event) {
-  event.preventDefault();
-
-  const form = event.currentTarget;
-  const type = form.dataset.form;
-  const formData = new FormData(form);
-  const key = String(formData.get("key") || "").trim();
-  const value = String(formData.get("value") || "");
-
-  if (type === "local") {
-    localStorage.setItem(key, value);
-    readLocalStorage();
-  }
-
-  if (type === "session") {
-    sessionStorage.setItem(key, value);
-    readSessionStorage();
-  }
-
-  if (type === "cookies") {
-    const maxAge = Number(formData.get("maxAge")) || 86400;
-    document.cookie = `${encodeURIComponent(key)}=${encodeURIComponent(value)}; path=/; max-age=${maxAge}; SameSite=Lax`;
-    readCookies();
-  }
-
-  if (type === "indexed") {
-    const saved = await saveIndexedRecord(key, value);
-    if (!saved) {
-      return;
-    }
-    await refreshIndexedDB();
-  }
-
-  form.reset();
-  renderAll();
-  setStatus(`${labelFor(type)} entry saved.`);
-}
-
-async function saveIndexedRecord(key, value) {
-  const dbName = elements.dbSelect.value;
-  const storeName = elements.storeSelect.value;
-
-  if (!dbName || !storeName) {
-    setStatus("Select an IndexedDB database and object store before saving.");
-    return;
-  }
-
-  let parsedValue;
-  try {
-    parsedValue = JSON.parse(value);
-  } catch (error) {
-    setStatus("IndexedDB values must be valid JSON.");
-    return;
-  }
-
-  try {
-    const db = await openDatabase(dbName);
-    await new Promise((resolve, reject) => {
-      const transaction = db.transaction(storeName, "readwrite");
-      const store = transaction.objectStore(storeName);
-      const parsedKey = key ? parseIndexedKey(key) : undefined;
-      const request = store.keyPath
-        ? store.put(parsedValue)
-        : parsedKey === undefined
-          ? store.put(parsedValue)
-          : store.put(parsedValue, parsedKey);
-
-      request.onerror = () =>
-        reject(request.error || new Error("Could not save IndexedDB record."));
-      transaction.oncomplete = () => resolve();
-      transaction.onerror = () =>
-        reject(transaction.error || new Error("IndexedDB transaction failed."));
-    });
-    db.close();
-    return true;
-  } catch (error) {
-    setStatus(`IndexedDB save failed: ${error.message}`);
-    return false;
-  }
-}
-
-function parseIndexedKey(key) {
-  try {
-    return JSON.parse(key);
-  } catch (error) {
-    return key;
-  }
-}
-
-async function clearStorage(type) {
-  if (type === "local") {
-    localStorage.clear();
-    readLocalStorage();
-  }
-
-  if (type === "session") {
-    sessionStorage.clear();
-    readSessionStorage();
-  }
-
-  if (type === "cookies") {
-    storageState.cookies.forEach(cookie => deleteCookie(cookie.key));
-    readCookies();
-  }
-
-  renderAll();
-  setStatus(`${labelFor(type)} cleared.`);
-}
-
-async function deleteEntry(type, key, metadata = {}) {
-  if (type === "local") {
-    localStorage.removeItem(key);
-    readLocalStorage();
-  }
-
-  if (type === "session") {
-    sessionStorage.removeItem(key);
-    readSessionStorage();
-  }
-
-  if (type === "cookies") {
-    deleteCookie(key);
-    readCookies();
-  }
-
-  if (type === "indexed") {
-    await deleteIndexedRecord(metadata.database, metadata.store, key);
-    await refreshIndexedDB();
-  }
-
-  renderAll();
-  setStatus(`${labelFor(type)} entry deleted.`);
-}
-
-function deleteCookie(name) {
-  document.cookie = `${encodeURIComponent(name)}=; path=/; max-age=0; SameSite=Lax`;
-}
-
-async function deleteIndexedRecord(dbName, storeName, key) {
-  const db = await openDatabase(dbName);
-  await new Promise((resolve, reject) => {
-    const transaction = db.transaction(storeName, "readwrite");
-    const store = transaction.objectStore(storeName);
-    const request = store.delete(key);
-
-    request.onerror = () =>
-      reject(request.error || new Error("Could not delete IndexedDB record."));
-    transaction.oncomplete = () => resolve();
-    transaction.onerror = () =>
-      reject(transaction.error || new Error("IndexedDB transaction failed."));
-  });
-  db.close();
-}
-
-async function deleteSelectedDatabase() {
-  const dbName = elements.dbSelect.value;
-  if (!dbName) {
-    setStatus("No IndexedDB database selected.");
-    return;
-  }
-
-  await new Promise((resolve, reject) => {
-    const request = indexedDB.deleteDatabase(dbName);
-    request.onerror = () =>
-      reject(request.error || new Error("Could not delete database."));
-    request.onsuccess = () => resolve();
-    request.onblocked = () =>
-      setStatus("Close other tabs using this database, then try again.");
-  });
-
-  storageState.selectedDb = "";
-  storageState.selectedStore = "";
-  await refreshIndexedDB();
-  renderAll();
-  setStatus(`IndexedDB database "${dbName}" deleted.`);
-}
-
-function editEntry(type, key, value) {
-  const form = document.querySelector(`[data-form="${type}"]`);
-  form.elements.key.value = key;
-  form.elements.value.value = stringifyValue(value);
-
-  if (type === "cookies" && form.elements.maxAge) {
-    form.elements.maxAge.value = 86400;
-  }
-
-  form.scrollIntoView({ behavior: "smooth", block: "center" });
-}
-
-function renderAll() {
-  const query = elements.searchInput.value.trim().toLowerCase();
-
-  renderKeyValueRows("local", filterEntries(storageState.local, query));
-  renderKeyValueRows("session", filterEntries(storageState.session, query));
-  renderKeyValueRows("cookies", filterEntries(storageState.cookies, query));
-  renderIndexedRows(filterIndexedEntries(storageState.indexed, query));
-
-  elements.counts.local.textContent = storageState.local.length;
-  elements.counts.session.textContent = storageState.session.length;
-  elements.counts.cookies.textContent = storageState.cookies.length;
-  elements.counts.indexed.textContent = storageState.indexed.length;
-}
-
-function renderKeyValueRows(type, entries) {
-  elements.rows[type].innerHTML = "";
-
-  if (!entries.length) {
-    renderEmptyRow(
-      elements.rows[type],
-      3,
-      `No ${labelFor(type)} entries found.`
-    );
-    return;
-  }
-
-  entries.forEach(entry => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td class="key-cell">${escapeHtml(entry.key)}</td>
-      <td class="value-cell">${escapeHtml(entry.value)}</td>
-      <td>
-        <div class="row-actions">
-          <button class="secondary" type="button" data-action="edit">Edit</button>
-          <button class="secondary" type="button" data-action="export">Export</button>
-          <button class="danger" type="button" data-action="delete">Delete</button>
-        </div>
-      </td>
-    `;
-
-    row.querySelector('[data-action="edit"]').addEventListener("click", () => {
-      editEntry(type, entry.key, entry.value);
-    });
-    row
-      .querySelector('[data-action="export"]')
-      .addEventListener("click", () => {
-        downloadJson(`${type}-${entry.key}.json`, entry);
-      });
-    row
-      .querySelector('[data-action="delete"]')
-      .addEventListener("click", () => {
-        deleteEntry(type, entry.key);
-      });
-
-    elements.rows[type].appendChild(row);
-  });
-}
-
-function renderIndexedRows(entries) {
-  elements.rows.indexed.innerHTML = "";
-
-  const selectedDb = elements.dbSelect.value;
-  const selectedStore = elements.storeSelect.value;
-  const scopedEntries = entries.filter(entry => {
-    if (!selectedDb || !selectedStore) return true;
-    return entry.database === selectedDb && entry.store === selectedStore;
-  });
-
-  if (!scopedEntries.length) {
-    renderEmptyRow(elements.rows.indexed, 4, "No IndexedDB records found.");
-    return;
-  }
-
-  scopedEntries.forEach(entry => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td class="key-cell">${escapeHtml(entry.database)} / ${escapeHtml(entry.store)}</td>
-      <td class="key-cell">${escapeHtml(stringifyValue(entry.key))}</td>
-      <td class="value-cell">${escapeHtml(stringifyValue(entry.value))}</td>
-      <td>
-        <div class="row-actions">
-          <button class="secondary" type="button" data-action="edit">Edit</button>
-          <button class="secondary" type="button" data-action="export">Export</button>
-          <button class="danger" type="button" data-action="delete">Delete</button>
-        </div>
-      </td>
-    `;
-
-    row.querySelector('[data-action="edit"]').addEventListener("click", () => {
-      editEntry("indexed", stringifyValue(entry.key), entry.value);
-    });
-    row
-      .querySelector('[data-action="export"]')
-      .addEventListener("click", () => {
-        downloadJson(
-          `indexeddb-${entry.database}-${entry.store}-${stringifyValue(entry.key)}.json`,
-          entry
-        );
-      });
-    row
-      .querySelector('[data-action="delete"]')
-      .addEventListener("click", () => {
-        deleteEntry("indexed", entry.key, {
-          database: entry.database,
-          store: entry.store,
-        });
-      });
-
-    elements.rows.indexed.appendChild(row);
-  });
-}
-
-function renderEmptyRow(target, colSpan, message) {
-  const row = document.createElement("tr");
-  row.innerHTML = `<td class="empty" colspan="${colSpan}">${escapeHtml(message)}</td>`;
-  target.appendChild(row);
-}
-
-function filterEntries(entries, query) {
-  if (!query) return entries;
-  return entries.filter(entry => {
-    return `${entry.key} ${entry.value}`.toLowerCase().includes(query);
-  });
-}
-
-function filterIndexedEntries(entries, query) {
-  if (!query) return entries;
-  return entries.filter(entry => {
-    return `${entry.database} ${entry.store} ${stringifyValue(entry.key)} ${stringifyValue(entry.value)}`
-      .toLowerCase()
-      .includes(query);
-  });
-}
-
-async function seedDemoData() {
-  localStorage.setItem("cradle:theme", "dark");
-  localStorage.setItem(
-    "cradle:user",
-    JSON.stringify({ name: "Demo User", role: "tester" }, null, 2)
-  );
-  sessionStorage.setItem("cradle:active-tab", "storage-inspector");
-  sessionStorage.setItem(
-    "cradle:draft",
-    "Remember to export the storage snapshot."
-  );
-  document.cookie =
-    "cradle_demo_cookie=visible_cookie_value; path=/; max-age=86400; SameSite=Lax";
-
-  await seedIndexedDB();
-  await refreshAll();
-  setStatus("Demo data added to all storage types.");
-}
-
-function seedIndexedDB() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open("cradle-storage-inspector-demo", 1);
-
-    request.onupgradeneeded = () => {
-      const db = request.result;
-      if (!db.objectStoreNames.contains("profiles")) {
-        db.createObjectStore("profiles");
-      }
-      if (!db.objectStoreNames.contains("events")) {
-        db.createObjectStore("events", { autoIncrement: true });
-      }
-    };
-
-    request.onerror = () =>
-      reject(request.error || new Error("Could not seed IndexedDB."));
-    request.onsuccess = () => {
-      const db = request.result;
-      const transaction = db.transaction(["profiles", "events"], "readwrite");
-
-      transaction
-        .objectStore("profiles")
-        .put({ name: "Ada", role: "admin" }, "user-1");
-      transaction
-        .objectStore("profiles")
-        .put({ name: "Linus", role: "developer" }, "user-2");
-      transaction
-        .objectStore("events")
-        .add({ type: "login", createdAt: new Date().toISOString() });
-
-      transaction.oncomplete = () => {
-        db.close();
-        resolve();
-      };
-      transaction.onerror = () => {
-        db.close();
-        reject(transaction.error || new Error("Could not write demo records."));
-      };
-    };
-  });
-}
-
-function exportAllData() {
-  const payload = {
-    exportedAt: new Date().toISOString(),
-    origin: location.origin,
-    localStorage: storageState.local,
-    sessionStorage: storageState.session,
-    cookies: storageState.cookies,
-    indexedDB: storageState.indexed,
-  };
-
-  downloadJson("browser-storage-export.json", payload);
-  setStatus("Storage snapshot exported.");
-}
-
-function downloadJson(filename, data) {
-  const safeFilename = filename.replace(/[^\w.-]+/g, "-");
-  const blob = new Blob([JSON.stringify(data, null, 2)], {
-    type: "application/json",
-  });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = safeFilename;
-  link.click();
-  URL.revokeObjectURL(link.href);
 }
 
 function showPanel(panelId) {
@@ -685,38 +91,148 @@ function showPanel(panelId) {
   });
 }
 
-function sortByKey(a, b) {
-  return String(a.key).localeCompare(String(b.key));
+function renderAll() {
+  const query = elements.searchInput ? elements.searchInput.value : "";
+  const typeFilter = storageState.typeFilter;
+
+  const filteredLocal = engine ? engine.filterItems(storageState.local, query, typeFilter) : storageState.local;
+  const filteredSession = engine ? engine.filterItems(storageState.session, query, typeFilter) : storageState.session;
+  const filteredCookies = engine ? engine.filterItems(storageState.cookies, query, typeFilter) : storageState.cookies;
+
+  if (elements.counts.local) elements.counts.local.textContent = storageState.local.length;
+  if (elements.counts.session) elements.counts.session.textContent = storageState.session.length;
+  if (elements.counts.cookies) elements.counts.cookies.textContent = storageState.cookies.length;
+
+  renderRows(elements.rows.local, filteredLocal, "local");
+  renderRows(elements.rows.session, filteredSession, "session");
+  renderRows(elements.rows.cookies, filteredCookies, "cookies");
 }
 
-function stringifyValue(value) {
-  if (typeof value === "string") return value;
-  return JSON.stringify(value, null, 2);
+function renderRows(container, items, storeType) {
+  if (!container) return;
+  container.innerHTML = "";
+
+  if (!items.length) {
+    container.innerHTML = `<tr><td colspan="5" class="empty-cell">No items found.</td></tr>`;
+    return;
+  }
+
+  items.forEach(item => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><strong>${escapeHtml(item.key)}</strong></td>
+      <td><span class="badge badge-${item.type || "string"}">${item.type || "string"}</span></td>
+      <td><small>${item.formattedBytes || "0 B"}</small></td>
+      <td><code class="val-preview">${escapeHtml(String(item.value))}</code></td>
+      <td>
+        <button class="btn-sm danger" data-delete-key="${escapeHtml(item.key)}" data-store="${storeType}">Delete</button>
+      </td>
+    `;
+
+    const deleteBtn = tr.querySelector("[data-delete-key]");
+    if (deleteBtn) {
+      deleteBtn.addEventListener("click", () => deleteItem(storeType, item.key));
+    }
+
+    container.appendChild(tr);
+  });
 }
 
-function labelFor(type) {
-  const labels = {
-    local: "LocalStorage",
-    session: "SessionStorage",
-    cookies: "Cookies",
-    indexed: "IndexedDB",
-  };
-  return labels[type] || type;
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
-function setStatus(message) {
-  elements.statusMessage.textContent = message;
-  window.clearTimeout(setStatus.timer);
-  setStatus.timer = window.setTimeout(() => {
-    elements.statusMessage.textContent = "";
-  }, 3500);
+function deleteItem(storeType, key) {
+  if (storeType === "local") {
+    localStorage.removeItem(key);
+  } else if (storeType === "session") {
+    sessionStorage.removeItem(key);
+  } else if (storeType === "cookies") {
+    document.cookie = `${encodeURIComponent(key)}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+  }
+  refreshAll();
+  setStatus(`Deleted entry '${key}' from ${storeType}.`);
 }
 
-function escapeHtml(value) {
-  return String(value ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+function clearStorage(storeType) {
+  if (storeType === "local") {
+    localStorage.clear();
+  } else if (storeType === "session") {
+    sessionStorage.clear();
+  } else if (storeType === "cookies") {
+    document.cookie.split(";").forEach(c => {
+      const eqPos = c.indexOf("=");
+      const name = eqPos > -1 ? c.substr(0, eqPos) : c;
+      document.cookie = `${name.trim()}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+    });
+  }
+  refreshAll();
+  setStatus(`Cleared ${storeType} storage.`);
+}
+
+function handleFormSubmit(e) {
+  e.preventDefault();
+  const form = e.target;
+  const storeType = form.dataset.form;
+  const formData = new FormData(form);
+  const key = formData.get("key");
+  const value = formData.get("value");
+
+  if (!key || value === null) return;
+
+  if (storeType === "local") {
+    localStorage.setItem(key, value);
+  } else if (storeType === "session") {
+    sessionStorage.setItem(key, value);
+  } else if (storeType === "cookies") {
+    const maxAge = formData.get("maxAge") || 86400;
+    document.cookie = `${encodeURIComponent(key)}=${encodeURIComponent(value)}; max-age=${maxAge}; path=/`;
+  }
+
+  form.reset();
+  refreshAll();
+  setStatus(`Saved entry '${key}' to ${storeType}.`);
+}
+
+function seedDemoData() {
+  localStorage.setItem("cradle_theme", JSON.stringify({ mode: "dark", accent: "#3b82f6" }));
+  localStorage.setItem("cradle_user_id", "usr_94812");
+  localStorage.setItem("cradle_visited", "true");
+
+  sessionStorage.setItem("draft_note", "Exploring matrix engine and ASCII exporters in Cradle.");
+  sessionStorage.setItem("tab_id", "tab_482");
+
+  document.cookie = "demo_session=active_771; path=/";
+  document.cookie = "preference_locale=en-US; path=/";
+
+  refreshAll();
+  setStatus("Demo storage items seeded successfully.");
+}
+
+function exportJSON() {
+  if (!exporter) return;
+  const payload = exporter.exportToJSON(storageState.local, "localStorage");
+  downloadFile("storage-export.json", payload, "application/json");
+}
+
+function exportCSV() {
+  if (!exporter) return;
+  const payload = exporter.exportToCSV(storageState.local);
+  downloadFile("storage-export.csv", payload, "text/csv");
+}
+
+function downloadFile(filename, content, mimeType) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }

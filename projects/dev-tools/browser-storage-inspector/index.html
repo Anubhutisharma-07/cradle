@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Browser Storage Inspector | Cradle</title>
+    <title>Browser Storage Inspector & Backup Manager | Cradle</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -21,8 +21,8 @@
           <p class="eyebrow">Dev Tools Mini</p>
           <h1>Browser Storage Inspector</h1>
           <p class="subtitle">
-            Inspect, search, edit, delete, clear, and export LocalStorage,
-            SessionStorage, Cookies, and IndexedDB data from one page.
+            Inspect, search, filter, edit, backup, and restore LocalStorage,
+            SessionStorage, Cookies, and IndexedDB data with size calculation.
           </p>
         </div>
 
@@ -56,6 +56,19 @@
           />
         </label>
 
+        <label class="filter-box">
+          <span>Type Filter</span>
+          <select id="typeFilterSelect" class="select-input">
+            <option value="all">All Data Types</option>
+            <option value="json">JSON Objects</option>
+            <option value="string">Strings</option>
+            <option value="number">Numbers</option>
+            <option value="boolean">Booleans</option>
+            <option value="jwt">JWT Tokens</option>
+            <option value="base64">Base64</option>
+          </select>
+        </label>
+
         <div class="toolbar-actions">
           <button
             id="refreshBtn"
@@ -76,13 +89,22 @@
             Seed Demo Data
           </button>
           <button
-            id="exportAllBtn"
+            id="exportJsonBtn"
+            data-cradle-btn
+            data-variant="secondary"
+            data-size="sm"
+            type="button"
+          >
+            Export JSON
+          </button>
+          <button
+            id="exportCsvBtn"
             data-cradle-btn
             data-variant="primary"
             data-size="sm"
             type="button"
           >
-            Export All
+            Export CSV
           </button>
         </div>
       </section>
@@ -153,6 +175,8 @@
             <thead>
               <tr>
                 <th>Key</th>
+                <th>Type</th>
+                <th>Bytes</th>
                 <th>Value</th>
                 <th>Actions</th>
               </tr>
@@ -210,6 +234,8 @@
             <thead>
               <tr>
                 <th>Key</th>
+                <th>Type</th>
+                <th>Bytes</th>
                 <th>Value</th>
                 <th>Actions</th>
               </tr>
@@ -225,7 +251,7 @@
             <h2>Cookies</h2>
             <p>
               Readable cookies for this page path. HttpOnly cookies are
-              intentionally hidden by browsers.
+              hidden by browsers.
             </p>
           </div>
           <button
@@ -272,6 +298,8 @@
             <thead>
               <tr>
                 <th>Name</th>
+                <th>Type</th>
+                <th>Bytes</th>
                 <th>Value</th>
                 <th>Actions</th>
               </tr>
@@ -352,8 +380,7 @@
 
         <div class="hint" id="indexedHint">
           IndexedDB listing is supported in Chromium-based browsers and some
-          recent browsers. If your browser does not expose database names, use
-          Seed Demo Data first.
+          recent browsers.
         </div>
 
         <div class="table-wrap">
@@ -377,6 +404,8 @@
       src="../../../src/components/ui/BackToHome/BackToHome.js"
       defer
     ></script>
+    <script src="storageEngine.js"></script>
+    <script src="storageExporter.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
