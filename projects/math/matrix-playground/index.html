@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Matrix Operations Playground</title>
+    <title>Matrix Operations & Decomposition Lab</title>
     <meta
       name="description"
-      content="Perform matrix operations with interactive, step-by-step visualizations."
+      content="Perform matrix operations, LU/QR decompositions, and eigenvalue analysis with step-by-step visualizations."
     />
 
     <!-- Fonts & Icons -->
@@ -37,11 +37,20 @@
           <span class="brand-icon"><i class="fa-solid fa-calculator"></i></span>
           <div class="brand-text">
             <h1>Matrix Lab</h1>
-            <p>Interactive Matrix Playground</p>
+            <p>Interactive Matrix Playground & Decomposition Suite</p>
           </div>
         </div>
 
         <div class="header-actions">
+          <!-- LaTeX Export Button -->
+          <button
+            type="button"
+            id="btn-export-latex"
+            class="btn btn-outline"
+            title="Export to LaTeX"
+          >
+            <i class="fa-solid fa-code"></i> Export LaTeX
+          </button>
           <!-- Theme Toggle -->
           <button
             type="button"
@@ -64,7 +73,7 @@
         <!-- Operation Selection -->
         <section class="card">
           <h2 class="card-title">
-            <i class="fa-solid fa-gears"></i> Operation
+            <i class="fa-solid fa-gears"></i> Operation & Analysis
           </h2>
           <div class="op-grid">
             <button
@@ -107,6 +116,30 @@
             >
               <i class="fa-solid fa-arrows-spin"></i> Transpose
             </button>
+            <button
+              type="button"
+              class="op-btn"
+              data-op="lu"
+              title="LU Decomposition"
+            >
+              <i class="fa-solid fa-layer-group"></i> LU Decomp
+            </button>
+            <button
+              type="button"
+              class="op-btn"
+              data-op="qr"
+              title="QR Decomposition"
+            >
+              <i class="fa-solid fa-square-root-variable"></i> QR Decomp
+            </button>
+            <button
+              type="button"
+              class="op-btn"
+              data-op="eigen"
+              title="Eigenvalues Analysis"
+            >
+              <i class="fa-solid fa-wave-square"></i> Eigenvalues
+            </button>
           </div>
         </section>
 
@@ -144,7 +177,6 @@
               <div class="form-group half">
                 <label for="rows-b">Rows</label>
                 <select id="rows-b" class="select-input" disabled>
-                  <!-- Linked dynamically to cols-a for multiplication, or rows-a for addition -->
                   <option value="2">2</option>
                   <option value="3" selected>3</option>
                   <option value="4">4</option>
@@ -162,11 +194,25 @@
           </div>
         </section>
 
-        <!-- Matrix Preset Actions -->
+        <!-- Matrix Presets -->
         <section class="card preset-card">
           <h2 class="card-title">
             <i class="fa-solid fa-wand-magic-sparkles"></i> Presets & Actions
           </h2>
+
+          <div class="form-group margin-bottom-sm">
+            <label for="preset-select">Load Preset Matrix</label>
+            <select id="preset-select" class="select-input">
+              <option value="">-- Choose Preset --</option>
+              <option value="identity3">3x3 Identity</option>
+              <option value="rotation45">2D 45° Rotation</option>
+              <option value="shear2d">2D Shear</option>
+              <option value="magicSquare3">3x3 Magic Square</option>
+              <option value="symmetric3">3x3 Symmetric</option>
+              <option value="hilbert3">3x3 Hilbert Matrix</option>
+            </select>
+          </div>
+
           <div class="btn-grid">
             <button type="button" id="btn-random" class="btn btn-secondary">
               <i class="fa-solid fa-dice"></i> Fill Random
@@ -293,7 +339,6 @@
 
             <!-- Formula / Math expression scratchpad -->
             <div id="math-scratchpad" class="math-scratchpad font-mono">
-              <!-- Dynamically rendered visual equation, e.g. A[0][0]*B[0][0] + A[0][1]*B[1][0] -->
               Waiting to start...
             </div>
           </div>
@@ -301,7 +346,7 @@
 
         <!-- Result Card -->
         <div class="card matrix-card result-card" id="card-matrix-result">
-          <h3 class="matrix-title text-accent">Result Matrix C</h3>
+          <h3 class="matrix-title text-accent" id="result-title">Result Matrix C</h3>
           <div class="matrix-bracket-container">
             <div class="matrix-bracket left"></div>
             <div id="grid-result" class="matrix-grid result-grid"></div>
@@ -310,6 +355,27 @@
         </div>
       </section>
     </main>
+
+    <!-- Modal Dialog for LaTeX Export -->
+    <div id="latex-modal" class="modal-backdrop hidden" aria-hidden="true">
+      <div class="modal-content card">
+        <header class="modal-header">
+          <h3><i class="fa-solid fa-code"></i> LaTeX Code Export</h3>
+          <button id="modal-close" class="btn btn-icon" aria-label="Close modal">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </header>
+        <div class="modal-body">
+          <label for="latex-output">Copy Matrix LaTeX snippet:</label>
+          <textarea id="latex-output" class="code-area" readonly></textarea>
+        </div>
+        <footer class="modal-footer">
+          <button id="btn-copy-latex" class="btn btn-accent">
+            <i class="fa-solid fa-copy"></i> Copy to Clipboard
+          </button>
+        </footer>
+      </div>
+    </div>
 
     <footer class="app-footer">
       <p>Built with 💖 in Cradle Math Showcase</p>
@@ -320,7 +386,10 @@
       src="../../../src/components/ui/BackToHome/BackToHome.js"
       defer
     ></script>
-    <!-- Application Core logic -->
+    <!-- Application Engine and Storage -->
+    <script src="matrixEngine.js"></script>
+    <script src="matrixStorage.js"></script>
+    <!-- Application Controller -->
     <script src="script.js"></script>
   </body>
 </html>
