@@ -47,6 +47,7 @@ Closes #
 - [ ] My branch is up-to-date with `main`
 - [ ] I have tested my changes locally
 - [ ] I have not merged my own PR
+- [ ] I have verified that licensing and third-party asset attributions are explicitly documented (if applicable)
 
 # Packages Added (if any)
 

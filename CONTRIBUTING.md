@@ -136,6 +136,12 @@ Every new project should also include an `ARCHITECTURE.md` inside its own folder
 - Avoid unnecessary global styles or scripts that affect other projects.
 - Add comments for non-obvious logic when helpful.
 
+### Licensing and Third-Party Assets
+
+- Every project must clearly specify its licensing (e.g., MIT) inside its `ARCHITECTURE.md` file.
+- If you use any third-party assets (images, icons, fonts, audio, code snippets), you must provide explicit attribution in the same section, including links to the source and stating the asset's license.
+- Avoid using copyrighted assets without a clear open-source or permissive license.
+
 ### New Project Checklist
 
 Before opening a Pull Request, review the following checklist:
@@ -144,6 +150,7 @@ Before opening a Pull Request, review the following checklist:
 - [ ] The project folder has a clear and descriptive name.
 - [ ] Project-specific files are organized within the project folder.
 - [ ] Assets are stored in an appropriate location.
+- [ ] The project explicitly specifies its licensing and includes attribution for any third-party assets.
 - [ ] `README.md` has been added inside the project folder.
 - [ ] `ARCHITECTURE.md` has been added following the [standardized template](ARCHITECTURE_TEMPLATE.md).
 - [ ] The project works correctly locally.
