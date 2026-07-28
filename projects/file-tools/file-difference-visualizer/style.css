@@ -50,16 +50,12 @@ body {
   width: 140%;
   height: 140%;
   background:
-    radial-gradient(
-      circle at 10% 20%,
+    radial-gradient(circle at 10% 20%,
       rgba(56, 189, 248, 0.05) 0%,
-      transparent 40%
-    ),
-    radial-gradient(
-      circle at 90% 80%,
+      transparent 40%),
+    radial-gradient(circle at 90% 80%,
       rgba(99, 102, 241, 0.05) 0%,
-      transparent 45%
-    );
+      transparent 45%);
   z-index: -1;
   pointer-events: none;
 }
@@ -195,7 +191,8 @@ body {
   backdrop-filter: blur(12px);
   display: flex;
   flex-direction: column;
-  height: 320px;
+  min-height: 320px;
+  height: auto;
 }
 
 .card-header {
@@ -275,7 +272,8 @@ body {
 
 .diff-container {
   display: grid;
-  height: 500px;
+  min-height: 500px;
+  height: auto;
   overflow: hidden;
 }
 
@@ -347,9 +345,11 @@ body {
 .line-add {
   background-color: var(--diff-add);
 }
+
 .line-add .line-text {
   color: var(--diff-add-text);
 }
+
 .line-add .line-number {
   background-color: rgba(16, 185, 129, 0.08);
   border-right: 2px solid var(--diff-add-border);
@@ -358,9 +358,11 @@ body {
 .line-remove {
   background-color: var(--diff-remove);
 }
+
 .line-remove .line-text {
   color: var(--diff-remove-text);
 }
+
 .line-remove .line-number {
   background-color: rgba(239, 68, 68, 0.08);
   border-right: 2px solid var(--diff-remove-border);
@@ -369,9 +371,11 @@ body {
 .line-modify {
   background-color: var(--diff-modify);
 }
+
 .line-modify .line-text {
   color: var(--diff-modify-text);
 }
+
 .line-modify .line-number {
   background-color: rgba(245, 158, 11, 0.08);
   border-right: 2px solid var(--diff-modify-border);
@@ -380,6 +384,7 @@ body {
 .line-empty {
   background-color: rgba(255, 255, 255, 0.01);
 }
+
 .line-empty .line-number {
   border-right: 1px solid rgba(255, 255, 255, 0.02);
 }
@@ -408,15 +413,89 @@ body {
 }
 
 /* Responsiveness */
+
+@media (max-width:600px) {
+
+  .logo {
+    flex-direction: column;
+    gap: .5rem;
+  }
+
+  .logo h1 {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    text-align: center;
+  }
+
+}
+
+@media(max-width:600px) {
+
+  .card-header {
+
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .75rem;
+
+  }
+
+  .file-input-label {
+
+    width: 100%;
+    text-align: center;
+
+  }
+
+}
+
 @media (max-width: 900px) {
+
+  .app-container {
+    padding: 1rem;
+  }
+
+  /* Stack top controls */
+  .control-panel {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .view-toggle {
+    width: 100%;
+  }
+
+  .view-toggle button {
+    flex: 1;
+  }
+
+  .actions {
+    width: 100%;
+    display: flex;
+    gap: .75rem;
+  }
+
+  .actions .btn {
+    flex: 1;
+  }
+
+  /* Stack input cards */
   .inputs-grid {
     grid-template-columns: 1fr;
   }
+
+  /* Stack diff panes */
   .side-by-side {
     grid-template-columns: 1fr;
   }
+
   .side-by-side .diff-pane:first-child {
     border-right: none;
     border-bottom: 1px solid var(--card-border);
   }
+
 }
