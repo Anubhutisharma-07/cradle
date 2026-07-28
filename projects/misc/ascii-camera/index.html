@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ASCII Camera | Cradle</title>
-  <meta name="description" content="Convert a webcam feed or uploaded image into real-time ASCII art with density controls and PNG or text export." />
+  <title>ASCII Camera Studio | Cradle</title>
+  <meta name="description" content="Convert a webcam feed or uploaded image into real-time ASCII art with density controls, Sobel edge detection, and multi-format exports." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -17,10 +17,9 @@
       <div class="hero-copy">
         <a class="back-link" href="../../../index.html">Back to Cradle</a>
         <p class="eyebrow">Misc Mini</p>
-        <h1>ASCII Camera</h1>
+        <h1>ASCII Camera Studio</h1>
         <p class="subtitle">
-          Turn your webcam or uploaded images into live ASCII art, tune the
-          character density, and export the result as text or a clean PNG.
+          Turn your webcam or uploaded images into live ASCII art, tune density & Sobel edge detection, and export as TXT, HTML, SVG, or PNG.
         </p>
       </div>
 
@@ -40,12 +39,13 @@
       </div>
 
       <label>
-        Density
+        Density Palette
         <select id="densitySelect">
-          <option value="soft">Soft</option>
-          <option value="classic" selected>Classic</option>
-          <option value="bold">Bold</option>
-          <option value="binary">Binary</option>
+          <option value="standard" selected>Standard</option>
+          <option value="detailed">Detailed (70 Chars)</option>
+          <option value="blocks">Blocks</option>
+          <option value="binary">Binary (0/1)</option>
+          <option value="minimal">Minimal</option>
         </select>
       </label>
 
@@ -79,18 +79,20 @@
           <span>Invert</span>
         </label>
         <label class="toggle">
-          <input id="colorToggle" type="checkbox" checked />
-          <span>Color ASCII</span>
+          <input id="edgeToggle" type="checkbox" />
+          <span>Sobel Edges</span>
         </label>
         <label class="toggle">
-          <input id="ditherToggle" type="checkbox" />
-          <span>Dither</span>
+          <input id="colorToggle" type="checkbox" checked />
+          <span>Color ASCII</span>
         </label>
       </div>
 
       <div class="export-actions">
         <button id="copyBtn" data-cradle-btn data-variant="outline" data-size="sm" type="button">Copy Text</button>
         <button id="downloadTxtBtn" data-cradle-btn data-variant="secondary" data-size="sm" type="button">Download TXT</button>
+        <button id="downloadHtmlBtn" data-cradle-btn data-variant="secondary" data-size="sm" type="button">Download HTML</button>
+        <button id="downloadSvgBtn" data-cradle-btn data-variant="secondary" data-size="sm" type="button">Download SVG</button>
         <button id="downloadPngBtn" data-cradle-btn data-variant="primary" data-size="sm" type="button">Export PNG</button>
       </div>
     </section>
@@ -131,6 +133,8 @@
   <canvas id="analysisCanvas" aria-hidden="true"></canvas>
   <script src="../../../src/components/ui/Button/Button.js"></script>
   <script src="../../../src/components/ui/BackToHome/BackToHome.js" defer></script>
+  <script src="asciiEngine.js"></script>
+  <script src="asciiExporter.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
