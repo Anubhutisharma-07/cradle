@@ -4,6 +4,11 @@ const categoriesContainer = document.getElementById("categories");
 const projectCount = document.getElementById("project-count");
 const clearFiltersBtn = document.getElementById("clear-filters");
 const searchSuggestions = document.getElementById("search-suggestions");
+const recentProjectsSection = document.getElementById(
+  "recent-projects-section"
+);
+const recentProjectsGrid = document.getElementById("recent-projects-grid");
+const clearRecentProjectsBtn = document.getElementById("clear-recent-projects");
 
 let allProjects = [];
 let selectedCategory = "all";
@@ -11,6 +16,8 @@ let activeProjectIndex = 0;
 let activeSuggestionIndex = -1;
 let currentSuggestions = [];
 const copyStatus = document.getElementById("copy-status");
+const RECENT_PROJECTS_KEY = "cradle:recent-projects";
+const RECENT_PROJECTS_LIMIT = 5;
 
 let filterWorker;
 
@@ -155,6 +162,125 @@ function isNewProject(dateAdded) {
   return diffDays <= 7;
 }
 
+function getRecentProjects() {
+  try {
+    const raw = localStorage.getItem(RECENT_PROJECTS_KEY);
+    if (!raw) return [];
+
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+
+    return parsed
+      .filter(
+        project =>
+          project &&
+          typeof project.title === "string" &&
+          typeof project.category === "string" &&
+          typeof project.path === "string"
+      )
+      .slice(0, RECENT_PROJECTS_LIMIT);
+  } catch (error) {
+    console.warn("Failed to load recently opened projects:", error);
+    return [];
+  }
+}
+
+function saveRecentProjects(projects) {
+  try {
+    localStorage.setItem(
+      RECENT_PROJECTS_KEY,
+      JSON.stringify(projects.slice(0, RECENT_PROJECTS_LIMIT))
+    );
+  } catch (error) {
+    console.warn("Failed to save recently opened projects:", error);
+  }
+}
+
+function recordRecentlyOpenedProject(project) {
+  if (!project) return;
+
+  const recentProject = {
+    title: project.title,
+    category: project.category,
+    path: project.path,
+    dateAdded: project.dateAdded || null,
+  };
+
+  const existingProjects = getRecentProjects().filter(
+    item => item.path !== recentProject.path
+  );
+
+  saveRecentProjects([recentProject, ...existingProjects]);
+  renderRecentProjects();
+}
+
+function clearRecentProjects() {
+  try {
+    localStorage.removeItem(RECENT_PROJECTS_KEY);
+  } catch (error) {
+    console.warn("Failed to clear recently opened projects:", error);
+  }
+
+  renderRecentProjects();
+}
+
+function createProjectCard(project, options = {}) {
+  const { onOpen = null, recent = false } = options;
+
+  const openButton = CradleButton.create({
+    variant: "outline",
+    size: "sm",
+    children: "Open Project",
+    rightIcon: "→",
+    href: project.path,
+    target: "_self",
+    rel: "noopener noreferrer",
+  });
+
+  openButton.addEventListener("click", () => {
+    if (onOpen) onOpen(project);
+  });
+
+  const copyButton = CradleButton.create({
+    variant: "ghost",
+    size: "sm",
+    children: "Copy Link",
+    ariaLabel: `Copy direct link to ${project.title}`,
+    onClick: () => copyProjectUrl(project, copyButton),
+  });
+
+  const card = CradleCard.create({
+    title: project.title,
+    subtitle: project.path,
+    badge: project.category,
+    isNew: isNewProject(project.dateAdded),
+    image: `${project.path}thumbnail.svg`,
+    footer: [openButton, copyButton],
+    footerAlign: "left",
+    className: recent ? "recent-project-card" : "",
+  });
+
+  return card;
+}
+
+function renderRecentProjects() {
+  if (!recentProjectsSection || !recentProjectsGrid) return;
+
+  const recentProjects = getRecentProjects();
+
+  recentProjectsSection.hidden = recentProjects.length === 0;
+  recentProjectsGrid.innerHTML = "";
+
+  recentProjects.forEach(project => {
+    recentProjectsGrid.appendChild(
+      createProjectCard(project, {
+        onOpen: recordRecentlyOpenedProject,
+        recent: true,
+      })
+    );
+  });
+}
+
 function renderProjects(projects) {
   projectCount.textContent = `${projects.length} projects`;
 
@@ -166,35 +292,11 @@ function renderProjects(projects) {
   projectsGrid.innerHTML = "";
 
   projects.forEach(project => {
-    const openButton = CradleButton.create({
-      variant: "outline",
-      size: "sm",
-      children: "Open Project",
-      rightIcon: "→",
-      href: project.path,
-      target: "_self",
-      rel: "noopener noreferrer",
-    });
-
-    const copyButton = CradleButton.create({
-      variant: "ghost",
-      size: "sm",
-      children: "Copy Link",
-      ariaLabel: `Copy direct link to ${project.title}`,
-      onClick: () => copyProjectUrl(project, copyButton),
-    });
-
-    const card = CradleCard.create({
-      title: project.title,
-      subtitle: project.path,
-      badge: project.category,
-      isNew: isNewProject(project.dateAdded),
-      image: `${project.path}thumbnail.svg`,
-      footer: [openButton, copyButton],
-      footerAlign: "left",
-    });
-
-    projectsGrid.appendChild(card);
+    projectsGrid.appendChild(
+      createProjectCard(project, {
+        onOpen: recordRecentlyOpenedProject,
+      })
+    );
   });
 }
 
@@ -483,6 +585,10 @@ if (clearFiltersBtn) {
   clearFiltersBtn.addEventListener("click", clearFilters);
 }
 
+if (clearRecentProjectsBtn) {
+  clearRecentProjectsBtn.addEventListener("click", clearRecentProjects);
+}
+
 // Floating Back to Top Button Logic
 const backToTopBtn = document.getElementById("back-to-top");
 
@@ -606,5 +712,6 @@ document.addEventListener("keydown", e => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
+  renderRecentProjects();
   loadProjects();
 });

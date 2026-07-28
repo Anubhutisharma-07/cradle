@@ -161,6 +161,38 @@
     <main>
       <section id="categories"></section>
 
+      <section
+        id="recent-projects-section"
+        class="recent-projects-section"
+        aria-labelledby="recent-projects-title"
+        hidden
+      >
+        <div class="section-header">
+          <div>
+            <h2 id="recent-projects-title">Recently Opened</h2>
+            <p class="section-subtitle">
+              Quick access to projects opened in this browser.
+            </p>
+          </div>
+
+          <button
+            id="clear-recent-projects"
+            data-cradle-btn
+            data-variant="ghost"
+            data-size="sm"
+            aria-label="Clear recently opened projects"
+          >
+            Clear Recent
+          </button>
+        </div>
+
+        <div
+          id="recent-projects-grid"
+          class="projects-grid recent-projects-grid"
+          aria-live="polite"
+        ></div>
+      </section>
+
       <section>
         <div class="section-header">
           <h2>Projects</h2>

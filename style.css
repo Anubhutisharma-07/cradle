@@ -54,8 +54,11 @@ body {
 
   font-family: Inter, system-ui, Arial, sans-serif;
 
-  background:
-    radial-gradient(circle at top, rgba(37, 99, 235, 0.1), transparent 45%),
+  background: radial-gradient(
+      circle at top,
+      rgba(37, 99, 235, 0.1),
+      transparent 45%
+    ),
     linear-gradient(180deg, var(--bg) 0%, var(--bg-secondary) 100%);
 
   color: var(--text);
@@ -290,9 +293,51 @@ main {
   font-size: 1.7rem;
 }
 
+.section-subtitle {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 0.2rem;
+}
+
 #project-count {
   color: var(--muted);
   font-size: 0.9rem;
+}
+
+.recent-projects-section {
+  margin-bottom: 2.75rem;
+  padding-bottom: 2.25rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.recent-projects-grid {
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+}
+
+.recent-project-card {
+  border-color: rgba(37, 99, 235, 0.45);
+}
+
+.recent-project-card::before {
+  content: "Recent";
+  position: absolute;
+  top: 0.85rem;
+  left: 0.85rem;
+  z-index: 2;
+  padding: 0.25rem 0.65rem;
+  border: 1px solid rgba(147, 197, 253, 0.45);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #bfdbfe;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+html.light-theme .recent-project-card::before {
+  background: rgba(255, 255, 255, 0.82);
+  color: #1d4ed8;
 }
 
 .projects-grid {
@@ -367,6 +412,10 @@ footer {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
+  }
+
+  #clear-recent-projects {
+    align-self: flex-start;
   }
 
   .projects-grid {
