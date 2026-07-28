@@ -3,7 +3,8 @@
    ========================================================================== */
 
 :root {
-  --theme-accent: #818cf8; /* Lavender accent for Editor theme */
+  --theme-accent: #818cf8;
+  /* Lavender accent for Editor theme */
   --theme-accent-hover: #6366f1;
   --theme-accent-light: rgba(129, 140, 248, 0.15);
   --canvas-size: 460px;
@@ -70,11 +71,9 @@ body {
   font-size: 1.25rem;
   font-weight: 800;
   letter-spacing: -0.5px;
-  background: linear-gradient(
-    to right,
-    var(--cradle-text),
-    var(--theme-accent)
-  );
+  background: linear-gradient(to right,
+      var(--cradle-text),
+      var(--theme-accent));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -422,7 +421,8 @@ body {
   border-radius: var(--cradle-radius);
   position: relative;
   overflow: visible;
-  touch-action: none; /* Prevent scroll on mobile dragging */
+  touch-action: none;
+  /* Prevent scroll on mobile dragging */
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -544,9 +544,11 @@ body {
   0% {
     box-shadow: 0 0 0 0 rgba(129, 140, 248, 0.8);
   }
+
   70% {
     box-shadow: 0 0 0 8px rgba(129, 140, 248, 0);
   }
+
   100% {
     box-shadow: 0 0 0 0 rgba(129, 140, 248, 0);
   }
@@ -612,7 +614,8 @@ body {
   line-height: 1.5;
   color: var(--theme-accent);
   display: block;
-  padding-right: 120px; /* Leave space for Copy button */
+  padding-right: 120px;
+  /* Leave space for Copy button */
 }
 
 .btn-copy {
@@ -667,6 +670,7 @@ body {
     transform: translateY(20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -704,4 +708,83 @@ body {
 
 .coordinate-editor {
   margin-top: var(--cradle-space-3);
+}
+
+/* ===================== MOBILE RESPONSIVE ===================== */
+@media (max-width: 768px) {
+
+  /* Container */
+  .app-container {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  /* Cards */
+  .card {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  /* Shape selector */
+  .shape-selector-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .shape-btn {
+    min-height: 88px;
+    padding: 12px;
+  }
+
+  /* Presets */
+  .presets-grid-layout {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .preset-btn {
+    min-height: 42px;
+    font-size: 0.9rem;
+  }
+
+  /* Add/Delete buttons */
+  .btn-row {
+    flex-direction: column;
+  }
+
+  /* Form rows */
+  .form-row {
+    flex-direction: column;
+  }
+
+  /* Color picker */
+  .color-picker-wrap {
+    width: 100%;
+  }
+
+  /* Canvas */
+  :root {
+    --canvas-size: min(300px, calc(100vw - 64px));
+  }
+
+  .canvas-container {
+    margin: auto;
+  }
+
+  /* Copy CSS button */
+  .code-box-wrapper {
+    padding-bottom: 80px;
+  }
+
+  .code-box-wrapper code {
+    padding-right: 0;
+  }
+
+  .btn-copy {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    top: auto;
+    bottom: 16px;
+    transform: none;
+    width: auto;
+  }
 }
