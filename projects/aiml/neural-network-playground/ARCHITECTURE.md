@@ -99,9 +99,11 @@ Model starts training
 
 ## Key Features
 
-- Customizable dataset type
+- Customizable dataset type with built-in generators (circle, XOR, spiral, gaussian, moons)
+- Custom CSV dataset import with validation
 - Visualization of decision boundary and neural network
 - Live metrics of loss and accuracy
+- Export trained model to JavaScript or Python
 
 ---
 
@@ -121,12 +123,12 @@ Example:
 | Chart.js 4.x (CDN) | Rendering the attendance pie chart |
 -->
 
-| Technology | Purpose |
-|---|---|
-| HTML5 | Page structure and semantic markup |
-| CSS3 | Layout and responsive design |
-| Vanilla JavaScript (ES6+) | Neural Network logic |
-| Canvass | 2D graphics |
+| Technology                | Purpose                            |
+| ------------------------- | ---------------------------------- |
+| HTML5                     | Page structure and semantic markup |
+| CSS3                      | Layout and responsive design       |
+| Vanilla JavaScript (ES6+) | Neural Network logic               |
+| Canvass                   | 2D graphics                        |
 
 ---
 
@@ -189,9 +191,9 @@ Example with no dependencies:
 None. This project uses only native browser APIs — no external libraries are required.
 -->
 
-| Dependency | Version | How loaded | Purpose |
-|---|---|---|---|
-| Outfit (font) | NA | Google Fonts CDN | UI typography |
+| Dependency    | Version | How loaded       | Purpose       |
+| ------------- | ------- | ---------------- | ------------- |
+| Outfit (font) | NA      | Google Fonts CDN | UI typography |
 
 ---
 
@@ -206,7 +208,6 @@ None. This project uses only native browser APIs — no external libraries are r
 
 - Accuracy always depicted as 100%
 - Cannot alter number of epochs
-- Model currently non-exportable
 
 ---
 
@@ -216,4 +217,3 @@ None. This project uses only native browser APIs — no external libraries are r
 - Visit (`http://localhost:8000`)
 
 ---
-

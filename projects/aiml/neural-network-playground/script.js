@@ -397,6 +397,263 @@ function setupEvents() {
     state.showWeights = e.target.checked;
     drawNetwork();
   });
+
+  // ── DATASET SELECTION ────────────────────────────────────────
+  document.querySelectorAll("[data-dataset]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document
+        .querySelectorAll("[data-dataset]")
+        .forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      const dataset = btn.dataset.dataset;
+      state.dataset = dataset;
+
+      if (dataset === "custom") {
+        $("csvFileInput").click();
+        return;
+      }
+
+      $("csvErrorContainer").style.display = "none";
+      $("csvSuccessContainer").style.display = "none";
+
+      initData();
+      resetAll();
+    });
+  });
+
+  // ── NOISE & POINTS SLIDERS ──────────────────────────────────
+  $("noiseSlider").addEventListener("input", e => {
+    state.noise = parseInt(e.target.value);
+    $("noiseLabel").textContent = state.noise + "%";
+  });
+
+  $("pointsSlider").addEventListener("input", e => {
+    state.numPoints = parseInt(e.target.value);
+    $("pointsLabel").textContent = state.numPoints;
+  });
+
+  $("btnRegenData").addEventListener("click", () => {
+    initData();
+    resetAll();
+  });
+
+  // ── CSV UPLOAD & PARSING ────────────────────────────────────
+  $("csvFileInput").addEventListener("change", e => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    $("csvErrorContainer").style.display = "none";
+    $("csvSuccessContainer").style.display = "none";
+
+    if (!file.name.endsWith(".csv")) {
+      $("csvErrorMessage").textContent = "Please upload a .csv file.";
+      $("csvErrorContainer").style.display = "flex";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = evt => {
+      try {
+        const text = evt.target.result;
+        const rows = text
+          .split(/\r?\n/)
+          .map(r => r.trim())
+          .filter(r => r.length > 0);
+
+        if (rows.length === 0) {
+          throw new Error("CSV file is empty.");
+        }
+
+        // Skip header row if it contains non-numeric first value
+        const startIdx = isNaN(parseFloat(rows[0].split(",")[0])) ? 1 : 0;
+        const data = [];
+
+        for (let i = startIdx; i < rows.length; i++) {
+          const cols = rows[i]
+            .split(",")
+            .map(c => parseFloat(c.trim()))
+            .filter(c => !isNaN(c));
+
+          if (cols.length < 3) {
+            throw new Error(
+              `Row ${i + 1}: expected at least 3 columns (x, y, label), found ${cols.length}.`
+            );
+          }
+
+          const [x, y, label] = cols;
+          if (label !== 0 && label !== 1) {
+            throw new Error(
+              `Row ${i + 1}: label must be 0 or 1, got ${label}.`
+            );
+          }
+          data.push([x, y, label]);
+        }
+
+        if (data.length === 0) {
+          throw new Error("No valid data rows found in CSV.");
+        }
+
+        state.customData = normalizeDataset(data);
+        state.dataset = "custom";
+
+        document
+          .querySelectorAll("[data-dataset]")
+          .forEach(b => b.classList.remove("active"));
+        $("btnCustomDataset").classList.add("active");
+
+        $("csvSuccessMessage").textContent =
+          `Loaded ${state.customData.length} points from CSV.`;
+        $("csvSuccessContainer").style.display = "flex";
+
+        initData();
+        resetAll();
+      } catch (err) {
+        $("csvErrorMessage").textContent = err.message;
+        $("csvErrorContainer").style.display = "flex";
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  // ── EXPORT JS ────────────────────────────────────────────────
+  function exportJS() {
+    if (!state.net) {
+      alert("Train a model before exporting.");
+      return;
+    }
+
+    const net = state.net;
+    const weightsJSON = JSON.stringify(net.weights);
+    const biasesJSON = JSON.stringify(net.biases);
+    const layersJSON = JSON.stringify(net.layers);
+
+    const code = `// Neural Network Playground — Exported Model (JavaScript)
+// Generated on ${new Date().toISOString()}
+// Architecture: [${net.layers.join(", ")}] | Activation: ${net.activationName} | LR: ${net.lr}
+
+const ACTIVATIONS = {
+  relu: x => Math.max(0, x),
+  sigmoid: x => 1 / (1 + Math.exp(-x)),
+  tanh: x => Math.tanh(x),
+  leaky_relu: x => (x > 0 ? x : 0.01 * x),
+};
+
+const WEIGHTS = ${weightsJSON};
+const BIASES = ${biasesJSON};
+const LAYERS = ${layersJSON};
+const ACTIVATION = "${net.activationName}";
+
+function predict(input) {
+  let a = input.slice();
+  for (let l = 0; l < WEIGHTS.length; l++) {
+    const z = [];
+    for (let j = 0; j < WEIGHTS[l].length; j++) {
+      let sum = BIASES[l][j];
+      for (let k = 0; k < a.length; k++) sum += WEIGHTS[l][j][k] * a[k];
+      z.push(sum);
+    }
+    const isLast = l === WEIGHTS.length - 1;
+    a = z.map(v =>
+      isLast ? 1 / (1 + Math.exp(-v)) : ACTIVATIONS[ACTIVATION](v)
+    );
+  }
+  return a[0];
+}
+
+// Example usage:
+// console.log(predict([0.5, -0.3]));  // returns probability
+`;
+
+    downloadFile(code, "neural-network-model.js", "application/javascript");
+  }
+
+  // ── EXPORT PYTHON ────────────────────────────────────────────
+  function exportPy() {
+    if (!state.net) {
+      alert("Train a model before exporting.");
+      return;
+    }
+
+    const net = state.net;
+
+    const formatMatrix = m =>
+      "[" +
+      m
+        .map(row => "[" + row.map(v => v.toFixed(8)).join(", ") + "]")
+        .join(",\n    ") +
+      "]";
+
+    const weightsPy = net.weights.map(formatMatrix).join(",\n    ");
+    const biasesPy = net.biases
+      .map(b => "[" + b.map(v => v.toFixed(8)).join(", ") + "]")
+      .join(",\n    ");
+
+    const pyActivation = {
+      relu: "lambda x: max(0, x)",
+      sigmoid: "lambda x: 1 / (1 + math.exp(-x))",
+      tanh: "lambda x: math.tanh(x)",
+      leaky_relu: "lambda x: x if x > 0 else 0.01 * x",
+    };
+
+    const code = `# Neural Network Playground — Exported Model (Python)
+# Generated on ${new Date().toISOString()}
+# Architecture: [${net.layers.join(", ")}] | Activation: ${net.activationName} | LR: ${net.lr}
+
+import math
+
+WEIGHTS = [
+    ${weightsPy}
+]
+
+BIASES = [
+    ${biasesPy}
+]
+
+ACTIVATION = ${pyActivation[net.activationName] || pyActivation.relu}
+
+
+def predict(inputs):
+    """Forward pass through the network."""
+    a = list(inputs)
+    for l in range(len(WEIGHTS)):
+        z = []
+        for j in range(len(WEIGHTS[l])):
+            s = BIASES[l][j]
+            for k in range(len(a)):
+                s += WEIGHTS[l][j][k] * a[k]
+            z.append(s)
+        is_last = l == len(WEIGHTS) - 1
+        if is_last:
+            a = [1 / (1 + math.exp(-v)) for v in z]
+        else:
+            a = [ACTIVATION(v) for v in z]
+    return a[0]
+
+
+# Example usage:
+# print(predict([0.5, -0.3]))  # returns probability
+`;
+
+    downloadFile(code, "neural_network_model.py", "text/x-python");
+  }
+
+  // ── DOWNLOAD HELPER ──────────────────────────────────────────
+  function downloadFile(content, filename, mimeType) {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // ── EXPORT BUTTON WIRING ─────────────────────────────────────
+  $("btnExportJS").addEventListener("click", exportJS);
+  $("btnExportPy").addEventListener("click", exportPy);
 }
 
 // ── INITIALIZATION ───────────────────────────────────────────
