@@ -10,10 +10,12 @@ RPS Arena is a Rock Paper Scissors game with a cyberpunk visual theme. The playe
 
 ```
 stone-paper-scissors-game/
-├── index.html   # Full page: navbar, game box, how-to section, footer, modal
-├── game-engine.js # Rules matrix for classic and Lizard-Spock modes
-├── script.js    # All game logic, animations, and event handling
-└── style.css   # Cyberpunk visual theme, animations, responsive layout
+├── index.html       # Full page: navbar, game box, how-to section, footer, modal
+├── game-engine.js   # Rules matrix for classic and Lizard-Spock modes
+├── rpsAiEngine.js   # Adaptive Markov chain opponent AI model
+├── rpsStorage.js    # Local storage persistence for match stats and win streaks
+├── script.js        # All game logic, animations, and event handling
+└── style.css       # Cyberpunk visual theme, animations, responsive layout
 ```
 
 ---

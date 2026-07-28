@@ -192,8 +192,7 @@ function startCountdown(playerChoice) {
       clearInterval(interval);
       playerPickEl.classList.remove("shake");
       computerPickEl.classList.remove("shake");
-      const computerChoice =
-        choicesList[Math.floor(Math.random() * choicesList.length)];
+      const computerChoice = getComputerChoice();
       playGame(playerChoice, computerChoice);
     }
   }, 400);
