@@ -1,12 +1,8 @@
 (function () {
   "use strict";
 
-  const ramps = {
-    soft: " .:-=+*#%@",
-    classic: " .'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$",
-    bold: " .oO0#@",
-    binary: " 01"
-  };
+  const engine = window.ASCIIEngine;
+  const exporter = window.ASCIIExporter;
 
   const sampleArt = [
     "      ####      ",
@@ -36,10 +32,12 @@
     fpsRange: document.getElementById("fpsRange"),
     fpsValue: document.getElementById("fpsValue"),
     invertToggle: document.getElementById("invertToggle"),
+    edgeToggle: document.getElementById("edgeToggle"),
     colorToggle: document.getElementById("colorToggle"),
-    ditherToggle: document.getElementById("ditherToggle"),
     copyBtn: document.getElementById("copyBtn"),
     downloadTxtBtn: document.getElementById("downloadTxtBtn"),
+    downloadHtmlBtn: document.getElementById("downloadHtmlBtn"),
+    downloadSvgBtn: document.getElementById("downloadSvgBtn"),
     downloadPngBtn: document.getElementById("downloadPngBtn"),
     sampleBtn: document.getElementById("sampleBtn"),
     sourceStatus: document.getElementById("sourceStatus"),
@@ -60,7 +58,7 @@
     animationId: null,
     lastFrameAt: 0,
     asciiText: "",
-    rows: [],
+    lines: [],
     sourceName: "",
     objectUrl: ""
   };
@@ -69,398 +67,233 @@
     return Number(el.value);
   }
 
-  function clamp(value, min, max) {
-    return Math.max(min, Math.min(max, value));
-  }
-
-  function escapeHtml(value) {
-    return value.replace(/[&<>"']/g, function (char) {
-      return {
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        "\"": "&quot;",
-        "'": "&#39;"
-      }[char];
-    });
-  }
-
   function updateControlLabels() {
-    els.columnValue.textContent = els.columnRange.value;
-    els.contrastValue.textContent = `${els.contrastRange.value}%`;
-    els.brightnessValue.textContent = els.brightnessRange.value;
-    els.fpsValue.textContent = els.fpsRange.value;
-    els.frameMeta.textContent = `${els.columnRange.value} cols`;
+    if (els.columnValue) els.columnValue.textContent = els.columnRange.value;
+    if (els.contrastValue) els.contrastValue.textContent = `${els.contrastRange.value}%`;
+    if (els.brightnessValue) els.brightnessValue.textContent = els.brightnessRange.value;
+    if (els.fpsValue) els.fpsValue.textContent = els.fpsRange.value;
+    if (els.frameMeta) els.frameMeta.textContent = `${els.columnRange.value} cols`;
   }
 
   function setStatus(source, detail, help) {
-    els.sourceStatus.textContent = source;
-    els.exportMeta.textContent = detail;
-    els.sourceHelp.textContent = help;
+    if (els.sourceStatus) els.sourceStatus.textContent = source;
+    if (els.exportMeta) els.exportMeta.textContent = detail;
+    if (els.sourceHelp) els.sourceHelp.textContent = help;
   }
 
-  function showToast(message) {
-    const toast = document.createElement("div");
-    toast.className = "toast";
-    toast.setAttribute("role", "status");
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    window.setTimeout(function () {
-      toast.remove();
-    }, 2600);
+  function setEmptyState() {
+    stopCamera();
+    state.mode = "empty";
+    state.sourceImage = null;
+    els.sourceCanvas.style.display = "none";
+    els.video.style.display = "none";
+    els.emptyPreview.style.display = "flex";
+    els.asciiOutput.textContent = "";
+    if (els.renderStats) els.renderStats.textContent = "Waiting for a source.";
+    setStatus("Idle", "Ready to render", "Upload an image or start camera.");
+  }
+
+  async function startCamera() {
+    try {
+      stopCamera();
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: "user" }
+      });
+      state.stream = stream;
+      state.mode = "camera";
+      els.video.srcObject = stream;
+      await els.video.play();
+
+      els.video.style.display = "block";
+      els.sourceCanvas.style.display = "none";
+      els.emptyPreview.style.display = "none";
+
+      els.cameraBtn.disabled = true;
+      els.stopCameraBtn.disabled = false;
+
+      setStatus("Camera Active", "Live Streaming", "Streaming live webcam feed.");
+      scheduleNextFrame();
+    } catch (err) {
+      alert("Camera access denied or unavailable: " + err.message);
+      setEmptyState();
+    }
   }
 
   function stopCamera() {
     if (state.stream) {
-      state.stream.getTracks().forEach(function (track) {
-        track.stop();
-      });
+      state.stream.getTracks().forEach(track => track.stop());
+      state.stream = null;
     }
-
-    state.stream = null;
-    els.video.srcObject = null;
+    if (state.animationId) {
+      cancelAnimationFrame(state.animationId);
+      state.animationId = null;
+    }
     els.cameraBtn.disabled = false;
     els.stopCameraBtn.disabled = true;
+  }
+
+  function scheduleNextFrame() {
+    if (state.mode !== "camera") return;
+    const now = performance.now();
+    const targetInterval = 1000 / numberValue(els.fpsRange);
+    if (now - state.lastFrameAt >= targetInterval) {
+      state.lastFrameAt = now;
+      processCurrentFrame();
+    }
+    state.animationId = requestAnimationFrame(scheduleNextFrame);
+  }
+
+  function processCurrentFrame() {
+    let sourceWidth = 0;
+    let sourceHeight = 0;
 
     if (state.mode === "camera") {
-      state.mode = state.sourceImage ? "image" : "empty";
+      sourceWidth = els.video.videoWidth;
+      sourceHeight = els.video.videoHeight;
+      if (!sourceWidth || !sourceHeight) return;
+    } else if (state.mode === "image" && state.sourceImage) {
+      sourceWidth = state.sourceImage.naturalWidth || state.sourceImage.width;
+      sourceHeight = state.sourceImage.naturalHeight || state.sourceImage.height;
+    } else {
+      return;
     }
-  }
 
-  function clearObjectUrl() {
-    if (state.objectUrl) {
-      URL.revokeObjectURL(state.objectUrl);
-      state.objectUrl = "";
-    }
-  }
-
-  function fitCanvasToSource(width, height) {
-    const maxWidth = 720;
-    const maxHeight = 520;
-    const scale = Math.min(maxWidth / width, maxHeight / height, 1);
-    els.sourceCanvas.width = Math.round(width * scale);
-    els.sourceCanvas.height = Math.round(height * scale);
-  }
-
-  function drawSourceToPreview(source, width, height) {
-    fitCanvasToSource(width, height);
-    sourceCtx.clearRect(0, 0, els.sourceCanvas.width, els.sourceCanvas.height);
-    sourceCtx.drawImage(source, 0, 0, els.sourceCanvas.width, els.sourceCanvas.height);
-    els.sourceCanvas.style.display = "block";
-    els.emptyPreview.style.display = "none";
-  }
-
-  function configureAnalysisCanvas(sourceWidth, sourceHeight) {
     const cols = numberValue(els.columnRange);
-    const rows = Math.max(8, Math.round((sourceHeight / sourceWidth) * cols * 0.48));
+    const aspect = sourceHeight / sourceWidth;
+    const rows = Math.max(12, Math.round(cols * aspect * 0.5));
+
     els.analysisCanvas.width = cols;
     els.analysisCanvas.height = rows;
-    return { cols, rows };
-  }
 
-  function adjustedLuma(r, g, b) {
-    const brightness = numberValue(els.brightnessRange);
-    const contrast = numberValue(els.contrastRange) / 100;
-    let luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-    luma = (luma - 128) * contrast + 128 + brightness;
-    return clamp(luma, 0, 255);
-  }
-
-  function ditherOffset(x, y) {
-    const matrix = [
-      [0, 8, 2, 10],
-      [12, 4, 14, 6],
-      [3, 11, 1, 9],
-      [15, 7, 13, 5]
-    ];
-    return (matrix[y % 4][x % 4] / 16 - 0.5) * 42;
-  }
-
-  function sourceDimensions() {
     if (state.mode === "camera") {
-      return {
-        source: els.video,
-        width: els.video.videoWidth,
-        height: els.video.videoHeight
-      };
+      analysisCtx.drawImage(els.video, 0, 0, cols, rows);
+    } else {
+      analysisCtx.drawImage(state.sourceImage, 0, 0, cols, rows);
     }
 
-    if (state.sourceImage) {
-      return {
-        source: state.sourceImage,
-        width: state.sourceImage.naturalWidth,
-        height: state.sourceImage.naturalHeight
-      };
-    }
+    const imageData = analysisCtx.getImageData(0, 0, cols, rows);
 
-    return null;
-  }
+    const rendered = engine ? engine.renderImageDataToASCII(imageData, {
+      paletteKey: els.densitySelect ? els.densitySelect.value : "standard",
+      invert: els.invertToggle ? els.invertToggle.checked : false,
+      contrast: numberValue(els.contrastRange) / 100,
+      brightness: numberValue(els.brightnessRange),
+      edgeDetection: els.edgeToggle ? els.edgeToggle.checked : false
+    }) : { lines: [], rawText: "" };
 
-  function renderAscii() {
-    const dimensions = sourceDimensions();
-    if (!dimensions || !dimensions.width || !dimensions.height) {
-      els.asciiOutput.textContent = state.asciiText || "";
-      return;
-    }
+    state.lines = rendered.lines;
+    state.asciiText = rendered.rawText;
 
-    const { source, width, height } = dimensions;
-    const { cols, rows } = configureAnalysisCanvas(width, height);
-    drawSourceToPreview(source, width, height);
-    analysisCtx.drawImage(source, 0, 0, cols, rows);
+    els.asciiOutput.textContent = state.asciiText;
 
-    const pixels = analysisCtx.getImageData(0, 0, cols, rows).data;
-    const ramp = ramps[els.densitySelect.value] || ramps.classic;
-    const shouldInvert = els.invertToggle.checked;
-    const shouldColor = els.colorToggle.checked;
-    const shouldDither = els.ditherToggle.checked;
-
-    const textRows = [];
-    const htmlRows = [];
-    const rowData = [];
-
-    for (let y = 0; y < rows; y += 1) {
-      let textLine = "";
-      let htmlLine = "";
-      const row = [];
-
-      for (let x = 0; x < cols; x += 1) {
-        const i = (y * cols + x) * 4;
-        const r = pixels[i];
-        const g = pixels[i + 1];
-        const b = pixels[i + 2];
-        let luma = adjustedLuma(r, g, b);
-
-        if (shouldDither) {
-          luma = clamp(luma + ditherOffset(x, y), 0, 255);
-        }
-
-        const normalized = shouldInvert ? luma / 255 : 1 - luma / 255;
-        const charIndex = clamp(Math.round(normalized * (ramp.length - 1)), 0, ramp.length - 1);
-        const char = ramp[charIndex];
-        const color = `rgb(${r}, ${g}, ${b})`;
-
-        textLine += char;
-        row.push({ char, color });
-        htmlLine += shouldColor
-          ? `<span style="color:${color}">${escapeHtml(char)}</span>`
-          : escapeHtml(char);
-      }
-
-      textRows.push(textLine);
-      htmlRows.push(htmlLine);
-      rowData.push(row);
-    }
-
-    state.asciiText = textRows.join("\n");
-    state.rows = rowData;
-    els.asciiOutput.innerHTML = htmlRows.join("\n");
-    els.renderStats.textContent = `${cols} columns x ${rows} rows from ${state.sourceName || state.mode}.`;
-    els.exportMeta.textContent = `${state.asciiText.length.toLocaleString()} text characters`;
-  }
-
-  function runCameraLoop(timestamp) {
-    if (state.mode !== "camera") return;
-    const fps = numberValue(els.fpsRange);
-    const interval = 1000 / fps;
-
-    if (!state.lastFrameAt || timestamp - state.lastFrameAt >= interval) {
-      state.lastFrameAt = timestamp;
-      renderAscii();
-    }
-
-    state.animationId = window.requestAnimationFrame(runCameraLoop);
-  }
-
-  async function startCamera() {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      showToast("Camera access is not supported in this browser.");
-      return;
-    }
-
-    try {
-      stopCamera();
-      state.stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } },
-        audio: false
-      });
-
-      els.video.srcObject = state.stream;
-      await els.video.play();
-      state.mode = "camera";
-      state.sourceName = "webcam";
-      els.cameraBtn.disabled = true;
-      els.stopCameraBtn.disabled = false;
-      setStatus("Camera live", "Rendering live frames", "Webcam frames are converted into ASCII in real time.");
-      state.animationId = window.requestAnimationFrame(runCameraLoop);
-    } catch (error) {
-      showToast("Unable to start camera. Check browser permissions and use a local server.");
+    if (els.renderStats) {
+      els.renderStats.textContent = `Rendered ${cols}×${rows} grid (${rendered.lines.length} lines).`;
     }
   }
 
-  function loadImage(file) {
+  function loadUploadedImage(file) {
     if (!file) return;
     stopCamera();
-    clearObjectUrl();
 
-    const img = new Image();
+    if (state.objectUrl) URL.revokeObjectURL(state.objectUrl);
     state.objectUrl = URL.createObjectURL(file);
-    img.onload = function () {
+    const img = new Image();
+    img.onload = () => {
       state.sourceImage = img;
       state.mode = "image";
       state.sourceName = file.name;
-      setStatus("Image loaded", file.name, "Uploaded image is ready for ASCII conversion.");
-      renderAscii();
-    };
-    img.onerror = function () {
-      showToast("The selected image could not be loaded.");
-      clearObjectUrl();
+
+      els.sourceCanvas.width = img.naturalWidth;
+      els.sourceCanvas.height = img.naturalHeight;
+      sourceCtx.drawImage(img, 0, 0);
+
+      els.sourceCanvas.style.display = "block";
+      els.video.style.display = "none";
+      els.emptyPreview.style.display = "none";
+
+      setStatus("Image Loaded", file.name, `Processing image: ${file.name}`);
+      processCurrentFrame();
     };
     img.src = state.objectUrl;
   }
 
   function loadSample() {
     stopCamera();
-    clearObjectUrl();
-    state.sourceImage = null;
     state.mode = "sample";
-    state.sourceName = "sample";
     state.asciiText = sampleArt;
-    state.rows = sampleArt.split("\n").map(function (line) {
-      return line.split("").map(function (char) {
-        return { char, color: "#38bdf8" };
-      });
-    });
+    state.lines = sampleArt.split("\n");
     els.asciiOutput.textContent = sampleArt;
-    els.sourceCanvas.style.display = "none";
-    els.emptyPreview.style.display = "grid";
-    setStatus("Sample loaded", "Static ASCII sample", "Use this sample to test copy and export actions.");
-    els.renderStats.textContent = "Sample ASCII art loaded.";
+    els.emptyPreview.style.display = "none";
+    if (els.renderStats) els.renderStats.textContent = "Sample ASCII rendered.";
+    setStatus("Sample Loaded", "Sample Art", "Sample logo rendered.");
   }
 
-  function requireAscii() {
-    if (!state.asciiText.trim()) {
-      showToast("Render or load ASCII art before exporting.");
-      return false;
-    }
-    return true;
-  }
+  function setupEvents() {
+    if (els.cameraBtn) els.cameraBtn.addEventListener("click", startCamera);
+    if (els.stopCameraBtn) els.stopCameraBtn.addEventListener("click", () => setEmptyState());
 
-  async function copyText() {
-    if (!requireAscii()) return;
-
-    try {
-      await navigator.clipboard.writeText(state.asciiText);
-      showToast("ASCII text copied.");
-    } catch (error) {
-      showToast("Copy failed in this browser. Download TXT instead.");
-    }
-  }
-
-  function downloadBlob(blob, fileName) {
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
-  }
-
-  function downloadText() {
-    if (!requireAscii()) return;
-    downloadBlob(new Blob([state.asciiText], { type: "text/plain;charset=utf-8" }), "ascii-camera.txt");
-  }
-
-  function downloadPng() {
-    if (!requireAscii()) return;
-
-    const lines = state.asciiText.split("\n");
-    const fontSize = 12;
-    const charWidth = 7.2;
-    const lineHeight = 11;
-    const padding = 28;
-    const width = Math.max(320, Math.ceil(Math.max(...lines.map(function (line) {
-      return line.length;
-    })) * charWidth + padding * 2));
-    const height = Math.max(180, Math.ceil(lines.length * lineHeight + padding * 2));
-    const exportCanvas = document.createElement("canvas");
-    exportCanvas.width = width;
-    exportCanvas.height = height;
-    const ctx = exportCanvas.getContext("2d");
-
-    ctx.fillStyle = "#020617";
-    ctx.fillRect(0, 0, width, height);
-    ctx.font = `${fontSize}px "JetBrains Mono", Consolas, monospace`;
-    ctx.textBaseline = "top";
-
-    state.rows.forEach(function (row, y) {
-      row.forEach(function (cell, x) {
-        ctx.fillStyle = els.colorToggle.checked ? cell.color : "#dbeafe";
-        ctx.fillText(cell.char, padding + x * charWidth, padding + y * lineHeight);
+    if (els.imageUpload) {
+      els.imageUpload.addEventListener("change", e => {
+        if (e.target.files && e.target.files[0]) {
+          loadUploadedImage(e.target.files[0]);
+        }
       });
-    });
-
-    exportCanvas.toBlob(function (blob) {
-      if (!blob) {
-        showToast("PNG export failed.");
-        return;
-      }
-      downloadBlob(blob, "ascii-camera.png");
-    }, "image/png");
-  }
-
-  function rerenderCurrentSource() {
-    updateControlLabels();
-    if (state.mode === "image" || state.mode === "sample") {
-      if (state.mode === "sample") {
-        loadSample();
-      } else {
-        renderAscii();
-      }
     }
+
+    const controls = [
+      els.densitySelect, els.columnRange, els.contrastRange,
+      els.brightnessRange, els.invertToggle, els.edgeToggle
+    ];
+
+    controls.forEach(control => {
+      if (control) {
+        control.addEventListener("input", () => {
+          updateControlLabels();
+          if (state.mode !== "camera") processCurrentFrame();
+        });
+      }
+    });
+
+    if (els.copyBtn) {
+      els.copyBtn.addEventListener("click", () => {
+        if (!state.asciiText) return;
+        navigator.clipboard.writeText(state.asciiText).then(() => {
+          els.copyBtn.textContent = "Copied!";
+          setTimeout(() => { els.copyBtn.textContent = "Copy Text"; }, 2000);
+        });
+      });
+    }
+
+    if (els.downloadTxtBtn) {
+      els.downloadTxtBtn.addEventListener("click", () => {
+        if (!state.asciiText) return;
+        const payload = exporter ? exporter.toPlainText(state.lines) : state.asciiText;
+        if (exporter) exporter.downloadFile("ascii-art.txt", payload, "text/plain");
+      });
+    }
+
+    if (els.downloadHtmlBtn) {
+      els.downloadHtmlBtn.addEventListener("click", () => {
+        if (!state.lines.length) return;
+        const html = exporter ? exporter.toHTML(state.lines) : "";
+        if (exporter) exporter.downloadFile("ascii-art.html", html, "text/html");
+      });
+    }
+
+    if (els.downloadSvgBtn) {
+      els.downloadSvgBtn.addEventListener("click", () => {
+        if (!state.lines.length) return;
+        const svg = exporter ? exporter.toSVG(state.lines) : "";
+        if (exporter) exporter.downloadFile("ascii-art.svg", svg, "image/svg+xml");
+      });
+    }
+
+    if (els.sampleBtn) els.sampleBtn.addEventListener("click", loadSample);
   }
 
-  function bindEvents() {
-    els.cameraBtn.addEventListener("click", startCamera);
-    els.stopCameraBtn.addEventListener("click", function () {
-      stopCamera();
-      setStatus("Camera stopped", "Paused", "Start the camera or upload an image to continue.");
-    });
-    els.imageUpload.addEventListener("change", function (event) {
-      loadImage(event.target.files[0]);
-    });
-    els.sampleBtn.addEventListener("click", loadSample);
-    els.copyBtn.addEventListener("click", copyText);
-    els.downloadTxtBtn.addEventListener("click", downloadText);
-    els.downloadPngBtn.addEventListener("click", downloadPng);
-
-    [
-      els.densitySelect,
-      els.columnRange,
-      els.contrastRange,
-      els.brightnessRange,
-      els.fpsRange,
-      els.invertToggle,
-      els.colorToggle,
-      els.ditherToggle
-    ].forEach(function (control) {
-      control.addEventListener("input", rerenderCurrentSource);
-      control.addEventListener("change", rerenderCurrentSource);
-    });
-
-    window.addEventListener("beforeunload", function () {
-      stopCamera();
-      clearObjectUrl();
-    });
-  }
-
-  function init() {
+  document.addEventListener("DOMContentLoaded", () => {
     updateControlLabels();
-    els.sourceCanvas.style.display = "none";
-    setStatus("Upload mode", "Ready to render", "Upload an image or start the camera to render ASCII.");
-    bindEvents();
-  }
-
-  init();
+    setupEvents();
+    setEmptyState();
+  });
 })();

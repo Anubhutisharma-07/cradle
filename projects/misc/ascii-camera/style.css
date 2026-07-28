@@ -339,6 +339,13 @@ h1 {
   box-shadow: var(--cradle-shadow, 0 10px 30px rgba(0, 0, 0, 0.35));
 }
 
+.export-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
 @media (max-width: 1180px) {
   .controls-panel {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -392,3 +399,4 @@ h1 {
     font-size: 7px;
   }
 }
+
