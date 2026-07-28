@@ -12,14 +12,16 @@ The project is intentionally self-contained: no build tools, no frameworks, no e
 
 ```
 2048-game/
-├── index.html   # Page shell, score display, game board container
-├── logic.js     # Pure game rules (no DOM access)
-├── storage.js   # State and high score saving/loading per grid size
-├── script.js    # UI layer — renders the board and handles input
-└── style.css   # Layout and tile colour theming
+├── index.html          # Page shell, score display, game board container
+├── logic.js            # Pure game rules (no DOM access)
+├── storage.js          # State and high score saving/loading per grid size
+├── gameUndoManager.js  # Move history stack manager with rollback support
+├── gameThemeEngine.js  # Preset grid color themes (Classic, Dark Neon, Cyberpunk)
+├── script.js           # UI layer — renders the board and handles input
+└── style.css          # Layout and tile colour theming
 ```
 
-**`logic.js`** and **`script.js`** are deliberately separated. `logic.js` contains every rule (tile merging, board traversal, win/loss detection) and exposes a small public API. `script.js` knows nothing about game rules — it only reads state and updates the DOM. This separation allows `logic.js` to be imported in a test environment without a browser.
+**`logic.js`**, **`gameUndoManager.js`**, and **`script.js`** are deliberately separated into modular architecture. `logic.js` contains core rules, `gameUndoManager.js` handles move history stack, and `script.js` binds UI events and DOM updates.
 
 ---
 

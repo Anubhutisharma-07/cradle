@@ -32,12 +32,23 @@ body {
   box-shadow: 0 24px 70px rgba(2, 6, 23, 0.45);
 }
 
-.panel__header {
+.controls {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.theme-selector {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#undoBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .eyebrow {
