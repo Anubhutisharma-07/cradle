@@ -211,6 +211,43 @@ function isNewProject(dateAdded) {
   return diffDays <= 7;
 }
 
+function createThumbnailFallback(project) {
+  const fallback = document.createElement("div");
+  fallback.className = "project-thumbnail-fallback";
+  fallback.setAttribute(
+    "aria-label",
+    `Thumbnail unavailable for ${project.title}`
+  );
+
+  const badge = document.createElement("span");
+  badge.className = "project-thumbnail-fallback__badge";
+  badge.textContent = formatCategoryLabel(project.category);
+
+  const title = document.createElement("span");
+  title.className = "project-thumbnail-fallback__title";
+  title.textContent = project.title;
+
+  const note = document.createElement("span");
+  note.className = "project-thumbnail-fallback__note";
+  note.textContent = "Preview unavailable";
+
+  fallback.append(badge, title, note);
+  return fallback;
+}
+
+function attachThumbnailFallback(card, project) {
+  const image = card.querySelector(".cradle-card__image");
+  if (!image) return;
+
+  image.addEventListener(
+    "error",
+    () => {
+      image.replaceWith(createThumbnailFallback(project));
+    },
+    { once: true }
+  );
+}
+
 function renderProjects(projects) {
   projectCount.textContent = `${projects.length} projects`;
 
@@ -250,6 +287,7 @@ function renderProjects(projects) {
       footerAlign: "left",
     });
 
+    attachThumbnailFallback(card, project);
     projectsGrid.appendChild(card);
   });
 }

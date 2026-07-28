@@ -54,8 +54,11 @@ body {
 
   font-family: Inter, system-ui, Arial, sans-serif;
 
-  background:
-    radial-gradient(circle at top, rgba(37, 99, 235, 0.1), transparent 45%),
+  background: radial-gradient(
+      circle at top,
+      rgba(37, 99, 235, 0.1),
+      transparent 45%
+    ),
     linear-gradient(180deg, var(--bg) 0%, var(--bg-secondary) 100%);
 
   color: var(--text);
@@ -305,6 +308,79 @@ main {
 
 .projects-grid p {
   color: var(--muted);
+}
+
+.project-thumbnail-fallback {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  padding: 1.1rem;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: radial-gradient(
+      circle at 18% 22%,
+      rgba(147, 197, 253, 0.26),
+      transparent 34%
+    ),
+    linear-gradient(135deg, var(--card-hover), var(--bg-secondary));
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.project-thumbnail-fallback::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+      rgba(148, 163, 184, 0.1) 1px,
+      transparent 1px
+    ),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.1) 1px, transparent 1px);
+  background-size: 28px 28px;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.55),
+    transparent
+  );
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), transparent);
+  pointer-events: none;
+}
+
+.project-thumbnail-fallback__badge,
+.project-thumbnail-fallback__title,
+.project-thumbnail-fallback__note {
+  position: relative;
+  z-index: 1;
+}
+
+.project-thumbnail-fallback__badge {
+  width: fit-content;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid rgba(147, 197, 253, 0.4);
+  border-radius: 999px;
+  color: #bfdbfe;
+  background: rgba(37, 99, 235, 0.16);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.project-thumbnail-fallback__title {
+  max-width: 85%;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.project-thumbnail-fallback__note {
+  color: var(--muted);
+  font-size: 0.82rem;
 }
 
 footer {
