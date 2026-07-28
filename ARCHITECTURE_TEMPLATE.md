@@ -347,6 +347,25 @@ Example:
 
 ---
 
+## License & Attribution
+
+<!--
+Specify the license for this specific project and attribute any third-party assets (images, audio, fonts, code snippets, etc.).
+
+Example:
+- **Project License:** MIT
+- **Third-Party Assets:**
+  - Background image by [Artist Name] on [Unsplash](https://unsplash.com)
+  - 'Outfit' Font by [Google Fonts](https://fonts.google.com) (OFL License)
+-->
+
+- **Project License:** <!-- License name, e.g., MIT -->
+- **Third-Party Assets:**
+  - <!-- Asset 1 description and source -->
+  - <!-- Asset 2 description and source -->
+
+---
+
 ## References
 
 <!--
