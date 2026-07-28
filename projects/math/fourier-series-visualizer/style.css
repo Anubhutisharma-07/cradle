@@ -9,6 +9,7 @@
 
   --canvas-bg: #0a0e1a;
   --grid-color: rgba(255, 255, 255, 0.04);
+  --grid-axis-color: rgba(255, 255, 255, 0.08);
   --wave-primary: var(--theme-accent);
   --wave-harmonic-1: #ef4444;
   --wave-harmonic-2: #f59e0b;
@@ -16,6 +17,13 @@
   --wave-harmonic-4: #06b6d4;
   --wave-harmonic-5: #8b5cf6;
   --wave-harmonic-6: #ec4899;
+
+  /* Header & canvas-header overlays (dark defaults) */
+  --header-bg: rgba(11, 18, 32, 0.7);
+  --canvas-header-bg: rgba(5, 7, 13, 0.3);
+
+  /* Slider thumb border matches canvas bg in dark mode */
+  --slider-thumb-border: var(--canvas-bg);
 }
 
 body {
@@ -33,7 +41,7 @@ body {
 
 /* ===================== HEADER ===================== */
 .app-header {
-  background-color: rgba(11, 18, 32, 0.7);
+  background-color: var(--header-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--cradle-border);
@@ -220,7 +228,7 @@ body {
   height: 14px;
   border-radius: 50%;
   background: var(--theme-accent);
-  border: 2px solid var(--cradle-bg);
+  border: 2px solid var(--slider-thumb-border);
   box-shadow: 0 0 6px rgba(99, 102, 241, 0.4);
 }
 
@@ -229,7 +237,7 @@ body {
   height: 14px;
   border-radius: 50%;
   background: var(--theme-accent);
-  border: 2px solid var(--cradle-bg);
+  border: 2px solid var(--slider-thumb-border);
   cursor: pointer;
 }
 
@@ -383,7 +391,7 @@ body {
   align-items: center;
   padding: var(--cradle-space-3) var(--cradle-space-4);
   border-bottom: 1px solid var(--cradle-border);
-  background: rgba(5, 7, 13, 0.3);
+  background: var(--canvas-header-bg);
 }
 
 .canvas-title {
@@ -510,4 +518,247 @@ body {
   .wave-grid {
     grid-template-columns: 1fr 1fr;
   }
+}
+
+/* ==========================================================================
+   LIGHT THEME
+   Activated via [data-theme="light"] on <html>.
+   Dark theme remains the default and is NOT modified.
+   ========================================================================== */
+
+[data-theme="light"] {
+  /* ── Cradle token overrides (mirrors tokens.css light-theme) ── */
+  --cradle-bg: #f5f7fb;
+  --cradle-bg-secondary: #ffffff;
+  --cradle-surface: #ffffff;
+  --cradle-surface-2: #f1f5f9;
+
+  --cradle-border: #e2e5ec;
+  --cradle-border-hover: #cbd1db;
+
+  --cradle-text: #0f172a;
+  --cradle-text-secondary: #334155;
+  --cradle-muted: #64748b;
+
+  --cradle-shadow-sm: 0 2px 8px rgba(99, 102, 241, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --cradle-shadow: 0 8px 24px rgba(99, 102, 241, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+  --cradle-shadow-lg: 0 20px 50px rgba(99, 102, 241, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  /* ── Project-specific light tokens ── */
+  --canvas-bg: #0a0e1a;
+  --grid-color: rgba(99, 102, 241, 0.06);
+  --grid-axis-color: rgba(99, 102, 241, 0.14);
+  --header-bg: rgba(255, 255, 255, 0.82);
+  --canvas-header-bg: rgba(245, 247, 251, 0.6);
+  --slider-thumb-border: #ffffff;
+  --theme-accent-light: rgba(99, 102, 241, 0.1);
+}
+
+/* ── Cards get soft elevation in light mode ── */
+[data-theme="light"] .card,
+[data-theme="light"] .canvas-card,
+[data-theme="light"] .info-card {
+  box-shadow: var(--cradle-shadow-sm);
+  border-color: var(--cradle-border);
+}
+
+[data-theme="light"] .card:hover,
+[data-theme="light"] .canvas-card:hover {
+  box-shadow: var(--cradle-shadow);
+}
+
+/* ── Header ── */
+[data-theme="light"] .app-header {
+  border-bottom-color: var(--cradle-border);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+/* ── Brand text gradient adapts ── */
+[data-theme="light"] .brand-text h1 {
+  background: linear-gradient(to right, var(--cradle-text), var(--theme-accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* ── Theme toggle button ── */
+[data-theme="light"] .theme-toggle {
+  background: var(--cradle-surface-2);
+  border-color: var(--cradle-border);
+  color: var(--cradle-text-secondary);
+}
+
+[data-theme="light"] .theme-toggle:hover {
+  background: var(--cradle-border);
+  border-color: var(--cradle-border-hover);
+  color: var(--cradle-text);
+}
+
+/* ── Wave type buttons ── */
+[data-theme="light"] .wave-btn {
+  background: var(--cradle-surface-2);
+  border-color: var(--cradle-border);
+  color: var(--cradle-muted);
+}
+
+[data-theme="light"] .wave-btn:hover {
+  background: #ebedf5;
+  border-color: var(--theme-accent);
+  color: var(--cradle-text);
+}
+
+[data-theme="light"] .wave-btn.active {
+  background: var(--theme-accent-light);
+  border-color: var(--theme-accent);
+  color: var(--theme-accent);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+}
+
+/* ── Range slider track ── */
+[data-theme="light"] .harmonic-control input[type="range"] {
+  background: #dfe2ea;
+}
+
+[data-theme="light"] .harmonic-control input[type="range"]::-webkit-slider-thumb {
+  box-shadow: 0 1px 4px rgba(99, 102, 241, 0.3);
+}
+
+/* ── Select inputs ── */
+[data-theme="light"] .select-input {
+  background: var(--cradle-surface-2);
+  border-color: var(--cradle-border);
+  color: var(--cradle-text);
+}
+
+[data-theme="light"] .select-input:focus {
+  border-color: var(--theme-accent);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.12);
+}
+
+/* ── Buttons ── */
+[data-theme="light"] .btn-primary {
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.2);
+}
+
+[data-theme="light"] .btn-primary:hover {
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+}
+
+[data-theme="light"] .btn-secondary {
+  background: var(--cradle-surface-2);
+  border-color: var(--cradle-border);
+  color: var(--cradle-text-secondary);
+}
+
+[data-theme="light"] .btn-secondary:hover {
+  background: #e4e7ef;
+  color: var(--cradle-text);
+}
+
+[data-theme="light"] .btn-secondary.active {
+  background: var(--theme-accent-light);
+  border-color: var(--theme-accent);
+  color: var(--theme-accent);
+}
+
+/* ── Canvas card sections ── */
+[data-theme="light"] .canvas-header {
+  border-bottom-color: var(--cradle-border);
+}
+
+[data-theme="light"] .canvas-wrap canvas {
+  border-radius: 0;
+}
+
+/* ── Legend ── */
+[data-theme="light"] .legend {
+  border-top-color: var(--cradle-border);
+}
+
+[data-theme="light"] .legend-item {
+  color: var(--cradle-text-secondary);
+}
+
+/* ── Status bar ── */
+[data-theme="light"] .status-bar {
+  border-top-color: var(--cradle-border);
+  background: var(--cradle-surface-2);
+  color: var(--cradle-muted);
+}
+
+/* ── Info card ── */
+[data-theme="light"] .info-card .formula {
+  background: var(--cradle-surface-2);
+  color: var(--theme-accent);
+  border: 1px solid var(--cradle-border);
+}
+
+/* ── Harmonic list items ── */
+[data-theme="light"] .harmonic-item:hover {
+  background: var(--cradle-surface-2);
+}
+
+[data-theme="light"] .harmonic-item .harmonic-label {
+  color: var(--cradle-text-secondary);
+}
+
+[data-theme="light"] .harmonic-item .harmonic-amp {
+  color: var(--cradle-muted);
+}
+
+/* ── Scrollbar (Webkit) ── */
+[data-theme="light"] .harmonic-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+[data-theme="light"] .harmonic-list::-webkit-scrollbar-track {
+  background: var(--cradle-surface-2);
+  border-radius: 4px;
+}
+
+[data-theme="light"] .harmonic-list::-webkit-scrollbar-thumb {
+  background: #c7cbd6;
+  border-radius: 4px;
+}
+
+[data-theme="light"] .harmonic-list::-webkit-scrollbar-thumb:hover {
+  background: #a8adb8;
+}
+
+[data-theme="light"] .controls-panel::-webkit-scrollbar {
+  width: 5px;
+}
+
+[data-theme="light"] .controls-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+[data-theme="light"] .controls-panel::-webkit-scrollbar-thumb {
+  background: #c7cbd6;
+  border-radius: 4px;
+}
+
+[data-theme="light"] .controls-panel::-webkit-scrollbar-thumb:hover {
+  background: #a8adb8;
+}
+
+/* ── Smooth transitions for theme switch ── */
+.card,
+.canvas-card,
+.info-card,
+.app-header,
+.canvas-header,
+.legend,
+.status-bar,
+.wave-btn,
+.btn,
+.theme-toggle,
+.harmonic-control input[type="range"],
+.select-input,
+.harmonic-item,
+.info-card .formula {
+  transition:
+    background-color var(--cradle-transition),
+    border-color var(--cradle-transition),
+    box-shadow var(--cradle-transition),
+    color var(--cradle-transition);
 }

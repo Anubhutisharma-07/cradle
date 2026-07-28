@@ -67,13 +67,24 @@ function resizeAllCanvases() {
 }
 
 /* ──── Drawing Helpers ────────────────────────────────────────────── */
+function getThemeCanvasColors() {
+  const style = getComputedStyle(document.documentElement);
+  return {
+    bg: style.getPropertyValue('--canvas-bg').trim() || '#0a0e1a',
+    grid: style.getPropertyValue('--grid-color').trim() || 'rgba(255, 255, 255, 0.04)',
+    axis: style.getPropertyValue('--grid-axis-color').trim() || 'rgba(255, 255, 255, 0.08)',
+  };
+}
+
 function clearCanvas(ctx, w, h) {
-  ctx.fillStyle = '#0a0e1a';
+  const colors = getThemeCanvasColors();
+  ctx.fillStyle = colors.bg;
   ctx.fillRect(0, 0, w, h);
 }
 
 function drawGrid(ctx, w, h) {
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+  const colors = getThemeCanvasColors();
+  ctx.strokeStyle = colors.grid;
   ctx.lineWidth = 1;
 
   // Horizontal grid lines (zero line + quarter markers)
@@ -95,7 +106,7 @@ function drawGrid(ctx, w, h) {
   }
 
   // Zero axis (brighter)
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+  ctx.strokeStyle = colors.axis;
   ctx.lineWidth = 1.5;
   ctx.beginPath();
   ctx.moveTo(0, midY);
