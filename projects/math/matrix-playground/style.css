@@ -72,11 +72,9 @@ body {
   font-size: 1.25rem;
   font-weight: 800;
   letter-spacing: -0.5px;
-  background: linear-gradient(
-    to right,
-    var(--cradle-text),
-    var(--theme-accent)
-  );
+  background: linear-gradient(to right,
+      var(--cradle-text),
+      var(--theme-accent));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -566,6 +564,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   -webkit-appearance: none;
   margin: 0;
 }
+
 .matrix-cell[type="number"] {
   -moz-appearance: textfield;
 }
@@ -606,9 +605,11 @@ input[type="range"]::-webkit-slider-thumb:hover {
   0% {
     box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
   }
+
   70% {
     box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
   }
+
   100% {
     box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
   }
@@ -665,17 +666,20 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 /* Element color tags inside scratchpad */
 .scratch-term-a {
-  color: #60a5fa; /* Soft Blue */
+  color: #60a5fa;
+  /* Soft Blue */
   font-weight: 700;
 }
 
 .scratch-term-b {
-  color: #c084fc; /* Soft Purple */
+  color: #c084fc;
+  /* Soft Purple */
   font-weight: 700;
 }
 
 .scratch-term-c {
-  color: #a78bfa; /* Soft Indigo */
+  color: #a78bfa;
+  /* Soft Indigo */
   font-weight: 700;
 }
 
@@ -786,3 +790,42 @@ input[type="range"]::-webkit-slider-thumb:hover {
   text-align: center;
 }
 
+/* ===================== MOBILE FIXES ===================== */
+@media (max-width: 640px) {
+  .header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--cradle-space-3);
+  }
+
+  .header-actions {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .app-container {
+    padding: var(--cradle-space-3);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .panel {
+    width: 100%;
+  }
+
+  .card {
+    width: 100%;
+    box-sizing: border-box;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .workspace-grid {
+    justify-content: center;
+  }
+
+  .matrix-card {
+    width: 100%;
+  }
+}
