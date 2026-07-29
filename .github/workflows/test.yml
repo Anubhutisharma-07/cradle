@@ -18,3 +18,4 @@ jobs:
       - run: npm ci --prefer-offline || npm install
       - run: npm test
       - run: npm run check-links
+      - run: npm run validate-projects
