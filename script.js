@@ -9,8 +9,9 @@ const recentProjectsSection = document.getElementById(
 );
 const recentProjectsGrid = document.getElementById("recent-projects-grid");
 const clearRecentProjectsBtn = document.getElementById("clear-recent-projects");
-const SEARCH_QUERY_PARAM = "q";
-const CATEGORY_QUERY_PARAM = "category";
+const toggleRecentProjectsBtn = document.getElementById(
+  "toggle-recent-projects"
+);
 
 let allProjects = [];
 let selectedCategory = "all";
@@ -19,6 +20,7 @@ let activeSuggestionIndex = -1;
 let currentSuggestions = [];
 const copyStatus = document.getElementById("copy-status");
 const RECENT_PROJECTS_KEY = "cradle:recent-projects";
+const RECENT_PROJECTS_COLLAPSED_KEY = "cradle:recent-projects-collapsed";
 const RECENT_PROJECTS_LIMIT = 5;
 
 let filterWorker;
@@ -99,13 +101,11 @@ async function loadProjects() {
       if (cachedProjects && cachedProjects.length > 0) {
         allProjects = cachedProjects;
 
-        validateSelectedCategory();
         renderCategories();
-        applyFilters();
+        renderProjects(allProjects);
 
         fetchAndCacheProjects(db)
           .then(() => {
-            validateSelectedCategory();
             renderCategories();
             applyFilters();
           })
@@ -119,63 +119,11 @@ async function loadProjects() {
 
     await fetchAndCacheProjects(db);
 
-    validateSelectedCategory();
     renderCategories();
-    applyFilters();
+    renderProjects(allProjects);
   } catch (error) {
     console.error(error);
     projectsGrid.innerHTML = "<p>Failed to load projects.</p>";
-  }
-}
-
-function restoreFiltersFromUrl() {
-  const params = new URLSearchParams(window.location.search);
-  const query = params.get(SEARCH_QUERY_PARAM);
-  const category = params.get(CATEGORY_QUERY_PARAM);
-
-  if (query) {
-    searchInput.value = query;
-  }
-
-  if (category) {
-    selectedCategory = category;
-  }
-}
-
-function updateUrlFilterState() {
-  const params = new URLSearchParams(window.location.search);
-  const query = searchInput.value.trim();
-
-  if (query) {
-    params.set(SEARCH_QUERY_PARAM, query);
-  } else {
-    params.delete(SEARCH_QUERY_PARAM);
-  }
-
-  if (selectedCategory !== "all") {
-    params.set(CATEGORY_QUERY_PARAM, selectedCategory);
-  } else {
-    params.delete(CATEGORY_QUERY_PARAM);
-  }
-
-  const queryString = params.toString();
-  const nextUrl = `${window.location.pathname}${
-    queryString ? `?${queryString}` : ""
-  }${window.location.hash}`;
-
-  if (
-    nextUrl !==
-    `${window.location.pathname}${window.location.search}${window.location.hash}`
-  ) {
-    window.history.replaceState(null, "", nextUrl);
-  }
-}
-
-function validateSelectedCategory() {
-  const categories = new Set(allProjects.map(project => project.category));
-
-  if (selectedCategory !== "all" && !categories.has(selectedCategory)) {
-    selectedCategory = "all";
   }
 }
 
@@ -252,6 +200,42 @@ function saveRecentProjects(projects) {
   }
 }
 
+function getRecentProjectsCollapsed() {
+  try {
+    return localStorage.getItem(RECENT_PROJECTS_COLLAPSED_KEY) === "true";
+  } catch (error) {
+    console.warn("Failed to load recently opened collapse state:", error);
+    return false;
+  }
+}
+
+function saveRecentProjectsCollapsed(isCollapsed) {
+  try {
+    localStorage.setItem(RECENT_PROJECTS_COLLAPSED_KEY, String(isCollapsed));
+  } catch (error) {
+    console.warn("Failed to save recently opened collapse state:", error);
+  }
+}
+
+function setRecentProjectsCollapsed(isCollapsed) {
+  if (!recentProjectsSection || !recentProjectsGrid) return;
+
+  recentProjectsSection.classList.toggle("is-collapsed", isCollapsed);
+  recentProjectsGrid.hidden = isCollapsed;
+
+  if (toggleRecentProjectsBtn) {
+    toggleRecentProjectsBtn.textContent = isCollapsed ? "Expand" : "Collapse";
+    toggleRecentProjectsBtn.setAttribute(
+      "aria-expanded",
+      isCollapsed ? "false" : "true"
+    );
+    toggleRecentProjectsBtn.setAttribute(
+      "aria-label",
+      `${isCollapsed ? "Expand" : "Collapse"} recently opened projects`
+    );
+  }
+}
+
 function recordRecentlyOpenedProject(project) {
   if (!project) return;
 
@@ -325,6 +309,7 @@ function renderRecentProjects() {
   const recentProjects = getRecentProjects();
 
   recentProjectsSection.hidden = recentProjects.length === 0;
+  setRecentProjectsCollapsed(getRecentProjectsCollapsed());
   recentProjectsGrid.innerHTML = "";
 
   recentProjects.forEach(project => {
@@ -335,41 +320,13 @@ function renderRecentProjects() {
       })
     );
   });
-function createThumbnailFallback(project) {
-  const fallback = document.createElement("div");
-  fallback.className = "project-thumbnail-fallback";
-  fallback.setAttribute(
-    "aria-label",
-    `Thumbnail unavailable for ${project.title}`
-  );
-
-  const badge = document.createElement("span");
-  badge.className = "project-thumbnail-fallback__badge";
-  badge.textContent = formatCategoryLabel(project.category);
-
-  const title = document.createElement("span");
-  title.className = "project-thumbnail-fallback__title";
-  title.textContent = project.title;
-
-  const note = document.createElement("span");
-  note.className = "project-thumbnail-fallback__note";
-  note.textContent = "Preview unavailable";
-
-  fallback.append(badge, title, note);
-  return fallback;
 }
 
-function attachThumbnailFallback(card, project) {
-  const image = card.querySelector(".cradle-card__image");
-  if (!image) return;
+function toggleRecentProjects() {
+  const isCollapsed = !getRecentProjectsCollapsed();
 
-  image.addEventListener(
-    "error",
-    () => {
-      image.replaceWith(createThumbnailFallback(project));
-    },
-    { once: true }
-  );
+  saveRecentProjectsCollapsed(isCollapsed);
+  setRecentProjectsCollapsed(isCollapsed);
 }
 
 function renderProjects(projects) {
@@ -388,36 +345,6 @@ function renderProjects(projects) {
         onOpen: recordRecentlyOpenedProject,
       })
     );
-    const openButton = CradleButton.create({
-      variant: "outline",
-      size: "sm",
-      children: "Open Project",
-      rightIcon: "→",
-      href: project.path,
-      target: "_self",
-      rel: "noopener noreferrer",
-    });
-
-    const copyButton = CradleButton.create({
-      variant: "ghost",
-      size: "sm",
-      children: "Copy Link",
-      ariaLabel: `Copy direct link to ${project.title}`,
-      onClick: () => copyProjectUrl(project, copyButton),
-    });
-
-    const card = CradleCard.create({
-      title: project.title,
-      subtitle: project.path,
-      badge: project.category,
-      isNew: isNewProject(project.dateAdded),
-      image: `${project.path}thumbnail.svg`,
-      footer: [openButton, copyButton],
-      footerAlign: "left",
-    });
-
-    attachThumbnailFallback(card, project);
-    projectsGrid.appendChild(card);
   });
 }
 
@@ -642,7 +569,6 @@ function applyFilters() {
   }
 
   updateClearButtonVisibility(query);
-  updateUrlFilterState();
 }
 
 function updateClearButtonVisibility(query) {
@@ -709,6 +635,10 @@ if (clearFiltersBtn) {
 
 if (clearRecentProjectsBtn) {
   clearRecentProjectsBtn.addEventListener("click", clearRecentProjects);
+}
+
+if (toggleRecentProjectsBtn) {
+  toggleRecentProjectsBtn.addEventListener("click", toggleRecentProjects);
 }
 
 // Floating Back to Top Button Logic
@@ -835,6 +765,5 @@ document.addEventListener("keydown", e => {
 
 document.addEventListener("DOMContentLoaded", () => {
   renderRecentProjects();
-  restoreFiltersFromUrl();
   loadProjects();
 });
