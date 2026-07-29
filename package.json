@@ -10,7 +10,7 @@
     "build": "npm run generate",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "check-duplicate-js": "node scripts/detect-duplicate-js.js"
+    "check-links": "node scripts/check-broken-links.js"
   },
   "devDependencies": {
     "prettier": "^3.0.0"
