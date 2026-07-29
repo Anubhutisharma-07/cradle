@@ -9,6 +9,8 @@ const recentProjectsSection = document.getElementById(
 );
 const recentProjectsGrid = document.getElementById("recent-projects-grid");
 const clearRecentProjectsBtn = document.getElementById("clear-recent-projects");
+const SEARCH_QUERY_PARAM = "q";
+const CATEGORY_QUERY_PARAM = "category";
 
 let allProjects = [];
 let selectedCategory = "all";
@@ -97,11 +99,13 @@ async function loadProjects() {
       if (cachedProjects && cachedProjects.length > 0) {
         allProjects = cachedProjects;
 
+        validateSelectedCategory();
         renderCategories();
-        renderProjects(allProjects);
+        applyFilters();
 
         fetchAndCacheProjects(db)
           .then(() => {
+            validateSelectedCategory();
             renderCategories();
             applyFilters();
           })
@@ -115,11 +119,63 @@ async function loadProjects() {
 
     await fetchAndCacheProjects(db);
 
+    validateSelectedCategory();
     renderCategories();
-    renderProjects(allProjects);
+    applyFilters();
   } catch (error) {
     console.error(error);
     projectsGrid.innerHTML = "<p>Failed to load projects.</p>";
+  }
+}
+
+function restoreFiltersFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const query = params.get(SEARCH_QUERY_PARAM);
+  const category = params.get(CATEGORY_QUERY_PARAM);
+
+  if (query) {
+    searchInput.value = query;
+  }
+
+  if (category) {
+    selectedCategory = category;
+  }
+}
+
+function updateUrlFilterState() {
+  const params = new URLSearchParams(window.location.search);
+  const query = searchInput.value.trim();
+
+  if (query) {
+    params.set(SEARCH_QUERY_PARAM, query);
+  } else {
+    params.delete(SEARCH_QUERY_PARAM);
+  }
+
+  if (selectedCategory !== "all") {
+    params.set(CATEGORY_QUERY_PARAM, selectedCategory);
+  } else {
+    params.delete(CATEGORY_QUERY_PARAM);
+  }
+
+  const queryString = params.toString();
+  const nextUrl = `${window.location.pathname}${
+    queryString ? `?${queryString}` : ""
+  }${window.location.hash}`;
+
+  if (
+    nextUrl !==
+    `${window.location.pathname}${window.location.search}${window.location.hash}`
+  ) {
+    window.history.replaceState(null, "", nextUrl);
+  }
+}
+
+function validateSelectedCategory() {
+  const categories = new Set(allProjects.map(project => project.category));
+
+  if (selectedCategory !== "all" && !categories.has(selectedCategory)) {
+    selectedCategory = "all";
   }
 }
 
@@ -279,6 +335,41 @@ function renderRecentProjects() {
       })
     );
   });
+function createThumbnailFallback(project) {
+  const fallback = document.createElement("div");
+  fallback.className = "project-thumbnail-fallback";
+  fallback.setAttribute(
+    "aria-label",
+    `Thumbnail unavailable for ${project.title}`
+  );
+
+  const badge = document.createElement("span");
+  badge.className = "project-thumbnail-fallback__badge";
+  badge.textContent = formatCategoryLabel(project.category);
+
+  const title = document.createElement("span");
+  title.className = "project-thumbnail-fallback__title";
+  title.textContent = project.title;
+
+  const note = document.createElement("span");
+  note.className = "project-thumbnail-fallback__note";
+  note.textContent = "Preview unavailable";
+
+  fallback.append(badge, title, note);
+  return fallback;
+}
+
+function attachThumbnailFallback(card, project) {
+  const image = card.querySelector(".cradle-card__image");
+  if (!image) return;
+
+  image.addEventListener(
+    "error",
+    () => {
+      image.replaceWith(createThumbnailFallback(project));
+    },
+    { once: true }
+  );
 }
 
 function renderProjects(projects) {
@@ -297,6 +388,36 @@ function renderProjects(projects) {
         onOpen: recordRecentlyOpenedProject,
       })
     );
+    const openButton = CradleButton.create({
+      variant: "outline",
+      size: "sm",
+      children: "Open Project",
+      rightIcon: "→",
+      href: project.path,
+      target: "_self",
+      rel: "noopener noreferrer",
+    });
+
+    const copyButton = CradleButton.create({
+      variant: "ghost",
+      size: "sm",
+      children: "Copy Link",
+      ariaLabel: `Copy direct link to ${project.title}`,
+      onClick: () => copyProjectUrl(project, copyButton),
+    });
+
+    const card = CradleCard.create({
+      title: project.title,
+      subtitle: project.path,
+      badge: project.category,
+      isNew: isNewProject(project.dateAdded),
+      image: `${project.path}thumbnail.svg`,
+      footer: [openButton, copyButton],
+      footerAlign: "left",
+    });
+
+    attachThumbnailFallback(card, project);
+    projectsGrid.appendChild(card);
   });
 }
 
@@ -521,6 +642,7 @@ function applyFilters() {
   }
 
   updateClearButtonVisibility(query);
+  updateUrlFilterState();
 }
 
 function updateClearButtonVisibility(query) {
@@ -713,5 +835,6 @@ document.addEventListener("keydown", e => {
 
 document.addEventListener("DOMContentLoaded", () => {
   renderRecentProjects();
+  restoreFiltersFromUrl();
   loadProjects();
 });

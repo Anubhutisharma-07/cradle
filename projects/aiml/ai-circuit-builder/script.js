@@ -41,11 +41,13 @@ let selectedArch = "npu";
 let activeDesignData = null;
 
 // Initialize Workspace Assets on Document Mounting
-document.addEventListener("DOMContentLoaded", () => {
-  initTheme();
-  renderSavedProjectsList();
-  renderComparisonTable();
-});
+if (typeof document !== "undefined") {
+  document.addEventListener("DOMContentLoaded", () => {
+    initTheme();
+    renderSavedProjectsList();
+    renderComparisonTable();
+  });
+}
 
 function selectArch(btn) {
   document.querySelectorAll(".arch-btn").forEach(b => {
@@ -453,13 +455,18 @@ function saveActiveProject() {
   renderSavedProjectsList();
   renderComparisonTable();
 
-  const status = document.getElementById("storageStatus");
-  status.innerText = "Project Saved Successfully!";
-  status.className = "text-xs text-purple-400 font-mono animate-bounce";
-  setTimeout(() => {
-    status.innerText = "LocalStorage Synced";
-    status.className = "text-xs text-emerald-400 font-mono";
-  }, 2500);
+  const status =
+    typeof document !== "undefined"
+      ? document.getElementById("storageStatus")
+      : null;
+  if (status) {
+    status.innerText = "Project Saved Successfully!";
+    status.className = "text-xs text-purple-400 font-mono animate-bounce";
+    setTimeout(() => {
+      status.innerText = "LocalStorage Synced";
+      status.className = "text-xs text-emerald-400 font-mono";
+    }, 2500);
+  }
 }
 
 function deleteProject(id, event) {
@@ -502,6 +509,7 @@ function loadSavedProject(id) {
 }
 
 function renderSavedProjectsList() {
+  if (typeof document === "undefined") return;
   const projects = getStoredProjects();
   const container = document.getElementById("savedProjectsList");
   document.getElementById("savedCount").innerText = projects.length;
@@ -549,6 +557,7 @@ function renderSavedProjectsList() {
 }
 
 function renderComparisonTable() {
+  if (typeof document === "undefined") return;
   const list = getComparisonList();
   const tbody = document.getElementById("comparisonBody");
 
@@ -609,4 +618,29 @@ function exportDesignToJSON() {
   document.body.appendChild(downloadAnchor);
   downloadAnchor.click();
   downloadAnchor.remove();
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = {
+    escapeHTML,
+    calculatePPA,
+    initTheme,
+    setTheme,
+    toggleTheme,
+    getStoredProjects,
+    getComparisonList,
+    saveActiveProject,
+    deleteProject,
+    loadSavedProject,
+    clearComparison,
+    selectArch,
+    getSelectedArch: () => selectedArch,
+    setSelectedArch: arch => {
+      selectedArch = arch;
+    },
+    getActiveDesignData: () => activeDesignData,
+    setActiveDesignData: data => {
+      activeDesignData = data;
+    },
+  };
 }
