@@ -130,6 +130,11 @@
     "path": "projects/games/memory-flip-game/"
   },
   {
+    "title": "Monopoly",
+    "category": "games",
+    "path": "projects/games/monopoly/"
+  },
+  {
     "title": "Morse Code Studio",
     "category": "misc",
     "path": "projects/misc/morse-code-studio/"
@@ -163,6 +168,11 @@
     "title": "Stone Paper Scissors Game",
     "category": "games",
     "path": "projects/games/stone-paper-scissors-game/"
+  },
+  {
+    "title": "Terminal Portfolio Generator",
+    "category": "productivity",
+    "path": "projects/productivity/terminal-portfolio-generator/"
   },
   {
     "title": "Time Blocking Planner",

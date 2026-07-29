@@ -1,5 +1,5 @@
-const DEFAULT_MARKDOWN = `# Jidnyasa Patil
-Pune, India | jidnyasa@example.com | +91 98765 43210 | [LinkedIn](https://linkedin.com/in/jidnyasa) | [GitHub](https://github.com/Jidnyasa-P)
+const DEFAULT_MARKDOWN = `# Demo User
+Pune, India | Demo@example.com | +91 98765 43210 | [LinkedIn](https://linkedin.com/in/Demo) | [GitHub](https://github.com/Demo)
 
 ## Professional Summary
 Cybersecurity and full-stack development learner with hands-on experience building web projects, security labs, and automation tools. Strong interest in SOC workflows, threat intelligence, and practical problem solving.
