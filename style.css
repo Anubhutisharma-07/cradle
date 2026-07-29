@@ -54,11 +54,9 @@ body {
 
   font-family: Inter, system-ui, Arial, sans-serif;
 
-  background: radial-gradient(
-      circle at top,
+  background: radial-gradient(circle at top,
       rgba(37, 99, 235, 0.1),
-      transparent 45%
-    ),
+      transparent 45%),
     linear-gradient(180deg, var(--bg) 0%, var(--bg-secondary) 100%);
 
   color: var(--text);
@@ -135,7 +133,6 @@ html.light-theme .hero h1 {
 .search-container {
   max-width: 650px;
   margin: 1.5rem auto 0;
-
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -416,16 +413,25 @@ footer {
   .search-container {
     flex-direction: column;
     align-items: stretch;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
   }
 
   #clear-filters {
     align-self: center;
+    margin: 1.6rem 0;
+  }
+  
+  #shortcuts-btn {
+    align-self: center;
+    margin-top: -30px;
   }
 
   .section-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
+    margin-top: 0.75rem;
   }
 
   .section-actions {
@@ -549,6 +555,7 @@ footer {
     opacity: 0;
     transform: scale(0.95) translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
