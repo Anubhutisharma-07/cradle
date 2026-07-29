@@ -1,10 +1,29 @@
  * { box-sizing: border-box; }
+ :root {
+  --bg: #eef3f8;
+  --surface: #ffffff;
+  --surface-2: #f8fafc;
+
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+
+  --success: #16a34a;
+  --warning: #facc15;
+  --danger: #dc2626;
+
+  --text: #1f2937;
+  --text-light: #6b7280;
+
+  --border: #d1d5db;
+  --shadow: rgba(0,0,0,0.12);
+}
   body {
-    font-family: Arial, sans-serif;
-    background: #f0f0f0;
-    margin: 0;
-    padding: 20px;
-  }
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(135deg, #eef3f8, #dbeafe);
+  color: #2c3e50;
+  margin: 0;
+  padding: 20px;
+}
   h1 { text-align: center; margin: 0 0 20px; }
 
   .app {
@@ -27,13 +46,13 @@
   .center {
     grid-column: 2 / 11;
     grid-row: 2 / 11;
-    background: #e8f5e9;
+    background: linear-gradient(135deg,#dcfce7,#bbf7d0);
+    color: #166534;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 36px;
     font-weight: bold;
-    color: #333;
     text-align: center;
     border: 1px solid #ccc;
   }
