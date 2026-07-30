@@ -164,6 +164,38 @@ User prints/PDF exports, exports JSON, or imports JSON
 
 ---
 
+## Data Persistence
+
+The application stores invoice drafts entirely in the browser using the `localStorage` API.
+
+- Every invoice change automatically updates the saved draft.
+- When the application loads, it restores the previously saved invoice if one exists.
+- If no saved invoice is found, the bundled `sampleInvoice` is loaded instead.
+- No invoice data is transmitted to any external server.
+
+---
+
+## Import / Export Format
+
+Invoice data is serialized as JSON for portability.
+
+The exported file contains:
+
+- Business information
+- Client information
+- Invoice metadata
+- Line items
+- Discount, tax, and shipping values
+- Selected invoice template
+- Selected currency
+- Payment terms
+- Notes
+- Uploaded logo as a Data URL
+
+Importing a previously exported JSON file restores the complete invoice state.
+
+---
+
 ## Dependencies
 
 None. This project uses native browser APIs and existing Cradle UI files only.
