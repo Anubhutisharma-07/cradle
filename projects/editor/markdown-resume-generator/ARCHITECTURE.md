@@ -20,12 +20,17 @@ Markdown Resume Generator is a static browser mini project that turns Markdown i
 
 ```text
 markdown-resume-generator/
+## Folder Structure
+
+```text
+markdown-resume-generator/
 ├── ARCHITECTURE.md  # Architecture, data flow, file responsibilities, and project notes
 ├── README.md        # User-facing overview, run steps, features, and supported Markdown
 ├── index.html       # Editor shell, toolbar controls, and preview container
 ├── script.js        # Markdown parsing, preview rendering, persistence, and export actions
 ├── style.css        # App layout, resume templates, themes, responsive rules, and print CSS
 └── thumbnail.svg    # Generated Cradle project thumbnail
+
 ```
 
 ---
@@ -100,6 +105,29 @@ Export actions read the current editor/preview state
 - Print-only CSS that hides editor controls and prints only the resume.
 
 ---
+
+## Key Features
+
+- Live Markdown-to-resume preview.
+- Three templates: Classic, Modern, and Compact.
+- Four themes: Slate, Indigo, Emerald, and Rose.
+- Sample resume reset for quick testing.
+- Copy Markdown to clipboard.
+- Download the resume source as `.md`.
+- Export a standalone HTML resume.
+- Print support for browser save-as-PDF workflows.
+- Autosave for Markdown draft, selected template, and selected theme.
+- Print-only CSS that hides editor controls and prints only the resume.
+
+## How to Use
+
+1. Edit the Markdown resume in the left editor pane.
+2. Choose a template from Classic, Modern, or Compact.
+3. Choose a color theme from Slate, Indigo, Emerald, or Rose.
+4. Use **Copy Markdown**, **Download MD**, **Export HTML**, or **Export PDF** depending on the desired output.
+5. For PDF export, click **Export PDF** and choose **Save as PDF** in the browser print dialog.
+
+## Technologies Used
 
 ## Technologies Used
 
