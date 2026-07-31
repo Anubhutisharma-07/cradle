@@ -6,29 +6,32 @@
 "use strict";
 
 /* ---------------------- DOM REFERENCES ---------------------- */
+const hasDocument = typeof document !== "undefined";
+const getElement = id => (hasDocument ? document.getElementById(id) : null);
+
 const el = {
-  themeToggle: document.getElementById("theme-toggle"),
-  themeIcon: document.getElementById("theme-icon"),
-  textInput: document.getElementById("qr-text"),
-  fgColor: document.getElementById("fg-color"),
-  fgColorText: document.getElementById("fg-color-text"),
-  bgColor: document.getElementById("bg-color"),
-  bgColorText: document.getElementById("bg-color-text"),
-  size: document.getElementById("qr-size"),
-  sizeValue: document.getElementById("size-value"),
-  margin: document.getElementById("qr-margin"),
-  marginValue: document.getElementById("margin-value"),
-  errorLevel: document.getElementById("error-level"),
-  logoUpload: document.getElementById("logo-upload"),
-  uploadText: document.getElementById("upload-text"),
-  removeLogoBtn: document.getElementById("remove-logo-btn"),
-  downloadPngBtn: document.getElementById("download-png-btn"),
-  downloadSvgBtn: document.getElementById("download-svg-btn"),
-  copyImageBtn: document.getElementById("copy-image-btn"),
-  resetBtn: document.getElementById("reset-btn"),
-  qrContainer: document.getElementById("qr-code-container"),
-  emptyState: document.getElementById("empty-state"),
-  toastContainer: document.getElementById("toast-container"),
+  themeToggle: getElement("theme-toggle"),
+  themeIcon: getElement("theme-icon"),
+  textInput: getElement("qr-text"),
+  fgColor: getElement("fg-color"),
+  fgColorText: getElement("fg-color-text"),
+  bgColor: getElement("bg-color"),
+  bgColorText: getElement("bg-color-text"),
+  size: getElement("qr-size"),
+  sizeValue: getElement("size-value"),
+  margin: getElement("qr-margin"),
+  marginValue: getElement("margin-value"),
+  errorLevel: getElement("error-level"),
+  logoUpload: getElement("logo-upload"),
+  uploadText: getElement("upload-text"),
+  removeLogoBtn: getElement("remove-logo-btn"),
+  downloadPngBtn: getElement("download-png-btn"),
+  downloadSvgBtn: getElement("download-svg-btn"),
+  copyImageBtn: getElement("copy-image-btn"),
+  resetBtn: getElement("reset-btn"),
+  qrContainer: getElement("qr-code-container"),
+  emptyState: getElement("empty-state"),
+  toastContainer: getElement("toast-container"),
 };
 
 /* ---------------------- DEFAULT STATE ---------------------- */
@@ -45,6 +48,12 @@ const DEFAULTS = Object.freeze({
 let state = { ...DEFAULTS };
 let qrCode = null; // QRCodeStyling instance
 let debounceTimer = null;
+
+function addListener(target, eventName, handler, options) {
+  if (target) {
+    target.addEventListener(eventName, handler, options);
+  }
+}
 
 /* ---------------------- THEME (LIGHT / DARK) ---------------------- */
 
@@ -75,7 +84,7 @@ function initTheme() {
   applyTheme(prefersDark ? "dark" : "light");
 }
 
-el.themeToggle.addEventListener("click", () => {
+addListener(el.themeToggle, "click", () => {
   const isDark = document.documentElement.getAttribute("data-theme") === "dark";
   applyTheme(isDark ? "light" : "dark");
 });
@@ -146,31 +155,31 @@ function attachRippleEffect() {
 /* ---------------------- QR GENERATION ---------------------- */
 
 /** Build qr-code-styling options object from current state */
-function buildQrOptions() {
+function buildQrOptions(qrState = state) {
   return {
-    width: state.size,
-    height: state.size,
-    data: state.text,
-    margin: state.margin,
+    width: qrState.size,
+    height: qrState.size,
+    data: qrState.text,
+    margin: qrState.margin,
     qrOptions: {
-      errorCorrectionLevel: state.errorLevel,
+      errorCorrectionLevel: qrState.errorLevel,
     },
     dotsOptions: {
-      color: state.fgColor,
+      color: qrState.fgColor,
       type: "rounded",
     },
     cornersSquareOptions: {
-      color: state.fgColor,
+      color: qrState.fgColor,
       type: "extra-rounded",
     },
     cornersDotOptions: {
-      color: state.fgColor,
+      color: qrState.fgColor,
       type: "dot",
     },
     backgroundOptions: {
-      color: state.bgColor,
+      color: qrState.bgColor,
     },
-    image: state.logo || undefined,
+    image: qrState.logo || undefined,
     imageOptions: {
       crossOrigin: "anonymous",
       margin: 6,
@@ -193,7 +202,7 @@ function generateQRCode() {
   const text = state.text.trim();
 
   // Validation: don't generate if input is empty
-  if (!text) {
+  if (!shouldGenerateQRCode(text)) {
     showEmptyState();
     return;
   }
@@ -233,19 +242,19 @@ const debouncedGenerate = debounce(generateQRCode, 200);
 /* ---------------------- EVENT HANDLERS ---------------------- */
 
 /** Text input — live generation */
-el.textInput.addEventListener("input", e => {
+addListener(el.textInput, "input", e => {
   state.text = e.target.value;
   debouncedGenerate();
 });
 
 /** Foreground color — swatch + text field sync */
-el.fgColor.addEventListener("input", e => {
+addListener(el.fgColor, "input", e => {
   state.fgColor = e.target.value;
   el.fgColorText.value = e.target.value.toUpperCase();
   debouncedGenerate();
 });
 
-el.fgColorText.addEventListener("input", e => {
+addListener(el.fgColorText, "input", e => {
   const value = e.target.value;
   if (isValidHex(value)) {
     state.fgColor = value;
@@ -255,13 +264,13 @@ el.fgColorText.addEventListener("input", e => {
 });
 
 /** Background color — swatch + text field sync */
-el.bgColor.addEventListener("input", e => {
+addListener(el.bgColor, "input", e => {
   state.bgColor = e.target.value;
   el.bgColorText.value = e.target.value.toUpperCase();
   debouncedGenerate();
 });
 
-el.bgColorText.addEventListener("input", e => {
+addListener(el.bgColorText, "input", e => {
   const value = e.target.value;
   if (isValidHex(value)) {
     state.bgColor = value;
@@ -271,32 +280,31 @@ el.bgColorText.addEventListener("input", e => {
 });
 
 /** Size slider */
-el.size.addEventListener("input", e => {
+addListener(el.size, "input", e => {
   state.size = parseInt(e.target.value, 10);
   el.sizeValue.textContent = `${state.size}px`;
   debouncedGenerate();
 });
 
 /** Margin slider */
-el.margin.addEventListener("input", e => {
+addListener(el.margin, "input", e => {
   state.margin = parseInt(e.target.value, 10);
   el.marginValue.textContent = `${state.margin}px`;
   debouncedGenerate();
 });
 
 /** Error correction level */
-el.errorLevel.addEventListener("change", e => {
+addListener(el.errorLevel, "change", e => {
   state.errorLevel = e.target.value;
   debouncedGenerate();
 });
 
 /** Logo upload */
-el.logoUpload.addEventListener("change", e => {
+addListener(el.logoUpload, "change", e => {
   const file = e.target.files[0];
   if (!file) return;
 
-  const validTypes = ["image/png", "image/jpeg", "image/svg+xml"];
-  if (!validTypes.includes(file.type)) {
+  if (!isValidLogoType(file.type)) {
     showToast("Please upload a PNG, JPG, JPEG, or SVG file.", "error");
     el.logoUpload.value = "";
     return;
@@ -317,7 +325,7 @@ el.logoUpload.addEventListener("change", e => {
 });
 
 /** Remove logo */
-el.removeLogoBtn.addEventListener("click", () => {
+addListener(el.removeLogoBtn, "click", () => {
   state.logo = null;
   el.logoUpload.value = "";
   el.uploadText.textContent = "Click to upload logo";
@@ -327,7 +335,7 @@ el.removeLogoBtn.addEventListener("click", () => {
 });
 
 /** Download PNG */
-el.downloadPngBtn.addEventListener("click", async () => {
+addListener(el.downloadPngBtn, "click", async () => {
   if (!qrCode || !state.text.trim()) return;
   try {
     await qrCode.download({ name: "qr-code", extension: "png" });
@@ -339,7 +347,7 @@ el.downloadPngBtn.addEventListener("click", async () => {
 });
 
 /** Download SVG */
-el.downloadSvgBtn.addEventListener("click", async () => {
+addListener(el.downloadSvgBtn, "click", async () => {
   if (!qrCode || !state.text.trim()) return;
   try {
     await qrCode.download({ name: "qr-code", extension: "svg" });
@@ -351,7 +359,7 @@ el.downloadSvgBtn.addEventListener("click", async () => {
 });
 
 /** Copy QR image to clipboard */
-el.copyImageBtn.addEventListener("click", async () => {
+addListener(el.copyImageBtn, "click", async () => {
   if (!qrCode || !state.text.trim()) return;
 
   const canvas = el.qrContainer.querySelector("canvas");
@@ -387,7 +395,7 @@ el.copyImageBtn.addEventListener("click", async () => {
 });
 
 /** Reset everything to defaults */
-el.resetBtn.addEventListener("click", () => {
+addListener(el.resetBtn, "click", () => {
   state = { ...DEFAULTS };
 
   el.textInput.value = "";
@@ -412,18 +420,42 @@ el.resetBtn.addEventListener("click", () => {
 /* ---------------------- KEYBOARD ACCESSIBILITY ---------------------- */
 
 /** Allow Enter/Space on upload label to trigger file dialog */
-document.querySelector(".upload-label").addEventListener("keydown", e => {
-  if (e.key === "Enter" || e.key === " ") {
-    e.preventDefault();
-    el.logoUpload.click();
-  }
-});
+if (hasDocument) {
+  const uploadLabel = document.querySelector(".upload-label");
 
-/* ---------------------- INIT ---------------------- */
-function init() {
-  initTheme();
-  attachRippleEffect();
-  showEmptyState();
+  addListener(uploadLabel, "keydown", e => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      el.logoUpload.click();
+    }
+  });
 }
 
-document.addEventListener("DOMContentLoaded", init);
+function shouldGenerateQRCode(text) {
+  return typeof text === "string" && text.trim().length > 0;
+}
+
+function isValidLogoType(type) {
+  return ["image/png", "image/jpeg", "image/svg+xml"].includes(type);
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = {
+    DEFAULTS,
+    buildQrOptions,
+    isValidHex,
+    isValidLogoType,
+    shouldGenerateQRCode,
+  };
+}
+
+if (hasDocument) {
+  /* ---------------------- INIT ---------------------- */
+  function init() {
+    initTheme();
+    attachRippleEffect();
+    showEmptyState();
+  }
+
+  document.addEventListener("DOMContentLoaded", init);
+}
