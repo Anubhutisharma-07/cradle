@@ -12,6 +12,13 @@ function parseURL() {
       throw new Error("Empty URL");
     }
 
+    if (typeof URLEngine !== "undefined" && typeof URLEngine.parseURLComponents === "function") {
+      const { components, error } = URLEngine.parseURLComponents(value);
+      if (error || !components) {
+        throw new Error(error || "Invalid URL");
+      }
+    }
+
     // Add protocol if user enters example.com
     if (
       !value.startsWith("http://") &&
