@@ -26,10 +26,13 @@ invoice-generator/
 ├── ARCHITECTURE.md  # Project architecture and contributor notes
 ├── README.md        # User-facing usage, testing, and export instructions
 ├── index.html       # Entry point, invoice form, toolbar, preview shell, and item row template
-├── script.js        # Invoice state, calculations, rendering, persistence, imports, and exports
+├── invoiceEngine.js # Calculation engine, currency formatter, and serializer
+├── script.js        # Invoice state, UI binding, rendering, and event handlers
 ├── style.css        # App layout, invoice templates, responsive behavior, and print styles
 └── thumbnail.svg    # Generated project thumbnail used by the Cradle project gallery
 ```
+
+- **tests/invoice-generator.test.js**: Unit test suite covering currency formatting, totals computation, and JSON serialization.
 
 ---
 
