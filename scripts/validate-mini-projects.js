@@ -4,6 +4,7 @@ const path = require("path");
 const REPO_ROOT = path.resolve(__dirname, "..");
 const PROJECTS_DIR = path.join(REPO_ROOT, "projects");
 const PROJECTS_JSON = path.join(REPO_ROOT, "data", "projects.json");
+const REQUIRED_STANDARD_FILES = ["index.html", "script.js", "style.css"];
 
 const EXTERNAL_PREFIXES = [
   "http://",
@@ -78,6 +79,26 @@ function parseHtmlAssetLinks(htmlContent) {
   return links;
 }
 
+function validateStandardProjectFiles(diskProjects) {
+  const issues = [];
+
+  for (const project of diskProjects) {
+    for (const fileName of REQUIRED_STANDARD_FILES) {
+      const filePath = path.join(project.absPath, fileName);
+
+      if (!fs.existsSync(filePath)) {
+        issues.push({
+          type: "MISSING_STANDARD_FILE",
+          project: project.name,
+          message: `Project folder "${project.relPath}" is missing required standard file "${fileName}".`,
+        });
+      }
+    }
+  }
+
+  return issues;
+}
+
 /**
  * Validates that every mini project opens successfully without missing pages or load failures.
  */
@@ -105,6 +126,8 @@ function validateMiniProjects() {
 
   // 2. Check disk projects against projects.json registry
   const diskProjects = getDiskProjects();
+  issues.push(...validateStandardProjectFiles(diskProjects));
+
   for (const proj of diskProjects) {
     if (!registeredPaths.has(proj.relPath)) {
       issues.push({
@@ -182,7 +205,10 @@ function validateMiniProjects() {
         issues.push({
           type: "BROKEN_ASSET",
           project: project.title,
-          message: `In "${projRelPath}index.html": Referenced resource "${rawLink}" could not be found on disk (Resolved: "${path.relative(REPO_ROOT, resolvedPath)}").`,
+          message: `In "${projRelPath}index.html": Referenced resource "${rawLink}" could not be found on disk (Resolved: "${path.relative(
+            REPO_ROOT,
+            resolvedPath
+          )}").`,
         });
       }
     }
@@ -225,5 +251,6 @@ module.exports = {
   sanitizePath,
   getDiskProjects,
   parseHtmlAssetLinks,
+  validateStandardProjectFiles,
   validateMiniProjects,
 };
