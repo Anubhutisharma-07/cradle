@@ -147,6 +147,9 @@ function attachRippleEffect() {
 
 /** Build qr-code-styling options object from current state */
 function buildQrOptions() {
+  if (typeof QREngine !== "undefined" && typeof QREngine.buildConfigPayload === "function") {
+    return QREngine.buildConfigPayload(state);
+  }
   return {
     width: state.size,
     height: state.size,

@@ -114,9 +114,13 @@ advanced-qr-code-generator/
 │
 ├── index.html
 ├── style.css
+├── qrEngine.js
 ├── script.js
 └── ARCHITECTURE.md
 ```
+
+- **qrEngine.js**: Modular engine encapsulating input validation, preset persistence, and payload construction.
+- **tests/advanced-qr-code-generator.test.js**: Dedicated unit test suite verifying engine logic.
 
 ---
 
