@@ -5,6 +5,7 @@ const {
   sanitizePath,
   getDiskProjects,
   parseHtmlAssetLinks,
+  validateProjectIndexEntries,
   validateMiniProjects,
 } = require("../scripts/validate-mini-projects");
 
@@ -56,6 +57,62 @@ test("getDiskProjects discovers all category subdirectories under projects/", ()
   assert.ok(Array.isArray(diskProjects) && diskProjects.length > 0);
   assert.ok(
     diskProjects.some(p => p.name === "2048-game" && p.category === "games")
+  );
+});
+
+test("validateProjectIndexEntries reports mini folders missing from projects.json", () => {
+  const diskProjects = [
+    {
+      category: "games",
+      name: "indexed-game",
+      relPath: "projects/games/indexed-game/",
+      absPath: "/repo/projects/games/indexed-game",
+    },
+    {
+      category: "math",
+      name: "missing-tool",
+      relPath: "projects/math/missing-tool/",
+      absPath: "/repo/projects/math/missing-tool",
+    },
+  ];
+
+  const projectsJsonData = [
+    {
+      title: "Indexed Game",
+      category: "games",
+      path: "projects/games/indexed-game/",
+    },
+  ];
+
+  const issues = validateProjectIndexEntries(diskProjects, projectsJsonData);
+
+  assert.equal(issues.length, 1);
+  assert.equal(issues[0].type, "UNINDEXED_PROJECT");
+  assert.equal(issues[0].project, "missing-tool");
+  assert.match(issues[0].message, /projects\/math\/missing-tool\//);
+});
+
+test("validateProjectIndexEntries passes when every mini folder is indexed", () => {
+  const diskProjects = [
+    {
+      category: "productivity",
+      name: "task-tool",
+      relPath: "projects/productivity/task-tool/",
+      absPath: "/repo/projects/productivity/task-tool",
+    },
+  ];
+
+  const projectsJsonData = [
+    {
+      title: "Task Tool",
+      category: "productivity",
+      path: "projects/productivity/task-tool/",
+    },
+  ];
+
+  assert.deepEqual(
+    validateProjectIndexEntries(diskProjects, projectsJsonData),
+    []
   );
 });
 
