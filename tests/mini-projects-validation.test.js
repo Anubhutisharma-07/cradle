@@ -1,10 +1,14 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("fs");
+const os = require("os");
+const path = require("path");
 const {
   isExternal,
   sanitizePath,
   getDiskProjects,
   parseHtmlAssetLinks,
+  validateStandardProjectFiles,
   validateProjectIndexEntries,
   validateMiniProjects,
 } = require("../scripts/validate-mini-projects");
@@ -60,6 +64,25 @@ test("getDiskProjects discovers all category subdirectories under projects/", ()
   );
 });
 
+test("validateStandardProjectFiles reports missing standard mini files", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "cradle-mini-files-"));
+  const miniPath = path.join(root, "sample-mini");
+
+  fs.mkdirSync(miniPath, { recursive: true });
+  fs.writeFileSync(path.join(miniPath, "index.html"), "<!doctype html>");
+  fs.writeFileSync(path.join(miniPath, "style.css"), "");
+
+  const issues = validateStandardProjectFiles([
+    {
+      name: "sample-mini",
+      relPath: "projects/test/sample-mini/",
+      absPath: miniPath,
+    },
+  ]);
+
+  assert.equal(issues.length, 1);
+  assert.equal(issues[0].type, "MISSING_STANDARD_FILE");
+  assert.match(issues[0].message, /script\.js/);
 test("validateProjectIndexEntries reports mini folders missing from projects.json", () => {
   const diskProjects = [
     {
