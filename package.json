@@ -5,13 +5,12 @@
   "main": "script.js",
   "scripts": {
     "generate": "node scripts/generate-projects.js",
+    "validate:architecture": "node scripts/validate-architecture-docs.js",
     "test": "node --test",
     "dev": "npm run generate && npx live-server",
     "build": "npm run generate",
     "format": "prettier --write .",
-    "check-format": "prettier --check .",
-    "check-links": "node scripts/check-broken-links.js",
-    "validate-projects": "node scripts/validate-mini-projects.js"
+    "check-format": "prettier --check ."
   },
   "devDependencies": {
     "prettier": "^3.0.0"

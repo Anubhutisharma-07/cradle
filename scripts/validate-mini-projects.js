@@ -97,6 +97,18 @@ function validateStandardProjectFiles(diskProjects) {
   }
 
   return issues;
+function validateProjectIndexEntries(diskProjects, projectsJsonData) {
+  const registeredPaths = new Set(
+    projectsJsonData.map(project => project.path)
+  );
+
+  return diskProjects
+    .filter(project => !registeredPaths.has(project.relPath))
+    .map(project => ({
+      type: "UNINDEXED_PROJECT",
+      project: project.name,
+      message: `Project folder "${project.relPath}" exists on disk but is missing from data/projects.json.`,
+    }));
 }
 
 /**
@@ -122,8 +134,6 @@ function validateMiniProjects() {
     ];
   }
 
-  const registeredPaths = new Set(projectsJsonData.map(p => p.path));
-
   // 2. Check disk projects against projects.json registry
   const diskProjects = getDiskProjects();
   issues.push(...validateStandardProjectFiles(diskProjects));
@@ -137,6 +147,7 @@ function validateMiniProjects() {
       });
     }
   }
+  issues.push(...validateProjectIndexEntries(diskProjects, projectsJsonData));
 
   // 3. Validate each registered project entry in projects.json
   for (const project of projectsJsonData) {
@@ -252,5 +263,6 @@ module.exports = {
   getDiskProjects,
   parseHtmlAssetLinks,
   validateStandardProjectFiles,
+  validateProjectIndexEntries,
   validateMiniProjects,
 };

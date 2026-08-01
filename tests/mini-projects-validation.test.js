@@ -9,6 +9,7 @@ const {
   getDiskProjects,
   parseHtmlAssetLinks,
   validateStandardProjectFiles,
+  validateProjectIndexEntries,
   validateMiniProjects,
 } = require("../scripts/validate-mini-projects");
 
@@ -82,6 +83,60 @@ test("validateStandardProjectFiles reports missing standard mini files", () => {
   assert.equal(issues.length, 1);
   assert.equal(issues[0].type, "MISSING_STANDARD_FILE");
   assert.match(issues[0].message, /script\.js/);
+test("validateProjectIndexEntries reports mini folders missing from projects.json", () => {
+  const diskProjects = [
+    {
+      category: "games",
+      name: "indexed-game",
+      relPath: "projects/games/indexed-game/",
+      absPath: "/repo/projects/games/indexed-game",
+    },
+    {
+      category: "math",
+      name: "missing-tool",
+      relPath: "projects/math/missing-tool/",
+      absPath: "/repo/projects/math/missing-tool",
+    },
+  ];
+
+  const projectsJsonData = [
+    {
+      title: "Indexed Game",
+      category: "games",
+      path: "projects/games/indexed-game/",
+    },
+  ];
+
+  const issues = validateProjectIndexEntries(diskProjects, projectsJsonData);
+
+  assert.equal(issues.length, 1);
+  assert.equal(issues[0].type, "UNINDEXED_PROJECT");
+  assert.equal(issues[0].project, "missing-tool");
+  assert.match(issues[0].message, /projects\/math\/missing-tool\//);
+});
+
+test("validateProjectIndexEntries passes when every mini folder is indexed", () => {
+  const diskProjects = [
+    {
+      category: "productivity",
+      name: "task-tool",
+      relPath: "projects/productivity/task-tool/",
+      absPath: "/repo/projects/productivity/task-tool",
+    },
+  ];
+
+  const projectsJsonData = [
+    {
+      title: "Task Tool",
+      category: "productivity",
+      path: "projects/productivity/task-tool/",
+    },
+  ];
+
+  assert.deepEqual(
+    validateProjectIndexEntries(diskProjects, projectsJsonData),
+    []
+  );
 });
 
 test("validateMiniProjects verifies all mini projects open without load failures or missing pages", () => {
