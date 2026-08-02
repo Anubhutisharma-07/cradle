@@ -426,6 +426,7 @@ textarea:focus {
   color: var(--paper-ink);
   font-size: 1.25rem;
   font-weight: 800;
+  font-variant-numeric: tabular-nums;
 }
 
 .invoice-footer {

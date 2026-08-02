@@ -220,6 +220,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Generate explanation breakdown for the pattern
   function generateExplainer(pattern) {
+    if (typeof RegexEngine !== "undefined" && typeof RegexEngine.parsePatternTokens === "function") {
+      const tokens = RegexEngine.parsePatternTokens(pattern);
+      if (!tokens.length) {
+        regexExplanation.innerHTML = '<p class="placeholder-text">Enter a valid regex to see character breakdown.</p>';
+        return;
+      }
+      regexExplanation.innerHTML = tokens.map(t => `
+        <div class="explanation-item">
+          <span class="token">${escapeHtml(t.token)}</span>
+          <span class="desc">${escapeHtml(t.explanation)}</span>
+        </div>
+      `).join('');
+      return;
+    }
     const items = [];
     let i = 0;
 

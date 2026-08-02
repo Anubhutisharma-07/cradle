@@ -118,6 +118,7 @@ button:hover {
   padding: 10px 12px;
   border-radius: 10px;
   font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
 }
 
 .copy {

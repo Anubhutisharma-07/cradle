@@ -4,6 +4,7 @@ const path = require("path");
 const REPO_ROOT = path.resolve(__dirname, "..");
 const PROJECTS_DIR = path.join(REPO_ROOT, "projects");
 const PROJECTS_JSON = path.join(REPO_ROOT, "data", "projects.json");
+const REQUIRED_STANDARD_FILES = ["index.html", "script.js", "style.css"];
 
 const EXTERNAL_PREFIXES = [
   "http://",
@@ -78,6 +79,38 @@ function parseHtmlAssetLinks(htmlContent) {
   return links;
 }
 
+function validateStandardProjectFiles(diskProjects) {
+  const issues = [];
+
+  for (const project of diskProjects) {
+    for (const fileName of REQUIRED_STANDARD_FILES) {
+      const filePath = path.join(project.absPath, fileName);
+
+      if (!fs.existsSync(filePath)) {
+        issues.push({
+          type: "MISSING_STANDARD_FILE",
+          project: project.name,
+          message: `Project folder "${project.relPath}" is missing required standard file "${fileName}".`,
+        });
+      }
+    }
+  }
+
+  return issues;
+function validateProjectIndexEntries(diskProjects, projectsJsonData) {
+  const registeredPaths = new Set(
+    projectsJsonData.map(project => project.path)
+  );
+
+  return diskProjects
+    .filter(project => !registeredPaths.has(project.relPath))
+    .map(project => ({
+      type: "UNINDEXED_PROJECT",
+      project: project.name,
+      message: `Project folder "${project.relPath}" exists on disk but is missing from data/projects.json.`,
+    }));
+}
+
 /**
  * Validates that every mini project opens successfully without missing pages or load failures.
  */
@@ -101,10 +134,10 @@ function validateMiniProjects() {
     ];
   }
 
-  const registeredPaths = new Set(projectsJsonData.map(p => p.path));
-
   // 2. Check disk projects against projects.json registry
   const diskProjects = getDiskProjects();
+  issues.push(...validateStandardProjectFiles(diskProjects));
+
   for (const proj of diskProjects) {
     if (!registeredPaths.has(proj.relPath)) {
       issues.push({
@@ -114,6 +147,7 @@ function validateMiniProjects() {
       });
     }
   }
+  issues.push(...validateProjectIndexEntries(diskProjects, projectsJsonData));
 
   // 3. Validate each registered project entry in projects.json
   for (const project of projectsJsonData) {
@@ -182,7 +216,10 @@ function validateMiniProjects() {
         issues.push({
           type: "BROKEN_ASSET",
           project: project.title,
-          message: `In "${projRelPath}index.html": Referenced resource "${rawLink}" could not be found on disk (Resolved: "${path.relative(REPO_ROOT, resolvedPath)}").`,
+          message: `In "${projRelPath}index.html": Referenced resource "${rawLink}" could not be found on disk (Resolved: "${path.relative(
+            REPO_ROOT,
+            resolvedPath
+          )}").`,
         });
       }
     }
@@ -225,5 +262,7 @@ module.exports = {
   sanitizePath,
   getDiskProjects,
   parseHtmlAssetLinks,
+  validateStandardProjectFiles,
+  validateProjectIndexEntries,
   validateMiniProjects,
 };

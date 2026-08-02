@@ -79,36 +79,32 @@ copyBtn.addEventListener("click", copyOutput);
 playBtn.addEventListener("click", playMorse);
 
 function encodeText() {
-  const text = inputText.value.toUpperCase();
-
-  const morse = [];
-
-  for (const char of text) {
-    if (MORSE[char]) {
-      morse.push(MORSE[char]);
-    }
+  const text = inputText.value;
+  if (typeof MorseEngine !== "undefined" && typeof MorseEngine.textToMorse === "function") {
+    outputText.value = MorseEngine.textToMorse(text);
+    return;
   }
-
+  const morse = [];
+  for (const char of text.toUpperCase()) {
+    if (MORSE[char]) morse.push(MORSE[char]);
+  }
   outputText.value = morse.join(" ");
 }
 
 function decodeText() {
   const morse = inputText.value.trim();
-
+  if (typeof MorseEngine !== "undefined" && typeof MorseEngine.morseToText === "function") {
+    outputText.value = MorseEngine.morseToText(morse);
+    return;
+  }
   if (!morse) {
     outputText.value = "";
     return;
   }
-
   const words = morse.split(" / ");
-
   const decoded = words.map(word => {
-    return word
-      .split(" ")
-      .map(code => REVERSE[code] || "?")
-      .join("");
+    return word.split(" ").map(code => REVERSE[code] || "?").join("");
   });
-
   outputText.value = decoded.join(" ");
 }
 
