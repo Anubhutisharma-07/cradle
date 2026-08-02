@@ -33,8 +33,14 @@ It uses the browser's native `URL` API to extract information like protocol, hos
 └──────────────┬──────────────┘
                │
                ▼
-┌─────────────────────────────┐
-│     Result Interface        │
-│  Edit + Copy Components     │
-└─────────────────────────────┘
+```text
+projects/dev-tools/url-parser/
+├── ARCHITECTURE.md # Architecture documentation
+├── index.html        # Main HTML user interface
+├── urlEngine.js      # Modular URL parser, query string builder, and safe encoder
+├── script.js         # UI bindings and row creation
+└── style.css         # Styling rules
+```
+
+- **tests/url-parser.test.js**: Dedicated unit test suite covering protocol normalization, query parameter building, and URL encoding.
 ```
