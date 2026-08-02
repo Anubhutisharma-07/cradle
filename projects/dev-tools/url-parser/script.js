@@ -104,7 +104,7 @@ function createRow(label, value) {
   const div = document.createElement("div");
   div.className = "item";
   div.innerHTML = `
-    <strong>${label}</strong>
+    <strong>${escapeHTML(label)}</strong>
 
     <input
       class="value"
