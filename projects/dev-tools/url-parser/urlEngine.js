@@ -80,10 +80,64 @@
     }
   }
 
+  /** Classify a file extension into a broad media type. */
+  function detectFileType(extension) {
+    const images = ["png", "jpg", "jpeg", "gif", "webp", "svg", "avif"];
+    const videos = ["mp4", "webm", "mov", "mkv"];
+    const documents = ["pdf", "doc", "docx", "txt"];
+
+    if (images.includes(extension)) return "Image ";
+    if (videos.includes(extension)) return "Video ";
+    if (documents.includes(extension)) return "Document ";
+    return "Unknown";
+  }
+
+  /** Classify a URL (a WHATWG URL instance) into a human-readable type. */
+  function detectURLType(url, extension) {
+    if (["png", "jpg", "jpeg", "gif", "webp", "svg"].includes(extension)) {
+      return "Image URL";
+    }
+    if (["mp4", "webm", "mov"].includes(extension)) {
+      return "Video URL";
+    }
+    if (url.hostname.includes("api")) {
+      return "API Endpoint";
+    }
+    if (url.hostname.includes("github.com")) {
+      return "GitHub URL";
+    }
+    if (
+      url.hostname.includes("youtube.com") ||
+      url.hostname.includes("youtu.be")
+    ) {
+      return "YouTube URL";
+    }
+    if (url.protocol === "ftp:") {
+      return "FTP URL";
+    }
+    if (url.protocol === "mailto:") {
+      return "Email URL";
+    }
+    return "Website URL";
+  }
+
+  /** Escape a value for safe interpolation into innerHTML. */
+  function escapeHTML(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
   return {
     parseURLComponents,
     buildQueryString,
     encodeURLComponentSafe,
     decodeURLComponentSafe,
+    detectFileType,
+    detectURLType,
+    escapeHTML,
   };
 });
