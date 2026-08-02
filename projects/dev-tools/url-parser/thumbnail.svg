@@ -54,7 +54,7 @@
   </g>
 
   <!-- Project Title -->
-  <text x="100" y="330" font-family="'Space Grotesk', Inter, system-ui, sans-serif" font-size="64" font-weight="800" fill="#ffffff" letter-spacing="-1.5">Url Parser</text>
+  <text x="100" y="330" font-family="'Space Grotesk', Inter, system-ui, sans-serif" font-size="64" font-weight="800" fill="#ffffff" letter-spacing="-1.5">URL Parser</text>
 
   <!-- Watermark logo -->
   <g transform="translate(1100, 560)" text-anchor="end">
