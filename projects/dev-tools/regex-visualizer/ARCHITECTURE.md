@@ -14,7 +14,7 @@ The RegEx Visualizer & Tester is an interactive developer tool designed to test,
                  ▼
  ┌───────────────────────────────┐
  │   Regex Visualizer Engine     │
- │         (script.js)           │
+ │    (regexEngine.js / script.js)│
  └──────┬─────────────────┬──────┘
         │                 │
         ▼                 ▼
@@ -29,4 +29,9 @@ The RegEx Visualizer & Tester is an interactive developer tool designed to test,
  │ Readable     │  │ Highlighted  │
  │ Breakdown    │  │ Overlay      │
  └──────────────┘  └──────────────┘
+
+## Components
+- **regexEngine.js**: Core token parser, flag validator, AST explanation engine, and substitution handler.
+- **script.js**: UI binding, event listening, overlay scrolling, and table rendering.
+- **tests/regex-visualizer.test.js**: Unit test suite covering compilation, flags, token breakdown, and replacements.
 ```
