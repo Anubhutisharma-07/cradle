@@ -309,6 +309,9 @@ function downloadFile(filename, content, type) {
 }
 
 function formatMoney(value, currency) {
+  if (typeof InvoiceEngine !== "undefined" && typeof InvoiceEngine.formatCurrency === "function") {
+    return InvoiceEngine.formatCurrency(value, currency);
+  }
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
