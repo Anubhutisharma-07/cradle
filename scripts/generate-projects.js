@@ -115,10 +115,15 @@ function titleCase(str) {
   const acronyms = {
     "Ai": "AI",
     "Ascii": "ASCII",
-    "Cpu": "CPU"
+    "Cpu": "CPU",
+    "Qr": "QR",
+    "Css": "CSS",
+    "Json": "JSON",
+    "Url": "URL",
+    "Html": "HTML"
   };
 
-  return title.replace(/\b(Ai|Ascii|Cpu)\b/g, match => acronyms[match]);
+  return title.replace(/\b(Ai|Ascii|Cpu|Qr|Css|Json|Url|Html)\b/g, match => acronyms[match]);
 }
 
 function wrapText(text, maxChars = 20) {

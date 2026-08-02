@@ -5,7 +5,7 @@
     "path": "projects/games/2048-game/"
   },
   {
-    "title": "Advanced Qr Code Generator",
+    "title": "Advanced QR Code Generator",
     "category": "productivity",
     "path": "projects/productivity/advanced-qr-code-generator/"
   },
@@ -60,7 +60,7 @@
     "path": "projects/dev-tools/cpu-emulator/"
   },
   {
-    "title": "Css Shape Designer",
+    "title": "CSS Shape Designer",
     "category": "editor",
     "path": "projects/editor/css-shape-designer/"
   },
@@ -100,7 +100,7 @@
     "path": "projects/productivity/invoice-generator/"
   },
   {
-    "title": "Json Converter",
+    "title": "JSON Converter",
     "category": "dev-tools",
     "path": "projects/dev-tools/json-converter/"
   },
@@ -180,7 +180,7 @@
     "path": "projects/productivity/time-blocking-planner/"
   },
   {
-    "title": "Url Parser",
+    "title": "URL Parser",
     "category": "dev-tools",
     "path": "projects/dev-tools/url-parser/"
   }
