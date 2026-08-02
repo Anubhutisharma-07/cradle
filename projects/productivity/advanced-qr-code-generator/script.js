@@ -155,7 +155,10 @@ function attachRippleEffect() {
 /* ---------------------- QR GENERATION ---------------------- */
 
 /** Build qr-code-styling options object from current state */
-function buildQrOptions(qrState = state) {
+function buildQrOptions() {
+  if (typeof QREngine !== "undefined" && typeof QREngine.buildConfigPayload === "function") {
+    return QREngine.buildConfigPayload(state);
+  }
   return {
     width: qrState.size,
     height: qrState.size,
