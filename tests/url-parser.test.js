@@ -39,3 +39,54 @@ test("encodeURLComponentSafe and decodeURLComponentSafe round-trip reserved symb
   const decoded = URLEngine.decodeURLComponentSafe(encoded);
   assert.equal(decoded, original);
 });
+
+test("detectFileType classifies extensions", () => {
+  assert.equal(URLEngine.detectFileType("png").trim(), "Image");
+  assert.equal(URLEngine.detectFileType("mp4").trim(), "Video");
+  assert.equal(URLEngine.detectFileType("pdf").trim(), "Document");
+  assert.equal(URLEngine.detectFileType("xyz"), "Unknown");
+});
+
+test("detectURLType classifies representative URLs", () => {
+  assert.equal(
+    URLEngine.detectURLType(new URL("https://example.com/photo.png"), "png"),
+    "Image URL"
+  );
+  assert.equal(
+    URLEngine.detectURLType(new URL("https://api.example.com/v1/users"), "None"),
+    "API Endpoint"
+  );
+  assert.equal(
+    URLEngine.detectURLType(new URL("https://github.com/vedant7007/cradle"), "None"),
+    "GitHub URL"
+  );
+  assert.equal(
+    URLEngine.detectURLType(new URL("https://youtu.be/dQw4w9WgXcQ"), "None"),
+    "YouTube URL"
+  );
+  assert.equal(
+    URLEngine.detectURLType(new URL("ftp://files.example.com/a.txt"), "txt"),
+    "FTP URL"
+  );
+  assert.equal(
+    URLEngine.detectURLType(new URL("https://example.com/about"), "None"),
+    "Website URL"
+  );
+});
+
+test("escapeHTML neutralises markup", () => {
+  assert.equal(
+    URLEngine.escapeHTML("<img src=x onerror=alert(1)>"),
+    "&lt;img src=x onerror=alert(1)&gt;"
+  );
+  assert.equal(URLEngine.escapeHTML(`"&'`), "&quot;&amp;&#039;");
+});
+
+test("escapeHTML is the shared escaper for both the key and value of a row", () => {
+  // createRow() interpolates escapeHTML(label) and escapeHTML(value) into
+  // innerHTML, so markup in either the key or the value is rendered inert.
+  const key = "<script>alert(1)</script>";
+  const value = "<b onmouseover=steal()>hi</b>";
+  assert.ok(!URLEngine.escapeHTML(key).includes("<"));
+  assert.ok(!URLEngine.escapeHTML(value).includes("<"));
+});
