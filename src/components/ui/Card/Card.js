@@ -100,6 +100,20 @@
         flex-shrink: 0;
       }
 
+      /* Shown when a thumbnail is missing or fails to load, instead of the
+         browser's broken-image icon. */
+      .cradle-card__image--fallback {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        object-fit: unset;
+        background: var(--cradle-color-surface-2, #1a1a1a);
+        color: var(--cradle-color-text-muted, #888);
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
       /* ── Header ─────────────────────────────────────── */
       .cradle-card__header {
         display: flex;
@@ -348,6 +362,15 @@
         img.src = image;
         img.alt = title || "";
         img.loading = "lazy";
+        // Degrade gracefully if the thumbnail is missing/fails to load.
+        img.addEventListener("error", () => {
+          const fallback = document.createElement("div");
+          fallback.className = "cradle-card__image cradle-card__image--fallback";
+          fallback.setAttribute("role", "img");
+          fallback.setAttribute("aria-label", title || "");
+          fallback.textContent = (title || "?").trim().charAt(0) || "?";
+          img.replaceWith(fallback);
+        });
         card.appendChild(img);
       }
 
