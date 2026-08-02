@@ -50,9 +50,12 @@ The Morse Code Studio is a browser-based tool that converts plain text into Mors
 projects/misc/morse-code-studio/
 ├── ARCHITECTURE.md    # Project documentation
 ├── index.html         # User interface
-├── script.js          # Translation and audio logic
+├── morseEngine.js     # Modular translation, timing, and audio sequence engine
+├── script.js          # UI binding, events, and audio player
 └── style.css          # Styling
 ```
+
+- **tests/morse-code-studio.test.js**: Dedicated unit tests covering encoding, decoding, WPM timing calculation, and audio sequence generation.
 
 ## Technologies Used
 
