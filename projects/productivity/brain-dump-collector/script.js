@@ -194,6 +194,9 @@ function handleCapture(event) {
 }
 
 function detectCategory(text) {
+  if (typeof BrainDumpEngine !== "undefined" && BrainDumpEngine.autoCategorize) {
+    return BrainDumpEngine.autoCategorize(text);
+  }
   const normalized = text.toLowerCase();
   const scores = CATEGORY_RULES.map(rule => {
     const score = rule.keywords.reduce((total, keyword) => {
