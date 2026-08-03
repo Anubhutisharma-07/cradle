@@ -34,7 +34,18 @@
             <button id="sideBySideBtn" class="active">Side-by-Side</button>
             <button id="unifiedBtn">Unified</button>
           </div>
+
+          <div class="options-toggle">
+            <label class="checkbox-label">
+              <input type="checkbox" id="ignoreWhitespace" /> Ignore Whitespace
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="ignoreCase" /> Ignore Case
+            </label>
+          </div>
+
           <div class="actions">
+            <button id="exportPatchBtn" class="btn btn-secondary">Export Patch</button>
             <button id="clearBtn" class="btn btn-secondary">Clear</button>
             <button id="demoBtn" class="btn btn-accent">Load Demo</button>
           </div>
@@ -118,6 +129,7 @@
       </main>
     </div>
 
+    <script src="diffEngine.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
