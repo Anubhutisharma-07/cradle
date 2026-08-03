@@ -18,7 +18,7 @@ Cradle is a personal, static, framework-free website that catalogs a growing col
 
 ## Folder Structure
 
-```
+```text
 cradle/
 ├── index.html                    # Landing page shell: hero, search, category filters, project grid
 ├── script.js                     # Landing page logic: fetch/cache projects, render grid, filtering
@@ -122,7 +122,7 @@ graph TD
 
 ## Data Flow / Execution Flow
 
-```
+```text
 Contributor adds projects/<category>/<project-name>/ with an index.html
         ↓
 `npm run generate` runs scripts/generate-projects.js
@@ -258,17 +258,23 @@ None at runtime. The site uses only native browser APIs (DOM, `fetch`, IndexedDB
 ## Development Notes
 
 - Regenerate the project registry after adding, renaming, or removing a project folder:
+
   ```bash
   npm run generate
   ```
+
 - Serve the site locally instead of using `file://`, since `fetch("./data/projects.json")` and Web Workers require an HTTP context in most browsers:
+
   ```bash
   python3 -m http.server 8000
   ```
+
 - Run the root-level test suite:
+
   ```bash
   npm test
   ```
+
 - When adding a new project, follow `CONTRIBUTING.md` and copy `ARCHITECTURE_TEMPLATE.md` into the new project's own folder as its `ARCHITECTURE.md`.
 
 ---

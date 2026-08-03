@@ -43,4 +43,3 @@ projects/dev-tools/url-parser/
 ```
 
 - **tests/url-parser.test.js**: Dedicated unit test suite covering protocol normalization, query parameter building, and URL encoding.
-```
