@@ -1,21 +1,19 @@
 # Project Architecture — CSS Shape Designer
 
-This document explains the architecture and working of the **CSS Shape Designer** project located in `projects/editor/css-shape-designer/`.
-
 ---
 
 ## Overview
 
-The **CSS Shape Designer** is a visual web editor that enables developers to design complex CSS shapes, including polygons (`clip-path`), organic blobs (`border-radius`), circles, and ellipses. Users can morph shapes dynamically using on-canvas drag-and-drop handle coordinates, customize background properties (solid color, gradients, images, and glow shadows), and instantly export clean copy-paste CSS code.
+CSS Shape Designer is an interactive web tool for visually creating custom clip-path polygons, organic border-radius blobs, circles, and ellipses. It provides real-time drag handles, background color/gradient customizers, drop-shadow visualizers, and multi-format code exporters (CSS, SVG, and Tailwind arbitrary values).
 
 ---
 
 ## Purpose & Goals
 
-- **Visual Polygon Reshaping**: Support visual editing of custom polygon paths with options to add vertices (double-click canvas) and remove vertices (double-click handles).
-- **Blob Morpher**: Model border-radius blob morphing on-canvas by rendering horizontal and vertical edge handles, linking them to the 8 components of `border-radius: tl-h tr-h br-h bl-h / tl-v tr-v br-v bl-v`.
-- **Glow Shadow filter**: Solve the issue where CSS `box-shadow` is clipped by `clip-path` by styling outer glows using the CSS `filter: drop-shadow(...)` property.
-- **Pure Responsive Client Rendering**: Leverage percentage-based coordinate layout models to ensure shape previews and draggable anchors adjust automatically on all screen sizes.
+- Provide a visual, drag-and-drop generator for CSS `clip-path` shapes and organic `border-radius` blobs.
+- Support real-time code export in CSS, SVG, and Tailwind CSS formats.
+- Encapsulate shape math into a reusable, UMD-compliant `shapeEngine.js` module.
+- Offer shape presets (Triangle, Pentagon, Hexagon, Star, Rhombus, Egg, Bean).
 
 ---
 
@@ -23,83 +21,138 @@ The **CSS Shape Designer** is a visual web editor that enables developers to des
 
 ```
 css-shape-designer/
-├── ARCHITECTURE.md  # System overview and implementation specs
-├── index.html       # UI structures, settings sidebar, canvas and exporter tabs
-├── script.js        # Mouse/touch interaction loops, preset values, code builders
-└── style.css        # Canvas grids, grab anchor handles, toast popups, responsive styles
+├── index.html          # Shell layout, controls side panel, canvas preview, code modals
+├── shapeEngine.js      # Core shape mathematics, clip-path formatting, SVG & Tailwind generators
+├── script.js           # DOM event handling, handle dragging, canvas updating
+├── style.css           # Custom dark theme, control sliders, handles styling
+├── thumbnail.svg       # Card preview asset
+└── ARCHITECTURE.md     # Architecture documentation
 ```
 
 ---
 
 ## System / Project Architecture Overview
 
-The application utilizes a classic Event-Driven Architecture model:
-
 ```mermaid
 graph TD
-    A[index.html - HTML Grid Layout] <--> B[script.js - State Management]
-    B -->|Binds mouse/touch events| C[Draggable Anchor Handles]
-    C -->|Update coordinate state| B
-    B -->|Double-Click handlers| D[Insert / Remove Polygon Points]
-    B -->|Calculates CSS properties| E[updateCanvas rendering]
-    E -->|Morphed Clip-Path/Radius| F[Shape Preview Element]
-    E -->|Tracer outline coordinates| G[SVG Overlay Lines]
-    E -->|Code Exporters| H[CSS & HTML Tab outputs]
+    A[index.html] --> B[shapeEngine.js]
+    A --> C[script.js]
+    C --> B
+    C --> D[Interactive Canvas Handles]
+    C --> E[Code Exporters]
 ```
-
-To achieve precise cursor tracking, `script.js` listens to `mousedown`/`touchstart` on the anchor elements, and attaches `mousemove`/`touchmove` and `mouseup`/`touchend` listeners to the `document` object. This prevents cursor "slipping" where anchor dragging stops when the cursor momentarily moves faster than the DOM element.
 
 ---
 
 ## Component Breakdown
 
-| File         | Responsibility                                                                                                                            |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `index.html` | Page structure, settings sidebar (radii, colors, gradients, image input), visual canvas target area, and generated code tabs.             |
-| `script.js`  | Anchor coordinates, blob borders math, circle centers/radii calculations, touch/drag handlers, presets, clipboard copy, and toast popups. |
-| `style.css`  | Glassmorphism card backgrounds, coordinate checkerboards, anchor drag cursors, tab active indicators, and slide-up toast animations.      |
+| File | Responsibility |
+|---|---|
+| `index.html` | Controls sidebar, preset buttons, handle container, code tabs |
+| `shapeEngine.js` | Pure shape logic, clip-path string generator, SVG exporter, Tailwind generator |
+| `script.js` | Mouse/touch drag events, preview element background, handle position synchronization |
+| `style.css` | Canvas container styles, drag handle visuals, glassmorphism UI rules |
 
 ---
 
 ## Data Flow / Execution Flow
 
 ```
-Page loads and initializes default polygon shape state
-        ↓
-Generates coordinate selectors and presets in sidebar
-        ↓
-User drags handle or adjusts slider
-        ↓
-Calculates container relative percentages and updates state
-        ↓
-Re-renders shape-preview properties (clip-path, border-radius, background, drop-shadow)
-        ↓
-Draws dash-array lines on SVG tracing overlays
-        ↓
-Compiles clean CSS text code outputs to exporter textareas
+User selects shape type or clicks preset button
+↓
+state object is initialized with vertices/radii
+↓
+script.js renders handles on canvas
+↓
+User drags handle on canvas or moves control slider
+↓
+updateCanvas() calls ShapeEngine.generateClipPathCSS()
+↓
+Preview element clip-path / border-radius & exporters are updated
 ```
 
 ---
 
 ## Key Features
 
-- **Draggable On-Canvas Anchors**: Drag handles to morph polygons, blobs, and circle radii.
-- **Mobile Touch Compatibility**: Full swipe/drag support on touch screens.
-- **Multi-Shape Modes**:
-  - **Polygon**: Freeform polygon editor with point addition/deletion.
-  - **Blob**: 8-point fancy border-radius blob morpher.
-  - **Circle / Ellipse**: Handles for centers (`cx, cy`) and radii (`r`, `rx`, `ry`).
-- **Style Customizers**: Select solid color backgrounds, linear gradients with angle controls, background image URLs, and drop-shadow glow filters.
-- **Export Formats**: Select either CSS code properties or complete HTML elements.
-- **Clipboard Utility**: Copy with single clicks accompanied by confirmation toasts.
+- Interactive canvas drag handles for polygon vertices and circle radii.
+- Organic 8-point blob border-radius slider generator.
+- Multi-fill backgrounds (Solid, Gradient, Image cover).
+- Drop-shadow glow intensity slider.
+- CSS, SVG, and Tailwind CSS code export.
 
 ---
 
 ## Technologies Used
 
-| Technology               | Purpose                                                                          |
-| ------------------------ | -------------------------------------------------------------------------------- |
-| HTML5                    | Semantic structure, input select/range options.                                  |
-| CSS3                     | Grid layouts, drop-shadow filters, slider track selectors, and toast animations. |
-| Vanilla JavaScript (ES6) | Coordinate clamping, drag-and-drop math, clipboard copy, and point insertion.    |
-| Font Awesome 6.5.1       | Icon vector graphics.                                                            |
+| Technology | Purpose |
+|---|---|
+| HTML5 | Canvas shell, inputs, code export areas |
+| CSS3 | UI layout, CSS variables, glassmorphism effects |
+| Vanilla JavaScript (ES6+) | Shape Engine, SVG math, DOM drag handlers |
+
+---
+
+## File Responsibilities
+
+### `index.html`
+- Contains controls panel, preset containers, drag handle overlay container, and preview box.
+
+### `shapeEngine.js`
+- `generateClipPathCSS(type, shapeData)` — Formats CSS clip-path or border-radius rules.
+- `generateSVGCode(type, shapeData, width, height)` — Generates standalone vector `<svg>` markup.
+- `generateTailwindCode(type, shapeData)` — Produces Tailwind CSS arbitrary utility classes.
+
+### `script.js`
+- `updateCanvas()` — Re-evaluates handles, shapes, and exports.
+- `handleDocumentMouseMove(e)` — Updates coordinates during handle dragging.
+
+### `style.css`
+- Modern dark mode variables, handle styles, SVG tracer overlays.
+
+---
+
+## Design Decisions
+
+- **UMD Module Encapsulation**: Isolated shape calculations in `shapeEngine.js` for standalone Node.js testing without DOM dependencies.
+- **SVG Tracer Overlay**: Uses SVG `<polygon>` overlay lines for sharp boundary visualization.
+
+---
+
+## Dependencies
+
+None. Built using native browser APIs and vanilla JavaScript.
+
+---
+
+## Future Improvements
+
+- Add 3D CSS transform matrix visualizer.
+- Add animation keyframe generator for shape transitions.
+
+---
+
+## Known Limitations
+
+- Self-intersecting polygon vertices may render inverted fill regions in webkit browser engines.
+
+---
+
+## Development Notes
+
+- Node tests validate `shapeEngine.js` outputs via `node --test tests/css-shape-designer.test.js`.
+
+---
+
+## License & Attribution
+
+- **Project License:** MIT
+- **Third-Party Assets:**
+  - Google Fonts (Outfit & Fira Code) — Open Font License
+
+---
+
+## References
+
+- [MDN Web Docs — clip-path](https://developer.mozilla.org/en-US/docs/Web/CSS/clip-path)
+- [MDN Web Docs — border-radius](https://developer.mozilla.org/en-US/docs/Web/CSS/border-radius)
