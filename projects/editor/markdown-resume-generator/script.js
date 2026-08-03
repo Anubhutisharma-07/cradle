@@ -91,6 +91,9 @@ function updatePreview() {
 }
 
 function parseMarkdown(markdown) {
+  if (typeof ResumeEngine !== "undefined" && ResumeEngine.parseMarkdownToHTML) {
+    return ResumeEngine.parseMarkdownToHTML(markdown);
+  }
   const lines = markdown.replace(/\r\n/g, "\n").split("\n");
   const html = [];
   let listOpen = false;
