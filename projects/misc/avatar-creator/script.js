@@ -113,6 +113,19 @@ function drawPixel(row, col, color) {
 // Rebuilds the entire avatar from scratch, in careful layer order:
 // background -> face -> blush -> hair -> mouth -> eyes
 function renderAvatar() {
+  if (typeof AvatarEngine !== "undefined" && AvatarEngine.generateAvatarSVG) {
+    const svgMarkup = AvatarEngine.generateAvatarSVG({
+      bgColor: bgColorInput.value,
+      skinColor: skinColorInput.value,
+      hairColor: hairColorInput.value,
+      hairStyle: hairStyleInput.value,
+    });
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(svgMarkup, "image/svg+xml");
+    const newSvg = doc.querySelector("svg");
+    svg.innerHTML = newSvg ? newSvg.innerHTML : "";
+    return;
+  }
   svg.innerHTML = "";
 
   const bgColor = bgColorInput.value;
@@ -135,22 +148,22 @@ function renderAvatar() {
     }
   }
 
-  // 3. Blush (soft pink, drawn on top of face, under hair)
+  // 3. Blush
   blushPositions.forEach(([row, col]) => {
     drawPixel(row, col, "#ff9a9a");
   });
 
-  // 4. Hair (drawn after face/blush so it sits on top of the forehead area)
+  // 4. Hair
   hairStyles[styleIndex].forEach(([row, col]) => {
     drawPixel(row, col, hairColor);
   });
 
-  // 5. Mouth (simple flat smile line)
+  // 5. Mouth
   mouthPositions.forEach(([row, col]) => {
     drawPixel(row, col, "#7a4a3a");
   });
 
-  // 6. Eyes (always last, always on top)
+  // 6. Eyes
   eyePositions.forEach(([row, col]) => {
     drawPixel(row, col, "#000000");
   });
