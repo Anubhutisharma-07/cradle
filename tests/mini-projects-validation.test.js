@@ -83,6 +83,8 @@ test("validateStandardProjectFiles reports missing standard mini files", () => {
   assert.equal(issues.length, 1);
   assert.equal(issues[0].type, "MISSING_STANDARD_FILE");
   assert.match(issues[0].message, /script\.js/);
+});
+
 test("validateProjectIndexEntries reports mini folders missing from projects.json", () => {
   const diskProjects = [
     {
