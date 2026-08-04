@@ -8,7 +8,7 @@ RPS Arena is a Rock Paper Scissors game with a cyberpunk visual theme. The playe
 
 ## Folder Structure
 
-```
+```text
 stone-paper-scissors-game/
 ├── index.html       # Full page: navbar, game box, how-to section, footer, modal
 ├── game-engine.js   # Rules matrix for classic and Lizard-Spock modes
@@ -22,7 +22,7 @@ stone-paper-scissors-game/
 
 ## Application Flow
 
-```
+```text
 User opens index.html
         ↓
 Page renders with default mode: Single Round
@@ -132,7 +132,7 @@ State is held in six module-level variables. There is no state object or persist
 
 ## Event Flow
 
-```
+```text
 User clicks a choice button
         ↓
 startCountdown(playerChoice)

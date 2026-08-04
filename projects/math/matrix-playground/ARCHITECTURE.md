@@ -42,13 +42,13 @@ graph TD
 
 ## Component Breakdown
 
-| File               | Role                                                                                                               |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| `matrixEngine.js`  | Pure mathematical calculation engine for LU decomposition, QR decomposition, eigenvalues, determinants, and inverses.|
+| File | Role |
+| --- | --- |
+| `matrixEngine.js` | Pure mathematical calculation engine for LU decomposition, QR decomposition, eigenvalues, determinants, and inverses. |
 | `matrixStorage.js` | Preset catalog (Identity, Rotation, Shear, Hilbert, Magic Square), LocalStorage cache, and LaTeX/CSV formatting. |
-| `script.js`        | Interactive UI controller, event listener setup, animation stepper management, and DOM grid rendering.             |
-| `index.html`       | Interface layout, operation buttons, dimension selectors, visual timeline controls, and LaTeX export modal.       |
-| `style.css`        | Design tokens, grid layouts, responsive rules, modal overlays, and animation keyframes.                           |
+| `script.js` | Interactive UI controller, event listener setup, animation stepper management, and DOM grid rendering. |
+| `index.html` | Interface layout, operation buttons, dimension selectors, visual timeline controls, and LaTeX export modal. |
+| `style.css` | Design tokens, grid layouts, responsive rules, modal overlays, and animation keyframes. |
 
 ---
 

@@ -1,164 +1,147 @@
-# Architecture Documentation
-
-This document explains the architecture and working of the **Advanced QR Code Generator** project located in `projects/productivity/`.
+# Project Architecture — Advanced QR Code Generator
 
 ---
 
-## 1. System Overview
+## Overview
 
-The **Advanced QR Code Generator** is a browser-based web application that allows users to create, customize, preview, and download QR codes in real time. The application runs entirely on the client side, meaning all processing happens in the user's browser without requiring a backend server.
-
----
-
-## 2. Architecture
-
-```
-+----------------------+
-|      User Input      |
-+----------+-----------+
-           |
-           v
-+----------------------+
-|  Input Validation    |
-+----------+-----------+
-           |
-           v
-+----------------------+
-| QR Generation Engine |
-+----------+-----------+
-           |
-     +-----+-----+
-     |           |
-     v           v
-+---------+   +-----------+
-| Preview |   | Download  |
-| Display |   |  Module   |
-+---------+   +-----------+
-```
+Advanced QR Code Generator is a web application for creating, customizing, previewing, and downloading QR codes in real time. It supports payload construction for URLs, plain text, WiFi credentials, email, and phone numbers with custom color themes, logo overlays, and SVG/PNG image export.
 
 ---
 
-## 3. Components
+## Purpose & Goals
 
-### User Interface (UI)
-
-The user interface allows users to:
-
-- Enter text or URLs
-- Change QR code colors
-- Adjust the QR code size
-- Select the error correction level
-- Preview changes instantly
-- Download the generated QR code
+- Provide a zero-dependency in-browser QR code builder.
+- Support payload construction for URLs, text, contacts, and WiFi configurations.
+- Allow customizable foreground/background color themes and error correction levels.
+- Modularize logic into a standalone UMD `qrEngine.js`.
 
 ---
 
-### Input Validation
+## Folder Structure
 
-Before generating the QR code, the application checks that:
-
-- The input is not empty.
-- Unnecessary spaces are removed.
-- The entered data is valid.
-
-This helps prevent errors during QR code generation.
-
----
-
-### QR Generation Engine
-
-This is the core part of the application. It:
-
-- Converts the user's input into a QR code.
-- Applies the selected customization options.
-- Generates the QR code for display.
-
----
-
-### Preview Module
-
-The preview module displays the generated QR code immediately after any change made by the user.
-
----
-
-### Download Module
-
-This module allows users to export the generated QR code as an image while preserving the selected size and colors.
-
----
-
-## 4. Data Flow
-
-```
-User Input
-     │
-     ▼
-Input Validation
-     │
-     ▼
-QR Generation Engine
-     │
-     ▼
-Live Preview
-     │
-     ▼
-Download QR Code
-```
-
----
-
-## 5. Project Structure
-
-```
+```text
 advanced-qr-code-generator/
-│
-├── index.html
-├── style.css
-├── qrEngine.js
-├── script.js
-└── ARCHITECTURE.md
+├── index.html          # Controls layout, preview container, export buttons
+├── qrEngine.js         # Payload generator, input validator, preset storage
+├── script.js           # Event listeners, canvas drawing, QR rendering
+├── style.css           # Styling rules, color pickers, responsive design
+├── thumbnail.svg       # Card preview asset
+└── ARCHITECTURE.md     # Architecture documentation
 ```
 
-- **qrEngine.js**: Modular engine encapsulating input validation, preset persistence, and payload construction.
-- **tests/advanced-qr-code-generator.test.js**: Dedicated unit test suite verifying engine logic.
+---
+
+## System / Project Architecture Overview
+
+```mermaid
+graph TD
+    A[index.html Inputs] --> B[script.js]
+    B --> C[qrEngine.js]
+    C --> D[Payload Builder & Validator]
+    B --> E[DOM Canvas QR Renderer]
+    B --> F[PNG/SVG Exporter]
+```
 
 ---
 
-## 6. Technologies Used
+## Component Breakdown
 
-- HTML5
-- CSS3
-- JavaScript (ES6+)
-- QR Code Generation Library
-
----
-
-## 7. Design Principles
-
-The project is designed to be:
-
-- Simple and easy to maintain
-- Modular and reusable
-- Fast and responsive
-- Fully client-side
-- Easy to extend with new features
+| File | Responsibility |
+|---|---|
+| `index.html` | Page markup, payload textareas, color pickers, download controls |
+| `qrEngine.js` | Payload builder for WiFi/vCard/URL, preset storage manager |
+| `script.js` | DOM input bindings, QR matrix rendering loop, image download handler |
+| `style.css` | Modern visual design, tab layouts, preview box styling |
 
 ---
 
-## 8. Future Improvements
+## Data Flow / Execution Flow
 
-Some features that can be added in future versions include:
-
-- Logo inside QR code
-- Gradient QR codes
-- Batch QR code generation
-- Wi-Fi and vCard QR codes
-- Dark mode
-- QR code history
-- Additional export formats
+```text
+User inputs payload text or selects configuration options
+↓
+script.js validates payload via QREngine
+↓
+QR code matrix calculated and rendered on preview canvas
+↓
+User clicks Download PNG/SVG -> Image blob generated for download
+```
 
 ---
 
-## 9. Summary
+## Key Features
 
-The Advanced QR Code Generator follows a simple, modular architecture where each component has a specific responsibility. User input is validated, converted into a QR code, displayed instantly, and can be downloaded—all within the browser. This approach keeps the application lightweight, fast, secure, and easy to maintain.
+- Payload presets for URLs, plain text, WiFi, and contact details.
+- Custom foreground/background color pickers.
+- Adjustable error correction levels (L, M, Q, H).
+- PNG and SVG image download.
+
+---
+
+## Technologies Used
+
+| Technology | Purpose |
+|---|---|
+| HTML5 | Form inputs, canvas element |
+| CSS3 | Custom properties, dark theme styling |
+| Vanilla JavaScript (ES6+) | QR Engine module, DOM events |
+
+---
+
+## File Responsibilities
+
+### `index.html`
+- Form controls for text input, size slider, color pickers, download buttons.
+
+### `qrEngine.js`
+- `buildPayload(type, data)` — Formats type-specific payload strings (e.g., WiFi `WIFI:S:...`).
+- `validateInput(text)` — Sanitizes payload input.
+
+### `script.js`
+- Handles DOM input events and triggers preview canvas redraws.
+
+### `style.css`
+- Form container rules, visual theme styles.
+
+---
+
+## Design Decisions
+
+- **UMD Engine Module**: Separated payload building into `qrEngine.js` for standalone Node unit testing.
+
+---
+
+## Dependencies
+
+None. Built with standard browser APIs.
+
+---
+
+## Future Improvements
+
+- Add custom logo image overlay in center of QR code.
+
+---
+
+## Known Limitations
+
+- High error correction levels require larger grid dimensions.
+
+---
+
+## Development Notes
+
+- Unit test suite run via `node --test tests/advanced-qr-code-generator.test.js`.
+
+---
+
+## License & Attribution
+
+- **Project License:** MIT
+- **Third-Party Assets:** None.
+
+---
+
+## References
+
+- [MDN Web Docs — Canvas API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)

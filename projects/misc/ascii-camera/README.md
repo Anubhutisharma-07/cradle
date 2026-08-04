@@ -6,9 +6,9 @@ Real-time browser-based webcam & image ASCII art generator featuring customizabl
 
 - **Live Webcam & Image Processing**: Stream real-time camera feed or upload local image files for ASCII conversion.
 - **Multiple Character Palettes**:
-  - **Standard**: ` .:-=+*#%@`
+  - **Standard**: `.:-=+*#%@`
   - **Detailed**: 70-character high-density ramp.
-  - **Blocks**: ` ░▒▓█`
+  - **Blocks**: `░▒▓█`
   - **Binary**: `01`
 - **Sobel Edge Detection Mode**: Highlight structural contours and boundaries in ASCII format.
 - **Contrast & Brightness Controls**: Fine-tune luminance, invert colors, and adjust character density dynamically.

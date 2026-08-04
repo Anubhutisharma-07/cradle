@@ -10,7 +10,7 @@ The project is intentionally self-contained: no build tools, no frameworks, no e
 
 ## Folder Structure
 
-```
+```text
 2048-game/
 ├── index.html          # Page shell, score display, game board container
 ├── logic.js            # Pure game rules (no DOM access)
@@ -27,7 +27,7 @@ The project is intentionally self-contained: no build tools, no frameworks, no e
 
 ## Application Flow
 
-```
+```text
 User opens index.html
         ↓
 Browser loads style.css → logic.js → script.js
@@ -114,7 +114,7 @@ The best score is the only value persisted across sessions, stored in `localStor
 
 ## Event Flow
 
-```
+```text
 keydown event (arrow key / WASD)
         ↓
 handleKeydown(event)  →  maps key to direction string

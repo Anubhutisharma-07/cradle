@@ -62,7 +62,7 @@ project-name/
 ```
 -->
 
-```
+```text
 project-name/
 ├── index.html      # <!-- describe purpose -->
 ├── script.js       # <!-- describe purpose -->
@@ -127,7 +127,7 @@ Walk through what happens from the moment the user opens the page to
 the moment they interact with it. Use a simple arrow diagram.
 
 Example:
-```
+```text
 
 User opens index.html
 ↓
@@ -148,7 +148,7 @@ DOM re-renders
 ```
 -->
 
-```
+```text
 
 User opens index.html
 ↓
