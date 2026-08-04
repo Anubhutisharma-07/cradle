@@ -589,27 +589,19 @@ function renderPreviewElement() {
   // Apply Glow filter shadow
   shapePreview.style.filter = `drop-shadow(0 0 ${state.shadowBlur}px ${state.shadowColor})`;
 
-  // Apply Clip-path or Border-radius shape
-  const op = state.selectedShape;
-  if (op === "polygon") {
-    const pointsStr = state.polygonVertices
-      .map(v => `${v.x}% ${v.y}%`)
-      .join(", ");
-    shapePreview.style.clipPath = `polygon(${pointsStr})`;
-    shapePreview.style.borderRadius = "0";
-  } else if (op === "blob") {
-    const b = state.blob;
-    // tlh trh brh blh / tlv trv brv blv
-    const radiusStr = `${b.tlh}% ${100 - b.trh}% ${100 - b.brh}% ${b.blh}% / ${b.tlv}% ${b.trv}% ${100 - b.brv}% ${100 - b.blv}%`;
-    shapePreview.style.borderRadius = radiusStr;
+  // Apply Clip-path or Border-radius shape via ShapeEngine
+  const shapeData = {
+    vertices: state.polygonVertices,
+    blob: state.blob,
+    circle: state.circle,
+    ellipse: state.ellipse,
+  };
+  const cssRule = ShapeEngine.generateClipPathCSS(state.selectedShape, shapeData);
+  if (cssRule.startsWith("border-radius:")) {
+    shapePreview.style.borderRadius = cssRule.replace("border-radius: ", "").replace(";", "");
     shapePreview.style.clipPath = "none";
-  } else if (op === "circle") {
-    const c = state.circle;
-    shapePreview.style.clipPath = `circle(${c.r}% at ${c.cx}% ${c.cy}%)`;
-    shapePreview.style.borderRadius = "0";
-  } else if (op === "ellipse") {
-    const el = state.ellipse;
-    shapePreview.style.clipPath = `ellipse(${el.rx}% ${el.ry}% at ${el.cx}% ${el.cy}%)`;
+  } else {
+    shapePreview.style.clipPath = cssRule.replace("clip-path: ", "").replace(";", "");
     shapePreview.style.borderRadius = "0";
   }
 }
