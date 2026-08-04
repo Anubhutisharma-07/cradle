@@ -1,19 +1,19 @@
-# Project Architecture
+# Project Architecture — Avatar Creator
+
+---
 
 ## Overview
 
-Pixel Avatar Creator is a browser-based tool that lets users design a custom
-blocky, pixel-art-style avatar by picking colors and hairstyles, then export
-the result as a downloadable PNG. It runs entirely client-side with no
-backend or external dependencies.
+Avatar Creator is a lightweight, interactive 16x16 pixel-art vector avatar generator. It allows users to customize background colors, skin tones, hair colors, and hair styles (Bowl Cut, Spiky, Bald) with live SVG rendering and PNG download capability.
 
 ---
 
 ## Purpose & Goals
 
-- Let users create a personalized pixel-art avatar in under a minute
-- Demonstrate how to build pixel-grid graphics using raw SVG rectangles instead of images
-- Keep the codebase small and dependency-free so a first-time contributor can read it in under 15 minutes
+- Provide a simple 16x16 pixel-art avatar designer running entirely in browser.
+- Render scalable SVG vector graphics without external dependencies.
+- Modularize SVG building logic into a standalone UMD `avatarEngine.js`.
+- Enable color randomization and PNG image export.
 
 ---
 
@@ -21,143 +21,132 @@ backend or external dependencies.
 
 ```
 avatar-creator/
-├── index.html      # Entry point; holds the SVG canvas and control panel (color pickers, hair style dropdown, buttons)
-├── script.js       # All logic: grid generation, rendering, randomize, and PNG export
-└── style.css        # Layout and visual styling, including crisp pixel-edge rendering
+├── index.html          # Controls layout, color inputs, SVG canvas shell
+├── avatarEngine.js      # 16x16 grid math, SVG rect element builder, random palette generator
+├── script.js           # DOM input binding, PNG export canvas rasterizer
+├── style.css           # Center card layout, color picker controls
+├── thumbnail.svg       # Card preview asset
+└── ARCHITECTURE.md     # Architecture documentation
 ```
 
 ---
 
 ## System / Project Architecture Overview
 
-The project follows a simple separation of concerns: `index.html` provides
-an empty SVG canvas and the input controls, `style.css` handles layout and
-visual presentation, and `script.js` owns all state and rendering logic.
-There is no build step — the browser loads the files directly, and no data
-is persisted between sessions.
-
 ```mermaid
 graph TD
-    A[index.html - controls] --> B[script.js - renderAvatar]
-    B --> C[SVG pixel grid]
-    C --> D[Canvas export]
-    D --> E[Downloaded PNG]
+    A[index.html Inputs] --> B[script.js]
+    B --> C[avatarEngine.js]
+    C --> D[SVG Rect Grid Builder]
+    B --> E[DOM SVG Preview]
+    B --> F[PNG Download Converter]
 ```
 
 ---
 
 ## Component Breakdown
 
-| File         | Responsibility                                                           |
-| ------------ | ------------------------------------------------------------------------ |
-| `index.html` | Page shell; contains the empty SVG element and all input controls        |
-| `script.js`  | Builds the pixel grid, handles all user interaction, and exports the PNG |
-| `style.css`  | Layout, sizing, and crisp pixel-edge rendering                           |
+| File | Responsibility |
+|---|---|
+| `index.html` | Page header, color inputs, hair style selector, canvas preview box |
+| `avatarEngine.js` | Grid coordinate constants, SVG string generator, random option builder |
+| `script.js` | Input event listeners, DOM parser injection, XMLSerializer PNG exporter |
+| `style.css` | Modern flex layout, button styles, centered preview box |
 
 ---
 
 ## Data Flow / Execution Flow
 
 ```
-User opens index.html
-        ↓
-Browser loads style.css → script.js
-        ↓
-script.js calls renderAvatar() once on load, drawing the default avatar
-        ↓
-User changes a color picker, hair style, or clicks Randomize
-        ↓
-Event listener fires → renderAvatar() runs again
-        ↓
-SVG is cleared and every pixel is redrawn from current state
-        ↓
-User clicks Download → SVG is serialized, drawn onto a canvas, and exported as PNG
+User selects color inputs or clicks Randomize
+↓
+script.js calls AvatarEngine.generateAvatarSVG(options)
+↓
+AvatarEngine loops over 16x16 grid layers (background, face, blush, mouth, eyes, hair)
+↓
+Raw SVG string parsed and inserted into DOM #avatar-svg
+↓
+User clicks Download -> SVG rasterized onto HTML5 Canvas to produce PNG download
 ```
 
 ---
 
 ## Key Features
 
-- 16×16 pixel grid avatar built from individual SVG `<rect>` elements (true pixel-art style, not smooth shapes)
-- Customizable background color, skin tone, and hair color via live color pickers
-- 3 selectable hair styles: Bowl Cut, Spiky, and Bald
-- One-click Randomize button that generates a random combination of colors and hair style
-- Download button that exports the current avatar as a PNG file, with pixel edges kept sharp (no blurring)
+- Real-time 16x16 pixel vector grid generation.
+- Dynamic color customization for background, skin, and hair.
+- Preset hair styles (Bowl Cut, Spiky, Bald).
+- Instant palette randomizer.
+- One-click PNG image download.
 
 ---
 
 ## Technologies Used
 
-| Technology                | Purpose                                                                      |
-| ------------------------- | ---------------------------------------------------------------------------- |
-| HTML5                     | Page structure and SVG canvas container                                      |
-| CSS3                      | Layout (Flexbox), sizing, and `shape-rendering: crispEdges` for sharp pixels |
-| Vanilla JavaScript (ES6+) | Grid generation, rendering, randomize logic, and Canvas-based PNG export     |
+| Technology | Purpose |
+|---|---|
+| HTML5 | Color inputs, selection dropdowns, SVG element |
+| CSS3 | Flex layout and UI styling |
+| Vanilla JavaScript (ES6+) | Avatar Engine, DOM Parser, Canvas PNG rasterization |
 
 ---
 
 ## File Responsibilities
 
 ### `index.html`
+- Color picker inputs, style select dropdown, preview SVG shell, download button.
 
-- `<svg id="avatar-svg">` — empty canvas; all pixels are drawn into this at runtime by `script.js`
-- `#controls` — color pickers for background/skin/hair, a hair style `<select>`, and Randomize/Download buttons
+### `avatarEngine.js`
+- `generateAvatarSVG(options)` — Produces `<svg>` markup with 16x16 `<rect>` layers.
+- `generateRandomOptions()` — Returns randomized hex color values and hair style index.
 
 ### `script.js`
-
-- `faceRows` — object mapping each grid row to its start/end column, defining the face's blocky circular outline
-- `hairStyles` — array of pixel coordinate lists for each hairstyle; the Spiky style is generated programmatically from a per-column height map (`topRowByCol`) so it forms connected triangular spikes
-- `eyePositions`, `mouthPositions`, `blushPositions` — fixed pixel coordinates for facial features
-- `drawPixel(row, col, color)` — creates and appends a single square `<rect>` to the SVG
-- `renderAvatar()` — clears the SVG and redraws every layer in order (background → face → blush → hair → mouth → eyes); called on every user interaction
-- `randomColor()` — generates a random hex color string
-- Download handler — serializes the SVG, draws it onto an off-screen `<canvas>` with `imageSmoothingEnabled = false`, then triggers a PNG download
+- `renderAvatar()` — Fetches input values, invokes `AvatarEngine`, and updates DOM.
 
 ### `style.css`
-
-- `.container` — Flexbox layout placing the avatar preview and controls side by side
-- `#avatar-svg` — fixed 200×200px size with `shape-rendering: crispEdges` to keep pixel edges sharp instead of anti-aliased
+- Centered container styling, color picker layout rules.
 
 ---
 
 ## Design Decisions
 
-- **Full re-render on every change** — `renderAvatar()` clears and redraws the entire grid on any input change rather than updating individual pixels. This is simpler to reason about and performant enough at this grid size (16×16 = 256 pixels max).
-- **Grid-based SVG rects instead of image assets** — avoids needing to source or create image files, keeps the project fully self-contained, and makes it trivial to recolor pixels via JavaScript.
-- **Spiky hair generated from a height map** — rather than hardcoding every pixel coordinate, the spiky style is computed from a small `topRowByCol` object, making the shape easier to tweak (just change a row number) and keeping the code shorter.
-- **`shape-rendering: crispEdges` + `imageSmoothingEnabled = false`** — both the on-screen SVG and the exported PNG deliberately disable anti-aliasing so the avatar reads as genuine pixel art rather than blurred shapes.
+- **UMD Engine Extraction**: Separated grid generation logic into `avatarEngine.js` for standalone headless Node testing.
+- **Layered Grid Rendering**: Built in strict z-index layer order (Background -> Face -> Blush -> Hair -> Mouth -> Eyes) for proper pixel-art occlusion.
 
 ---
 
 ## Dependencies
 
-None. This project uses only native browser APIs (SVG, Canvas, Blob) — no external libraries are required.
+None. Built entirely using standard browser APIs and native SVG web standards.
 
 ---
 
 ## Future Improvements
 
-- Add more hair styles and additional customizable features (eyes shape, outfit/clothing, accessories)
-- Add face shape variations beyond the current single circular outline
-- Persist the last-created avatar in localStorage so it survives a page refresh
+- Add hats, glasses, and facial hair accessories.
+- Support 32x32 high-resolution grid mode.
 
 ---
 
 ## Known Limitations
 
-- Fixed 16×16 grid resolution — no option to increase pixel density for finer detail
-- Only one face shape is available; hair styles are limited to the three provided
-- No mobile-specific layout adjustments; controls stack via flex-wrap but aren't touch-optimized
+- Limited to 16x16 grid resolution by design.
 
 ---
 
 ## Development Notes
 
-- No build step required — open `index.html` directly in a browser; no local server is needed since the project makes no fetch/API calls.
-- To add a new hair style, add a new entry to the `hairStyles` array in `script.js` and a matching `<option>` in the `#hair-style` dropdown in `index.html`.
+- Node tests run via `node --test tests/avatar-creator.test.js`.
+
+---
+
+## License & Attribution
+
+- **Project License:** MIT
+- **Third-Party Assets:** None.
 
 ---
 
 ## References
 
-- None — original implementation.
+- [MDN Web Docs — Scalable Vector Graphics](https://developer.mozilla.org/en-US/docs/Web/SVG)
