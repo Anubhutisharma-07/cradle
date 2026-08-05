@@ -379,12 +379,12 @@ function createBrowserSandbox() {
     },
     removeEventListener: () => {},
     dispatchEvent: () => true,
-    setTimeout: (cb, delay, ...args) => setTimeout(cb, 0, ...args),
-    clearTimeout,
-    setInterval: (cb, delay, ...args) => setInterval(cb, 0, ...args),
-    clearInterval,
-    requestAnimationFrame: cb => setTimeout(() => cb(Date.now()), 0),
-    cancelAnimationFrame: id => clearTimeout(id),
+    setTimeout: () => 0,
+    clearTimeout: () => {},
+    setInterval: () => 0,
+    clearInterval: () => {},
+    requestAnimationFrame: () => 0,
+    cancelAnimationFrame: () => {},
     getComputedStyle: () => ({
       getPropertyValue: () => "",
       width: "800px",
@@ -625,7 +625,9 @@ test("Smoke test: every mini project loads without JS errors", () => {
 
   if (errors.length > 0) {
     assert.fail(
-      `Encountered ${errors.length} JS load error(s) across mini projects:\n\n${errors.join("\n\n")}`
+      `Encountered ${
+        errors.length
+      } JS load error(s) across mini projects:\n\n${errors.join("\n\n")}`
     );
   }
 });
