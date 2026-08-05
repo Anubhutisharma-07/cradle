@@ -6,6 +6,7 @@
   "scripts": {
     "generate": "node scripts/generate-projects.js",
     "validate:architecture": "node scripts/validate-architecture-docs.js",
+    "validate:a11y-labels": "node scripts/validate-accessible-labels.js",
     "test": "node --test",
     "dev": "npm run generate && npx live-server",
     "build": "npm run generate",
