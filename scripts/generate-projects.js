@@ -1,5 +1,28 @@
 const fs = require("fs");
 const path = require("path");
+const { execSync } = require("child_process");
+
+const REPO_ROOT = path.join(__dirname, "..");
+
+// Date a project was first added, taken from the commit that introduced its
+// folder. This is what powers the "New" badge (isNewProject in script.js);
+// without it every project's dateAdded is undefined and the badge never shows.
+// Falls back to null when git history isn't available (e.g. running outside a
+// checkout) so generation still succeeds — the badge just stays hidden.
+function getDateAdded(absPath) {
+  try {
+    const rel = path.relative(REPO_ROOT, absPath);
+    const out = execSync(`git log --reverse --format=%aI -- "${rel}"`, {
+      cwd: REPO_ROOT,
+      stdio: ["ignore", "pipe", "ignore"],
+    })
+      .toString()
+      .trim();
+    return out.split("\n")[0] || null;
+  } catch {
+    return null;
+  }
+}
 
 const PROJECTS_DIR = path.join(__dirname, "..", "projects");
 const OUTPUT_FILE = path.join(
@@ -267,15 +290,18 @@ function generateProjects() {
 
     for (const project of projectFolders) {
       const projectTitle = titleCase(project.name);
-      
-      projects.push({
+      const projectAbsPath = path.join(categoryPath, project.name);
+
+      const entry = {
         title: projectTitle,
         category: categoryName,
         path: `projects/${categoryName}/${project.name}/`
-      });
+      };
+      const dateAdded = getDateAdded(projectAbsPath);
+      if (dateAdded) entry.dateAdded = dateAdded;
+      projects.push(entry);
 
       // Generate thumbnail SVG in the project folder
-      const projectAbsPath = path.join(categoryPath, project.name);
       generateSvgThumbnail(projectTitle, categoryName, projectAbsPath);
     }
   }
