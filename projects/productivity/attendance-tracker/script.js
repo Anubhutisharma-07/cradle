@@ -1,7 +1,15 @@
-let data = JSON.parse(localStorage.getItem("att_v5")) || {
-  subjects: [],
-  logs: [],
-};
+function loadData() {
+  const defaults = { subjects: [], logs: [] };
+  try {
+    return JSON.parse(localStorage.getItem("att_v5")) || defaults;
+  } catch {
+    // Corrupt/non-JSON value in storage would otherwise throw here and break
+    // the whole page on load; fall back to a clean default instead.
+    return defaults;
+  }
+}
+
+let data = loadData();
 
 function render() {
   const body = document.getElementById("attendance-body");

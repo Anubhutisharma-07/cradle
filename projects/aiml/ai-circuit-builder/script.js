@@ -425,14 +425,24 @@ function drawCircuitDiagram(cores, architecture) {
 /**
  * Storage Vault & Structural Comparison Manager Routines
  */
+// Corrupt/non-JSON data in storage would make JSON.parse throw and break the
+// app on load; fall back to an empty list in that case.
+function safeParseList(key) {
+  const data = localStorage.getItem(key);
+  if (!data) return [];
+  try {
+    return JSON.parse(data);
+  } catch {
+    return [];
+  }
+}
+
 function getStoredProjects() {
-  const data = localStorage.getItem("neuralforge_projects");
-  return data ? JSON.parse(data) : [];
+  return safeParseList("neuralforge_projects");
 }
 
 function getComparisonList() {
-  const data = localStorage.getItem("neuralforge_comparison");
-  return data ? JSON.parse(data) : [];
+  return safeParseList("neuralforge_comparison");
 }
 
 function saveActiveProject() {
