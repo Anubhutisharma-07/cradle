@@ -1,0 +1,45 @@
+name: Repository Healthcheck
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  healthcheck:
+    name: Validate repository health
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline || npm install
+
+      - name: Run repository healthcheck
+        run: npm run healthcheck
+
+      - name: Report healthcheck summary
+        if: always()
+        run: |
+          echo "## Repository Healthcheck" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "Status: passed" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Status: failed" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Validated build generation, architecture docs, mini-project structure, internal links, duplicate JS detection, and test coverage." >> "$GITHUB_STEP_SUMMARY"
