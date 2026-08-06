@@ -40,6 +40,15 @@
 
   const STYLE_ID = "cradle-back-home-styles";
 
+  /* This script's own URL, captured at load time (document.currentScript is
+     only valid during synchronous execution). It sits at a fixed path under
+     the site root, so we can resolve the home URL from it — which is correct
+     regardless of how deep the current page is or what base path the site is
+     deployed under (e.g. /<repo>/ on GitHub Pages). */
+  const SELF_SRC =
+    (document.currentScript && document.currentScript.src) || "";
+  const SELF_REL = "src/components/ui/BackToHome/BackToHome.js";
+
   /* ── Styles ───────────────────────────────────────────── */
   function injectStyles() {
     if (document.getElementById(STYLE_ID)) return;
@@ -159,19 +168,22 @@
 
   /* ── Compute home URL from current path ───────────────── */
   function computeHomeUrl() {
-    const path = window.location.pathname;
+    /* Preferred: derive the site root from this script's own location, which
+       is base-path safe. e.g. https://user.github.io/cradle/src/components/ui/
+       BackToHome/BackToHome.js → https://user.github.io/cradle/index.html */
+    if (SELF_SRC) {
+      const i = SELF_SRC.indexOf(SELF_REL);
+      if (i !== -1) return SELF_SRC.slice(0, i) + "index.html";
+    }
 
-    /* Count how many directory segments deep we are */
-    const segments = path
-      .split("/")
-      .filter(Boolean); /* remove empty strings from leading/trailing / */
-
-    /* We want to go back to the root index.html */
-    /* e.g. /projects/games/chess/ → 3 segments → ../../../index.html */
-    const depth = segments.length;
-    if (depth === 0) return "./index.html";
-
-    return "../".repeat(depth) + "index.html";
+    /* Fallback (script URL unavailable): count directory segments, but ignore
+       a trailing filename like index.html so we don't over-count by one. */
+    const segments = window.location.pathname.split("/").filter(Boolean);
+    if (segments.length && segments[segments.length - 1].includes(".")) {
+      segments.pop();
+    }
+    if (segments.length === 0) return "./index.html";
+    return "../".repeat(segments.length) + "index.html";
   }
 
   /* ── Is homepage check ────────────────────────────────── */
