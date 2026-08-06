@@ -74,16 +74,21 @@ function renderPresetsUI() {
   presets.forEach(p => {
     const item = document.createElement("div");
     item.className = "preset-card";
+    // Static skeleton only — the preset text is user-controlled and must be
+    // inserted as text (textContent), never interpolated into innerHTML, or a
+    // saved preset like `<img src=x onerror=...>` would execute on render.
     item.innerHTML = `
             <div class="preset-info">
-                <strong>"${p.topText || ""}"</strong>
-                <span>${p.bottomText || ""}</span>
+                <strong></strong>
+                <span></span>
             </div>
             <div class="preset-actions">
                 <button class="btn-sm load-preset-btn">Load</button>
                 <button class="btn-sm delete-preset-btn">&times;</button>
             </div>
         `;
+    item.querySelector(".preset-info strong").textContent = `"${p.topText || ""}"`;
+    item.querySelector(".preset-info span").textContent = p.bottomText || "";
 
     item.querySelector(".load-preset-btn").addEventListener("click", () => {
       inputTopText.value = p.topText || "";
