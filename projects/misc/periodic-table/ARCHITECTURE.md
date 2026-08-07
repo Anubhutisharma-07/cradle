@@ -98,6 +98,16 @@ User clicks an element tile → Modal opens → HTML5 Canvas draws Bohr model fo
 
 ---
 
+## Key Features
+
+- Interactive 118-element periodic table grid layout with IUPAC groupings
+- State of matter simulation based on live temperature slider (Kelvin scale)
+- Canvas-based dynamic Bohr atomic model visualization inside element modal
+- Real-time search and category filtering
+- Keyboard shortcuts: `Escape` to close element detail modal
+
+---
+
 ## Technologies Used
 
 | Technology         | Purpose                                                                 |
