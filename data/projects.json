@@ -66,6 +66,11 @@
     "dateAdded": "2026-06-18T12:02:12+05:30"
   },
   {
+    "title": "Color Contrast Checker",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/color-contrast-checker/"
+  },
+  {
     "title": "CPU Emulator",
     "category": "dev-tools",
     "path": "projects/dev-tools/cpu-emulator/",
