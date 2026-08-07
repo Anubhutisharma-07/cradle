@@ -753,7 +753,7 @@ function initEvents() {
 
   // Keyboard: close modals on Escape
   document.addEventListener("keydown", e => {
-    if (e.key === "Escape") {
+    if (e.key === "Escape" || e.key === "Esc") {
       if (!ui.bookModal.hidden) closeBookModal();
       if (!ui.sessionModal.hidden) closeSessionModal();
       if (!ui.detailModal.hidden) ui.detailModal.hidden = true;
