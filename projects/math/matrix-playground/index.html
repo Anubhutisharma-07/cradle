@@ -346,7 +346,9 @@
 
         <!-- Result Card -->
         <div class="card matrix-card result-card" id="card-matrix-result">
-          <h3 class="matrix-title text-accent" id="result-title">Result Matrix C</h3>
+          <h3 class="matrix-title text-accent" id="result-title">
+            Result Matrix C
+          </h3>
           <div class="matrix-bracket-container">
             <div class="matrix-bracket left"></div>
             <div id="grid-result" class="matrix-grid result-grid"></div>
@@ -361,13 +363,22 @@
       <div class="modal-content card">
         <header class="modal-header">
           <h3><i class="fa-solid fa-code"></i> LaTeX Code Export</h3>
-          <button id="modal-close" class="btn btn-icon" aria-label="Close modal">
+          <button
+            id="modal-close"
+            class="btn btn-icon"
+            aria-label="Close modal"
+          >
             <i class="fa-solid fa-xmark"></i>
           </button>
         </header>
         <div class="modal-body">
           <label for="latex-output">Copy Matrix LaTeX snippet:</label>
-          <textarea id="latex-output" class="code-area" readonly></textarea>
+          <textarea
+            id="latex-output"
+            class="code-area"
+            readonly
+            placeholder="\begin{matrix} ... \end{matrix}"
+          ></textarea>
         </div>
         <footer class="modal-footer">
           <button id="btn-copy-latex" class="btn btn-accent">
