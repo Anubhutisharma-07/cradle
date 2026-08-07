@@ -243,6 +243,22 @@
         </div>
       </div>
 
+      <!-- ── HTML ESCAPING UTILITY ─────────────────────────── -->
+      <div class="demo-section">
+        <p class="demo-section__title">EscapeHtml — Utility</p>
+        <div class="demo-row" id="escape-demo"></div>
+        <div
+          style="
+            margin-top: 8px;
+            color: var(--cradle-muted);
+            font-size: 0.85rem;
+          "
+        >
+          <code>CradleEscape.escapeHtml()</code> neutralises markup before it
+          is inserted into <code>innerHTML</code>.
+        </div>
+      </div>
+
       <!-- ── VERIFICATION CHECKLIST ────────────────────────── -->
       <div class="demo-section">
         <p class="demo-section__title">Verification Checklist — Issue #107</p>
@@ -264,6 +280,7 @@
     <script src="ThemeToggle/ThemeToggle.js"></script>
     <script src="Navbar/Navbar.js"></script>
     <script src="BackToHome/BackToHome.js"></script>
+    <script src="escapeHtml.js"></script>
 
     <script>
       /* ── Navbar ── */
@@ -504,6 +521,23 @@
           })
         );
 
+      /* ── EscapeHtml — utility ── */
+      const escapeDemo = document.getElementById("escape-demo");
+      const samples = [
+        '<script>alert("XSS")<\/script>',
+        "John's Chip & Co.",
+        'plain text <b>inert</b>',
+      ];
+      samples.forEach(text => {
+        const el = document.createElement("code");
+        el.style.cssText =
+          "display:block;padding:8px 12px;background:var(--cradle-surface);" +
+          "border:1px solid var(--cradle-border);border-radius:var(--cradle-radius);" +
+          "font-size:0.85rem;white-space:pre-wrap;max-width:100%;";
+        el.textContent = CradleEscape.escapeHtml(text);
+        escapeDemo.appendChild(el);
+      });
+
       /* ── Verification checklist ── */
       const checks = [
         "CradleButton — 7 variants exist (primary, secondary, outline, ghost, success, danger, icon)",
@@ -529,6 +563,7 @@
         "CradleBackToHome — pill (fixed) + minimal (inline) variants",
         "CradleBackToHome — dynamic home URL computed from window.location depth",
         "CradleBackToHome — replaces back-to-home.js in all 10 project pages",
+        "CradleEscape — escapeHtml escapes & < > \" ' before innerHTML insertion",
         "tokens.css — 70 CSS custom properties, dark + light theme",
         "All components — aria-label, aria-expanded, aria-current, aria-checked",
         "All components — :focus-visible ring",

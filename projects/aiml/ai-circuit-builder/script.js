@@ -1,11 +1,7 @@
-function escapeHTML(str) {
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
+const escapeHTML =
+  typeof window !== "undefined" && window.CradleEscape
+    ? window.CradleEscape.escapeHtml
+    : require("../../../src/components/ui/escapeHtml.js").escapeHtml;
 
 // Theme Management
 function initTheme() {

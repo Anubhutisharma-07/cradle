@@ -122,14 +122,10 @@
   }
 
   /** Escape a value for safe interpolation into innerHTML. */
-  function escapeHTML(value) {
-    return String(value)
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  }
+  const escapeHTML =
+    typeof window !== "undefined" && window.CradleEscape
+      ? window.CradleEscape.escapeHtml
+      : require("../../../src/components/ui/escapeHtml.js").escapeHtml;
 
   return {
     parseURLComponents,
