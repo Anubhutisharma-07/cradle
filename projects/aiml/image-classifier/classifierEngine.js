@@ -117,8 +117,8 @@ function formatConfidence(probability) {
   return (probability * 100).toFixed(2);
 }
 
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = {
+(function (root) {
+  const api = {
     formatCustomPredictions,
     canPredictCustom,
     hasLowConfidence,
@@ -127,4 +127,8 @@ if (typeof module !== "undefined" && module.exports) {
     getTrainedClasses,
     formatConfidence,
   };
-}
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = api;
+  }
+  root.ClassifierEngine = api;
+})(typeof self !== "undefined" ? self : this);
