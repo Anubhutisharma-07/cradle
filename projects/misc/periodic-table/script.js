@@ -83,9 +83,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // Calculate State of Matter at temperature T (Kelvin)
   function getElementState(elem, tempK) {
     if (typeof PeriodicEngine !== "undefined") {
-      return PeriodicEngine.calculatePhaseState(elem.meltingPoint, elem.boilingPoint, tempK, elem.phaseAtSTP);
+      return PeriodicEngine.calculatePhaseState(
+        elem.meltingPoint,
+        elem.boilingPoint,
+        tempK,
+        elem.phaseAtSTP
+      );
     }
-    if (elem.phaseAtSTP === "Synthetic" && !elem.meltingPoint) return "Synthetic";
+    if (elem.phaseAtSTP === "Synthetic" && !elem.meltingPoint)
+      return "Synthetic";
     const melt = elem.meltingPoint;
     const boil = elem.boilingPoint;
     if (!melt && !boil) return elem.phaseAtSTP || "Solid";
@@ -309,7 +315,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target === modal) closeModal();
   });
   document.addEventListener("keydown", e => {
-    if (e.key === "Escape" && !modal.hidden) closeModal();
+    if ((e.key === "Escape" || e.key === "Esc") && !modal.hidden) closeModal();
   });
 
   // Draw Bohr Model on Canvas

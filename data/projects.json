@@ -72,10 +72,21 @@
     "dateAdded": "2026-06-18T12:02:12+05:30"
   },
   {
+    "title": "CSS Clamp Calculator",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/css-clamp-calculator/"
+  },
+  {
     "title": "CSS Shape Designer",
     "category": "editor",
     "path": "projects/editor/css-shape-designer/",
     "dateAdded": "2026-07-25T09:18:49+05:30"
+  },
+  {
+    "title": "CSV Data Cleaner",
+    "category": "file-tools",
+    "path": "projects/file-tools/csv-data-cleaner/",
+    "dateAdded": "2026-08-07T23:13:17+05:30"
   },
   {
     "title": "Dot Game",
@@ -212,7 +223,8 @@
   {
     "title": "Text Diff Checker",
     "category": "dev-tools",
-    "path": "projects/dev-tools/text-diff-checker/"
+    "path": "projects/dev-tools/text-diff-checker/",
+    "dateAdded": "2026-08-06T09:32:02+05:30"
   },
   {
     "title": "Time Blocking Planner",

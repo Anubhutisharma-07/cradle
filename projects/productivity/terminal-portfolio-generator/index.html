@@ -163,7 +163,12 @@
         </button>
         <div class="field">
           <label>name</label
-          ><input data-field="name" type="text" aria-label="Project name" />
+          ><input
+            data-field="name"
+            type="text"
+            aria-label="Project name"
+            placeholder="Awesome Project"
+          />
         </div>
         <div class="field">
           <label>description</label
@@ -171,6 +176,7 @@
             data-field="description"
             type="text"
             aria-label="Project description"
+            placeholder="A cool web app built with JS"
           />
         </div>
         <div class="field">
@@ -179,11 +185,17 @@
             data-field="tech"
             type="text"
             aria-label="Project technologies"
+            placeholder="JavaScript, CSS, HTML"
           />
         </div>
         <div class="field">
           <label>link</label
-          ><input data-field="link" type="text" aria-label="Project link" />
+          ><input
+            data-field="link"
+            type="text"
+            aria-label="Project link"
+            placeholder="github.com/user/repo"
+          />
         </div>
       </div>
     </template>
@@ -199,7 +211,12 @@
         </button>
         <div class="field">
           <label>role</label
-          ><input data-field="role" type="text" aria-label="Experience role" />
+          ><input
+            data-field="role"
+            type="text"
+            aria-label="Experience role"
+            placeholder="Software Engineer"
+          />
         </div>
         <div class="field">
           <label>company</label
@@ -207,6 +224,7 @@
             data-field="company"
             type="text"
             aria-label="Experience company"
+            placeholder="Tech Corp"
           />
         </div>
         <div class="field">
@@ -223,6 +241,7 @@
             data-field="description"
             type="text"
             aria-label="Experience description"
+            placeholder="Built web applications"
           />
         </div>
       </div>
@@ -243,6 +262,7 @@
             data-field="degree"
             type="text"
             aria-label="Education degree"
+            placeholder="B.S. Computer Science"
           />
         </div>
         <div class="field">
@@ -251,6 +271,7 @@
             data-field="institution"
             type="text"
             aria-label="Education institution"
+            placeholder="University Name"
           />
         </div>
         <div class="field">
@@ -262,6 +283,7 @@
 
     <script src="theme.js"></script>
     <script src="portfolioEngine.js"></script>
+    <script src="../../../src/components/ui/escapeHtml.js"></script>
     <script src="exportHtml.js"></script>
     <script src="script.js"></script>
   </body>

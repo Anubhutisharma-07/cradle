@@ -48,12 +48,12 @@ graph TD
 
 ## Component Breakdown
 
-| File | Responsibility |
-|---|---|
-| `index.html` | Thought capture textarea, category dropdowns, board container, template cards |
+| File                 | Responsibility                                                                  |
+| -------------------- | ------------------------------------------------------------------------------- |
+| `index.html`         | Thought capture textarea, category dropdowns, board container, template cards   |
 | `brainDumpEngine.js` | Auto-categorization engine, priority rules, search filters, markdown generation |
-| `script.js` | Local storage state management, event listeners, board sorting & rendering |
-| `style.css` | Flexbox/Grid layouts, glassmorphism cards, priority badge colors |
+| `script.js`          | Local storage state management, event listeners, board sorting & rendering      |
+| `style.css`          | Flexbox/Grid layouts, glassmorphism cards, priority badge colors                |
 
 ---
 
@@ -80,35 +80,40 @@ DOM board re-renders with category cards and tag chips
 - Urgent keyword detection for High / Medium / Low priority tagging.
 - Real-time search query filtering and status filter (Open, Done, Pinned).
 - One-click Markdown outline export and JSON backup/restore.
+- Keyboard shortcuts: `Ctrl+Enter` / `Cmd+Enter` to submit new thought dump.
 
 ---
 
 ## Technologies Used
 
-| Technology | Purpose |
-|---|---|
-| HTML5 | Form input controls, semantic article cards, templates |
-| CSS3 | Custom properties, dark theme styling, responsive grid |
-| Vanilla JavaScript (ES6+) | Brain Dump Engine, regex tags extractor, localStorage |
+| Technology                | Purpose                                                |
+| ------------------------- | ------------------------------------------------------ |
+| HTML5                     | Form input controls, semantic article cards, templates |
+| CSS3                      | Custom properties, dark theme styling, responsive grid |
+| Vanilla JavaScript (ES6+) | Brain Dump Engine, regex tags extractor, localStorage  |
 
 ---
 
 ## File Responsibilities
 
 ### `index.html`
+
 - Defines capture form, category select dropdowns, search bar, stat counters, and note template.
 
 ### `brainDumpEngine.js`
+
 - `autoCategorize(text)` — Evaluates keyword occurrences to assign note category.
 - `detectPriority(text)` — Scans for urgency tokens (`!`, `urgent`, `asap`, `today`).
 - `filterDumps(dumps, query, category, priority)` — Multidimensional filtering function.
 - `exportToMarkdown(dumps)` — Generates structured Markdown text export.
 
 ### `script.js`
+
 - `initializeApp()` — Restores notes from `localStorage` and binds event handlers.
 - `render()` — Filters notes and updates DOM count badges and card list.
 
 ### `style.css`
+
 - Dark mode theme color variables, note card badges, and responsive board grid layout.
 
 ---

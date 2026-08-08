@@ -3,14 +3,10 @@
  * from a portfolio's rendered command output and a theme.
  */
 (function (exports) {
-  function escapeHtml(str) {
-    return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
-  }
+  const escapeHtml =
+    typeof window !== "undefined" && window.CradleEscape
+      ? window.CradleEscape.escapeHtml
+      : require("../../../src/components/ui/escapeHtml.js").escapeHtml;
 
   /**
    * Renders a standalone HTML document showing the portfolio as

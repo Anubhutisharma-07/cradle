@@ -34,8 +34,6 @@ const {
 
   let mode = "line"; // 'line' | 'word'
 
-  // ---------- Generic LCS diff over an array of tokens ----------
-
 
   // ---------- Row rendering helpers ----------
   function makeRow(lineNum, html, cls) {

@@ -54,12 +54,12 @@ graph TD
 
 ## Component Breakdown
 
-| File | Responsibility |
-|---|---|
-| `index.html` | Page shell, split-pane layout, format toggles, action buttons |
-| `logic.js` | JSON parsing/validation, YAML/CSV/XML serialization, format/minify, syntax highlighting |
-| `script.js` | DOM references, event binding, highlight sync, error display, clipboard, download |
-| `style.css` | Dark-theme layout, editor pane styling, responsive breakpoints |
+| File         | Responsibility                                                                          |
+| ------------ | --------------------------------------------------------------------------------------- |
+| `index.html` | Page shell, split-pane layout, format toggles, action buttons                           |
+| `logic.js`   | JSON parsing/validation, YAML/CSV/XML serialization, format/minify, syntax highlighting |
+| `script.js`  | DOM references, event binding, highlight sync, error display, clipboard, download       |
+| `style.css`  | Dark-theme layout, editor pane styling, responsive breakpoints                          |
 
 ---
 
@@ -96,19 +96,19 @@ Event handler → logic call → DOM update
 - Syntax-highlighted input pane using a transparent-textarea overlay technique
 - Format (pretty-print) and Minify buttons for the input JSON
 - Copy to clipboard and Download as `.yaml` / `.csv` / `.xml` file
-- Tab key inserts 2-space indentation in the editor
+- Keyboard shortcuts: `Tab` inserts 2-space indentation in the editor
 - Responsive layout: side-by-side panes on desktop, stacked on mobile
 
 ---
 
 ## Technologies Used
 
-| Technology | Purpose |
-|---|---|
-| HTML5 | Page structure and semantic markup |
-| CSS3 (Grid, Flexbox, Custom Properties) | Layout, editor overlay, responsive design |
-| Vanilla JavaScript (ES6+) | Logic, DOM manipulation, clipboard, Blob API |
-| Node.js `node:test` | Unit testing of `logic.js` functions |
+| Technology                              | Purpose                                      |
+| --------------------------------------- | -------------------------------------------- |
+| HTML5                                   | Page structure and semantic markup           |
+| CSS3 (Grid, Flexbox, Custom Properties) | Layout, editor overlay, responsive design    |
+| Vanilla JavaScript (ES6+)               | Logic, DOM manipulation, clipboard, Blob API |
+| Node.js `node:test`                     | Unit testing of `logic.js` functions         |
 
 ---
 
