@@ -95,10 +95,12 @@ function inlineWordDiff(oldLine, newLine) {
   return { leftHtml, rightHtml };
 }
 
-module.exports = {
-  diffArrays,
-  toLines,
-  toWordTokens,
-  escapeHtml,
-  inlineWordDiff,
-};
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = {
+    diffArrays,
+    toLines,
+    toWordTokens,
+    escapeHtml,
+    inlineWordDiff,
+  };
+}

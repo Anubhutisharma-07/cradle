@@ -1,7 +1,10 @@
-import {
+const {
   createBoard,
-  getCapacity
-} from "./dotGameEngine.js";
+  getCapacity,
+  getRandomMove,
+  getValidMoves,
+  hasPieces,
+} = DotGameEngine;
 const boardElement = document.getElementById("board");
 const playerCountElement = document.getElementById("playerCount");
 const gridPresetElement = document.getElementById("gridPreset");
@@ -132,7 +135,7 @@ function clearHint() {
   }
 }
 
-export function getBestMove(board, player, difficulty = "medium") {
+function getBestMove(board, player, difficulty = "medium") {
   const validMoves = getValidMoves(board, player);
 
   if (validMoves.length === 0) {
@@ -584,7 +587,7 @@ if (hintBtnElement) {
     if (state.gameMode === "pvai" && player !== COLORS[0]) return; // Not human's turn
 
     clearHint();
-    const bestMove = getBestMove(player);
+   const bestMove = getBestMove(state.board,player,difficultyElement.value);
     if (bestMove) {
       const cellIdx = bestMove.r * boardSize + bestMove.c;
       const cellEl = boardElement.children[cellIdx];

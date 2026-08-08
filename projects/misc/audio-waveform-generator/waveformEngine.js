@@ -30,3 +30,9 @@ export const NOTE_NAMES = {
   A4: 440.0,
   B4: 493.88,
 };
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = {
+    NOTES,
+    NOTE_NAMES,
+  };
+}

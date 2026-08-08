@@ -1,9 +1,4 @@
-/**
- * Dot Game Engine
- * Pure game logic extracted from the UI layer for testing.
- */
-
-export function createBoard(size) {
+function createBoard(size) {
   return Array.from({ length: size }, () =>
     Array.from({ length: size }, () => ({
       owner: null,
@@ -12,7 +7,7 @@ export function createBoard(size) {
   );
 }
 
-export function getCapacity(row, col, boardSize) {
+function getCapacity(row, col, boardSize) {
   const last = boardSize - 1;
 
   const edges =
@@ -24,13 +19,13 @@ export function getCapacity(row, col, boardSize) {
   return edges === 2 ? 2 : edges === 1 ? 3 : 4;
 }
 
-export function hasPieces(board, player) {
+function hasPieces(board, player) {
   return board.some(row =>
     row.some(cell => cell.owner === player)
   );
 }
 
-export function getRandomMove(board, player) {
+function getRandomMove(board, player) {
   const validMoves = [];
 
   for (let row = 0; row < board.length; row++) {
@@ -53,7 +48,7 @@ export function getRandomMove(board, player) {
   return validMoves[Math.floor(Math.random() * validMoves.length)];
 }
 
-export function getValidMoves(board, player) {
+function getValidMoves(board, player) {
   const validMoves = [];
 
   for (let row = 0; row < board.length; row++) {
@@ -70,4 +65,14 @@ export function getValidMoves(board, player) {
   }
 
   return validMoves;
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = {
+    createBoard,
+    getCapacity,
+    hasPieces,
+    getRandomMove,
+    getValidMoves,
+  };
 }

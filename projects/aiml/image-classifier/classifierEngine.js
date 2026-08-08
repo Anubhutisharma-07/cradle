@@ -117,12 +117,14 @@ function formatConfidence(probability) {
   return (probability * 100).toFixed(2);
 }
 
-module.exports = {
-  formatCustomPredictions,
-  canPredictCustom,
-  hasLowConfidence,
-  validateClassName,
-  countTrainedClasses,
-  getTrainedClasses,
-  formatConfidence,
-};
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = {
+    formatCustomPredictions,
+    canPredictCustom,
+    hasLowConfidence,
+    validateClassName,
+    countTrainedClasses,
+    getTrainedClasses,
+    formatConfidence,
+  };
+}
