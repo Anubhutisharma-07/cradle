@@ -11,7 +11,6 @@ Browser Storage Inspector & Backup Manager is a client-side dev tool that inspec
 ```text
 projects/dev-tools/browser-storage-inspector/
 ├── ARCHITECTURE.md    # System architecture and maintenance documentation
-├── README.md          # User-facing features and usage guide
 ├── index.html         # HTML layout, summary cards, search toolbar, storage forms
 ├── storageEngine.js   # Storage data type detection, byte footprint calculation, store reader
 ├── storageExporter.js # JSON and CSV export serializers and snapshot validation
