@@ -1,9 +1,12 @@
-import {
-  canPredictCustom,
-  formatConfidence,
+const {
   formatCustomPredictions,
-  validateClassName
-} from "./classifierEngine.js";
+  canPredictCustom,
+  hasLowConfidence,
+  validateClassName,
+  countTrainedClasses,
+  getTrainedClasses,
+  formatConfidence,
+} = require("../projects/aiml/image-classifier/classifierEngine.js");
 const imageUpload = document.getElementById("imageUpload");
 const preview = document.getElementById("preview");
 const uploadContent = document.getElementById("uploadContent");

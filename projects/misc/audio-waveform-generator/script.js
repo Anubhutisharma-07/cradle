@@ -9,6 +9,8 @@ import { NOTES, NOTE_NAMES } from "./waveformEngine.js";
 
 /* ──── DOM Refs ────────────────────────────────────────────────────── */
 
+
+
 const waveBtns = document.querySelectorAll(".wave-btn");
 const freqSlider = document.getElementById("freqSlider");
 const freqDisplay = document.getElementById("freqDisplay");

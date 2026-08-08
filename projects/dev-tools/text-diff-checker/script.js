@@ -9,7 +9,7 @@ const {
   toWordTokens,
   escapeHtml,
   inlineWordDiff,
-} = require("./diffEngine.js");
+} = DiffEngine;
 
 (() => {
   "use strict";
