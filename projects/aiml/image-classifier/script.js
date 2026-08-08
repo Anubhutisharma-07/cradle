@@ -1,3 +1,9 @@
+import {
+  canPredictCustom,
+  formatConfidence,
+  formatCustomPredictions,
+  validateClassName
+} from "./classifierEngine.js";
 const imageUpload = document.getElementById("imageUpload");
 const preview = document.getElementById("preview");
 const uploadContent = document.getElementById("uploadContent");
@@ -23,6 +29,7 @@ let isModelLoaded = false;
 let isCustomMode = false;
 let customClasses = []; // { id, name, count }
 let customTestImage = null; // img element
+let Engine = null;
 
 async function loadModel() {
   resultDiv.innerHTML = `<p class="loading">Loading AI Model...</p>`;
@@ -90,9 +97,7 @@ customImageUpload.addEventListener("change", event => {
 });
 
 function updateCustomPredictState() {
-  // Need at least 2 classes, each with >0 images, and a test image
-  let validClassesCount = customClasses.filter(c => c.count > 0).length;
-  if (validClassesCount >= 2 && customTestImage) {
+  if (canPredictCustom(customClasses, customTestImage)) {
     customClassifyBtn.removeAttribute("disabled");
   } else {
     customClassifyBtn.setAttribute("disabled", "true");
@@ -101,16 +106,20 @@ function updateCustomPredictState() {
 
 // Add Class
 addClassBtn.addEventListener("click", () => {
-  const className = newClassNameInput.value.trim();
-  if (!className) return alert("Class name cannot be empty.");
-  if (customClasses.find(c => c.name === className))
-    return alert("Class name already exists.");
+  const className = newClassNameInput.value;
+
+  const validation = validateClassName(className, customClasses);
+
+  if (!validation.valid) {
+    return alert(validation.error);
+  }
 
   const classObj = {
     id: Date.now().toString(),
-    name: className,
+    name: className.trim(),
     count: 0,
   };
+
   customClasses.push(classObj);
   newClassNameInput.value = "";
   renderClasses();
@@ -225,15 +234,11 @@ async function performPrediction() {
       const result = await knn.predictClass(activation);
 
       // Format for rendering
-      const formatted = Object.entries(result.confidences)
-        .map(([classId, conf]) => {
-          const classObj = customClasses.find(c => c.id === classId);
-          return {
-            className: classObj ? classObj.name : "Unknown",
-            probability: conf,
-          };
-        })
-        .sort((a, b) => b.probability - a.probability);
+      const formatted = formatCustomPredictions(
+  result.confidences,
+  customClasses
+);
+
 
       renderPredictions(formatted);
     }
@@ -251,7 +256,7 @@ function renderPredictions(predictions) {
   predictions.forEach((prediction, index) => {
     if (prediction.probability === 0) return; // Hide 0% in custom mode
 
-    const confidence = (prediction.probability * 100).toFixed(2);
+   const confidence = formatConfidence(prediction.probability);
     const predictionCard = document.createElement("div");
     predictionCard.className = "prediction";
     predictionCard.style.animationDelay = `${index * 0.08}s`;

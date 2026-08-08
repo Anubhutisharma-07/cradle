@@ -1,3 +1,7 @@
+import {
+  createBoard,
+  getCapacity
+} from "./dotGameEngine.js";
 const boardElement = document.getElementById("board");
 const playerCountElement = document.getElementById("playerCount");
 const gridPresetElement = document.getElementById("gridPreset");
@@ -70,19 +74,8 @@ function handleSizeChange(size) {
   }
 }
 
-const createBoard = size =>
-  Array.from({ length: size }, () =>
-    Array.from({ length: size }, () => ({
-      owner: null,
-      dots: 0,
-    }))
-  );
 
-function getCapacity(row, col) {
-  const last = boardSize - 1;
-  const edges = (row === 0) + (row === last) + (col === 0) + (col === last);
-  return edges === 2 ? 2 : edges === 1 ? 3 : 4;
-}
+
 
 function renderBoard() {
   boardElement.innerHTML = "";
@@ -139,6 +132,66 @@ function clearHint() {
   }
 }
 
+export function getBestMove(board, player, difficulty = "medium") {
+  const validMoves = getValidMoves(board, player);
+
+  if (validMoves.length === 0) {
+    return null;
+  }
+
+  if (difficulty === "easy") {
+    return getRandomMove(board, player);
+  }
+
+  // Score each valid move.
+  const scoredMoves = validMoves.map(move => {
+    const cell = board[move.r][move.c];
+    const capacity = getCapacity(move.r, move.c, board.length);
+
+    let score = 0;
+
+    // Prefer moves that are close to exploding.
+    if (cell.dots === capacity - 1) {
+      score += 10;
+    }
+
+    // Prefer corners because they have the lowest capacity.
+    if (
+      (move.r === 0 || move.r === board.length - 1) &&
+      (move.c === 0 || move.c === board.length - 1)
+    ) {
+      score += 5;
+    }
+
+    // Prefer edges.
+    if (
+      move.r === 0 ||
+      move.r === board.length - 1 ||
+      move.c === 0 ||
+      move.c === board.length - 1
+    ) {
+      score += 2;
+    }
+
+    return {
+      move,
+      score,
+    };
+  });
+
+  const maxScore = Math.max(
+    ...scoredMoves.map(item => item.score)
+  );
+
+  const bestMoves = scoredMoves
+    .filter(item => item.score === maxScore)
+    .map(item => item.move);
+
+  return bestMoves[
+    Math.floor(Math.random() * bestMoves.length)
+  ];
+}
+
 function addDot(row, col) {
   if (!state.isActive) return;
 
@@ -190,129 +243,7 @@ function addDot(row, col) {
   });
 }
 
-function getBestMove(player) {
-  let bestMoves = [];
-  let bestScore = -Infinity;
 
-  for (let r = 0; r < boardSize; r++) {
-    for (let c = 0; c < boardSize; c++) {
-      const cell = state.board[r][c];
-      if (cell.owner && cell.owner !== player) continue;
-
-      const capacity = getCapacity(r, c);
-      const isAboutToExplode = cell.dots + 1 >= capacity;
-
-      let score = 0;
-
-      if (isAboutToExplode) {
-        // Highest priority: Completes a box (triggers explosion)
-        score += 1000;
-      }
-
-      // Check if placing a dot here is vulnerable to an immediate opponent explosion
-      let isVulnerable = false;
-
-      for (const [dr, dc] of [
-        [-1, 0],
-        [1, 0],
-        [0, -1],
-        [0, 1],
-      ]) {
-        const nr = r + dr;
-        const nc = c + dc;
-        if (nr >= 0 && nr < boardSize && nc >= 0 && nc < boardSize) {
-          const neighbor = state.board[nr][nc];
-          if (neighbor.owner && neighbor.owner !== player) {
-            const neighborCapacity = getCapacity(nr, nc);
-            if (neighbor.dots >= neighborCapacity - 1) {
-              // Opponent is one dot away from exploding here
-              isVulnerable = true;
-            }
-          }
-        }
-      }
-
-      if (!isVulnerable) {
-        // Medium priority: Safe move
-        score += 100;
-      } else {
-        // Vulnerable move
-        score -= 100;
-        if (!isAboutToExplode && cell.dots + 1 === capacity - 1) {
-          // Lowest priority: creates a 3-sided box next to an opponent (leaves it at capacity - 1 next to an almost full opponent)
-          score -= 500;
-        }
-      }
-
-      if (score > bestScore) {
-        bestScore = score;
-        bestMoves = [{ r, c }];
-      } else if (score === bestScore) {
-        bestMoves.push({ r, c });
-      }
-    }
-  }
-
-  if (bestMoves.length === 0) return null;
-  return bestMoves[Math.floor(Math.random() * bestMoves.length)];
-}
-
-function getRandomMove(player) {
-  let validMoves = [];
-  for (let r = 0; r < boardSize; r++) {
-    for (let c = 0; c < boardSize; c++) {
-      const cell = state.board[r][c];
-      if (!cell.owner || cell.owner === player) {
-        validMoves.push({ r, c });
-      }
-    }
-  }
-  if (validMoves.length === 0) return null;
-  return validMoves[Math.floor(Math.random() * validMoves.length)];
-}
-
-function handleAiTurn() {
-  if (!state.isActive) return;
-  const player = state.players[state.currentPlayer];
-  if (
-    state.gameMode === "pvai" &&
-    player !== COLORS[0] &&
-    !state.isAiTurnProcessing
-  ) {
-    state.isAiTurnProcessing = true;
-    boardElement.classList.add("ai-thinking");
-
-    setTimeout(() => {
-      if (!state.isActive) return;
-
-      let move;
-      const diff = difficultyElement.value;
-
-      if (diff === "easy") {
-        move = getRandomMove(player);
-      } else if (diff === "medium") {
-        if (Math.random() < 0.5) {
-          move = getBestMove(player);
-        } else {
-          move = getRandomMove(player);
-        }
-      } else {
-        move = getBestMove(player);
-      }
-
-      if (move) {
-        addDot(move.r, move.c);
-      }
-
-      boardElement.classList.remove("ai-thinking");
-      state.isAiTurnProcessing = false;
-      // Whether it's still the AI's turn (extra turn) is handled
-      // automatically: addDot's callback ends in render(), which
-      // calls handleAiTurn() again if it's still an AI player's turn
-      // and isAiTurnProcessing is now false.
-    }, 500);
-  }
-}
 
 // Async, step-by-step chain reaction resolver.
 // Instead of rescanning the WHOLE board every round (slow) and running
@@ -329,7 +260,7 @@ function resolveBoardStep(queue, onDone, explodedAny = false) {
 
   for (const { row, col } of queue) {
     const cell = state.board[row][col];
-    const capacity = getCapacity(row, col);
+    const capacity = getCapacity(row, col, boardSize);
 
     while (state.board[row][col].dots >= capacity) {
       const owner = state.board[row][col].owner;
@@ -364,13 +295,9 @@ function resolveBoardStep(queue, onDone, explodedAny = false) {
   }
 }
 
-function hasPieces(player) {
-  return state.board.some(row => row.some(cell => cell.owner === player));
-}
-
 function explode(row, col, owner) {
   const cell = state.board[row][col];
-  const capacity = getCapacity(row, col);
+ const capacity = getCapacity(row, col, boardSize);
 
   cell.dots -= capacity;
 
@@ -425,22 +352,6 @@ function checkGameOver() {
   }
 }
 
-function nextTurn() {
-  let next = (state.currentPlayer + 1) % state.players.length;
-
-  if (state.analytics.moves >= state.players.length) {
-    let loopProtect = 0;
-    while (
-      !hasPieces(state.players[next]) &&
-      loopProtect < state.players.length
-    ) {
-      next = (next + 1) % state.players.length;
-      loopProtect++;
-    }
-  }
-
-  state.currentPlayer = next;
-}
 
 function renderStats() {
   playerStatsElement.innerHTML = "";

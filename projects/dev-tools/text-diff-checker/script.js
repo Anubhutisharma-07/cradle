@@ -3,11 +3,19 @@
  * Vanilla JS, dependency-free LCS-based diff engine.
  * Supports side-by-side comparison in Line mode and Word mode.
  */
+const {
+  diffArrays,
+  toLines,
+  toWordTokens,
+  escapeHtml,
+  inlineWordDiff,
+} = require("./diffEngine.js");
 
 (() => {
   "use strict";
 
   // ---------- DOM ----------
+
   const originalEl = document.getElementById("originalText");
   const modifiedEl = document.getElementById("modifiedText");
   const compareBtn = document.getElementById("compareBtn");
@@ -26,75 +34,6 @@
 
   let mode = "line"; // 'line' | 'word'
 
-  // ---------- Generic LCS diff over an array of tokens ----------
-  // Returns an array of { type: 'equal' | 'add' | 'del', value }
-  function diffArrays(a, b) {
-    const n = a.length;
-    const m = b.length;
-    const dp = Array.from({ length: n + 1 }, () => new Uint32Array(m + 1));
-
-    for (let i = n - 1; i >= 0; i--) {
-      for (let j = m - 1; j >= 0; j--) {
-        dp[i][j] = a[i] === b[j]
-          ? dp[i + 1][j + 1] + 1
-          : Math.max(dp[i + 1][j], dp[i][j + 1]);
-      }
-    }
-
-    const ops = [];
-    let i = 0, j = 0;
-    while (i < n && j < m) {
-      if (a[i] === b[j]) {
-        ops.push({ type: "equal", value: a[i] });
-        i++; j++;
-      } else if (dp[i + 1][j] >= dp[i][j + 1]) {
-        ops.push({ type: "del", value: a[i] });
-        i++;
-      } else {
-        ops.push({ type: "add", value: b[j] });
-        j++;
-      }
-    }
-    while (i < n) { ops.push({ type: "del", value: a[i] }); i++; }
-    while (j < m) { ops.push({ type: "add", value: b[j] }); j++; }
-
-    return ops;
-  }
-
-  // ---------- Tokenizers ----------
-  function toLines(text) {
-    return text.length === 0 ? [] : text.split("\n");
-  }
-
-  // Splits into words while preserving whitespace as its own tokens,
-  // so re-highlighting doesn't distort spacing.
-  function toWordTokens(text) {
-    if (text.length === 0) return [];
-    return text.match(/\S+|\s+/g) || [];
-  }
-
-  function escapeHtml(str) {
-    return CradleEscape.escapeHtml(str);
-  }
-
-  // ---------- Word-level inline diff (used for modified line pairs) ----------
-  function inlineWordDiff(oldLine, newLine) {
-    const ops = diffArrays(toWordTokens(oldLine), toWordTokens(newLine));
-    let leftHtml = "";
-    let rightHtml = "";
-    for (const op of ops) {
-      const safe = escapeHtml(op.value);
-      if (op.type === "equal") {
-        leftHtml += safe;
-        rightHtml += safe;
-      } else if (op.type === "del") {
-        leftHtml += `<span class="word-del">${safe}</span>`;
-      } else {
-        rightHtml += `<span class="word-add">${safe}</span>`;
-      }
-    }
-    return { leftHtml, rightHtml };
-  }
 
   // ---------- Row rendering helpers ----------
   function makeRow(lineNum, html, cls) {
