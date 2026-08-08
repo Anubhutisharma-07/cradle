@@ -74,10 +74,7 @@
   }
 
   function escapeHtml(str) {
-    return str
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
+    return CradleEscape.escapeHtml(str);
   }
 
   // ---------- Word-level inline diff (used for modified line pairs) ----------

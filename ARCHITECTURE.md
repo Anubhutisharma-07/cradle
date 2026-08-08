@@ -38,6 +38,7 @@ cradle/
 │   └── components/
 │       └── ui/                   # Cradle UI - shared, framework-free component library
 │           ├── tokens.css        # Design tokens (colors, spacing) shared by all components
+│           ├── escapeHtml.js     # Shared HTML escaping utility (window.CradleEscape)
 │           ├── index.js          # Barrel loader exposing window.CradleUI, lazy-loads components
 │           ├── demo.html         # Standalone demo/preview page for the component library
 │           ├── README.md         # Component library usage docs
@@ -114,7 +115,7 @@ graph TD
 | `scripts/generate-projects.js` | Build-time script that walks `projects/` and regenerates `data/projects.json`                                    |
 | `scripts/theme.js`             | Light/dark theme state, `localStorage` persistence, toggle button wiring                                         |
 | `scripts/worker.js`            | Web Worker that filters the project list by category and search query off the main thread                        |
-| `src/components/ui/*`          | Shared UI primitives (Button, Card, ThemeToggle, Navbar, BackToHome) and design tokens                           |
+| `src/components/ui/*`          | Shared UI primitives (Button, Card, ThemeToggle, Navbar, BackToHome), the shared HTML escaping utility (`escapeHtml.js`), and design tokens                           |
 | `projects/<category>/<name>/`  | One self-contained experiment with its own HTML/CSS/JS, README, and ARCHITECTURE.md                              |
 | `tests/*.test.js`              | Node's built-in test runner exercising pure logic exported by individual projects                                |
 
@@ -215,7 +216,12 @@ renderProjects() re-renders the grid with the filtered list
 ### `src/components/ui/index.js`
 
 - `resolveBase()` - locates the component library's own base URL regardless of how deep the current page is nested under `projects/`
-- `CradleUI.loadAll()` / `CradleUI.load(name)` - dynamically load individual component scripts on demand
+- `CradleUI.loadAll()` / `CradleUI.load(name)` - dynamically load individual component scripts on demand, plus shared utilities (e.g. `CradleUI.load("escapeHtml")`)
+
+### `src/components/ui/escapeHtml.js`
+
+- `escapeHtml(value)` - escapes `& < > " '` so user-controlled text is inert when interpolated into `innerHTML`; shared by the affected mini-projects
+- Exposed as `window.CradleEscape.escapeHtml` in the browser and `module.exports.escapeHtml` in Node (UMD, mirroring `exportHtml.js`)
 
 ---
 

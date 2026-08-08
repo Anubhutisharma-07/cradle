@@ -328,12 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
     regexExplanation.innerHTML = html;
   }
 
-  function escapeHtml(text) {
-    return text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
+  function escapeHtml(str) {
+    return CradleEscape.escapeHtml(str);
   }
 });

@@ -24,6 +24,7 @@
  *   - CradleThemeToggle  Light/dark theme toggle with localStorage + OS preference
  *   - CradleNavbar       Sticky navbar with mobile drawer
  *   - CradleBackToHome   Fixed "Back to Home" pill button
+ *   - CradleEscape       HTML escaping utility (CradleEscape.escapeHtml)
  *
  * Individual component files:
  *   /src/components/ui/Button/Button.js
@@ -31,6 +32,9 @@
  *   /src/components/ui/ThemeToggle/ThemeToggle.js
  *   /src/components/ui/Navbar/Navbar.js
  *   /src/components/ui/BackToHome/BackToHome.js
+ *
+ * Utility files:
+ *   /src/components/ui/escapeHtml.js
  *
  * Design tokens:
  *   /src/components/ui/tokens.css
@@ -94,6 +98,9 @@
     "BackToHome/BackToHome.js",
   ];
 
+  /* Non-DOM utilities that follow the same load-on-demand pattern. */
+  const UTILITIES = ["escapeHtml.js"];
+
   /**
    * Load a single component script.
    * @param {string} relativePath  e.g. 'Button/Button.js'
@@ -121,29 +128,38 @@
   /**
    * Exposed API — available as window.CradleUI
    *
-   * CradleUI.loadAll()           — load all 5 components
+   * CradleUI.loadAll()           — load all 5 components + utilities
    * CradleUI.load('Button')      — load a single component by name
+   * CradleUI.load('escapeHtml')  — load a utility by name
    */
   const CradleUI = {
     _baseUrl: BASE_URL,
     _loaded: {},
 
-    /** Load every component */
+    /** Load every component and utility */
     loadAll() {
-      return Promise.all(COMPONENTS.map(p => this.load(p.split("/")[0])));
+      return Promise.all(
+        [
+          ...COMPONENTS.map(p => p.split("/")[0]),
+          ...UTILITIES.map(u => u.replace(/\.js$/, "")),
+        ].map(name => this.load(name))
+      );
     },
 
     /**
-     * Load a single component by name.
-     * @param {'Button'|'Card'|'ThemeToggle'|'Navbar'|'BackToHome'} name
+     * Load a single component or utility by name.
+     * @param {'Button'|'Card'|'ThemeToggle'|'Navbar'|'BackToHome'|'escapeHtml'} name
      * @returns {Promise<void>}
      */
     load(name) {
       if (this._loaded[name]) return Promise.resolve();
 
-      const found = COMPONENTS.find(p => p.startsWith(name + "/"));
+      const found =
+        COMPONENTS.find(p => p.startsWith(name + "/")) ||
+        UTILITIES.find(u => u === name + ".js");
+
       if (!found) {
-        console.warn(`[CradleUI] Unknown component: "${name}"`);
+        console.warn(`[CradleUI] Unknown component or utility: "${name}"`);
         return Promise.resolve();
       }
 
