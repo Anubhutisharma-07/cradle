@@ -1,13 +1,30 @@
-let data = JSON.parse(localStorage.getItem('att_v5')) || {
-  subjects: [],
-  logs: [],
-};
+function loadData() {
+  const defaults = { subjects: [], logs: [] };
+  try {
+    return JSON.parse(localStorage.getItem("att_v5")) || defaults;
+  } catch {
+    // Corrupt/non-JSON value in storage would otherwise throw here and break
+    // the whole page on load; fall back to a clean default instead.
+    return defaults;
+  }
+}
+
+let data = loadData();
 
 function render() {
-  const body = document.getElementById('attendance-body');
-  const logBox = document.getElementById('history-log');
-  body.innerHTML = '';
-  logBox.innerHTML = '';
+  const body = document.getElementById("attendance-body");
+  const logBox = document.getElementById("history-log");
+  body.innerHTML = "";
+  logBox.innerHTML = "";
+
+  const stats = calculateStats(data.subjects);
+  const overallPctEl = document.getElementById("overallAttendance");
+  const totalCondEl = document.getElementById("totalConducted");
+  const belowTgtEl = document.getElementById("belowTargetCount");
+
+  if (overallPctEl) overallPctEl.textContent = `${stats.overallPercentage}%`;
+  if (totalCondEl) totalCondEl.textContent = stats.totalConducted;
+  if (belowTgtEl) belowTgtEl.textContent = stats.belowTargetCount;
 
   data.subjects.forEach((s, i) => {
     const targetPct = s.target || 80;
@@ -22,21 +39,21 @@ function render() {
     const neededFromRemaining = Math.max(0, neededTotal - s.p);
 
     // Create main row container
-    const tr = document.createElement('tr');
+    const tr = document.createElement("tr");
 
     // Column 1: Subject Name (XSS Safe via textContent)
-    const tdName = document.createElement('td');
-    const bName = document.createElement('b');
+    const tdName = document.createElement("td");
+    const bName = document.createElement("b");
     bName.textContent = s.name;
     tdName.appendChild(bName);
     tr.appendChild(tdName);
 
     // Column 2: Total Classes Input
-    const tdTotal = document.createElement('td');
-    const inputTotal = document.createElement('input');
-    inputTotal.type = 'number';
+    const tdTotal = document.createElement("td");
+    const inputTotal = document.createElement("input");
+    inputTotal.type = "number";
     inputTotal.value = s.total;
-    inputTotal.style.width = '50px';
+    inputTotal.style.width = "50px";
     inputTotal.onchange = function () {
       updateTotal(i, this.value);
     };
@@ -44,25 +61,25 @@ function render() {
     tr.appendChild(tdTotal);
 
     // Column 3: Present Counter Group
-    const tdPresent = document.createElement('td');
-    const divPGroup = document.createElement('div');
-    divPGroup.className = 'counter-group';
+    const tdPresent = document.createElement("td");
+    const divPGroup = document.createElement("div");
+    divPGroup.className = "counter-group";
 
-    const btnPDec = document.createElement('button');
-    btnPDec.className = 'btn btn-dec';
-    btnPDec.textContent = '-';
+    const btnPDec = document.createElement("button");
+    btnPDec.className = "btn btn-dec";
+    btnPDec.textContent = "-";
     btnPDec.onclick = function () {
-      update(i, 'p', -1);
+      update(i, "p", -1);
     };
 
-    const spanP = document.createElement('span');
+    const spanP = document.createElement("span");
     spanP.textContent = s.p;
 
-    const btnPInc = document.createElement('button');
-    btnPInc.className = 'btn btn-inc';
-    btnPInc.textContent = '+';
+    const btnPInc = document.createElement("button");
+    btnPInc.className = "btn btn-inc";
+    btnPInc.textContent = "+";
     btnPInc.onclick = function () {
-      update(i, 'p', 1);
+      update(i, "p", 1);
     };
 
     divPGroup.appendChild(btnPDec);
@@ -72,25 +89,25 @@ function render() {
     tr.appendChild(tdPresent);
 
     // Column 4: Absent Counter Group
-    const tdAbsent = document.createElement('td');
-    const divAGroup = document.createElement('div');
-    divAGroup.className = 'counter-group';
+    const tdAbsent = document.createElement("td");
+    const divAGroup = document.createElement("div");
+    divAGroup.className = "counter-group";
 
-    const btnADec = document.createElement('button');
-    btnADec.className = 'btn btn-dec';
-    btnADec.textContent = '-';
+    const btnADec = document.createElement("button");
+    btnADec.className = "btn btn-dec";
+    btnADec.textContent = "-";
     btnADec.onclick = function () {
-      update(i, 'a', -1);
+      update(i, "a", -1);
     };
 
-    const spanA = document.createElement('span');
+    const spanA = document.createElement("span");
     spanA.textContent = s.a;
 
-    const btnAInc = document.createElement('button');
-    btnAInc.className = 'btn btn-inc';
-    btnAInc.textContent = '+';
+    const btnAInc = document.createElement("button");
+    btnAInc.className = "btn btn-inc";
+    btnAInc.textContent = "+";
     btnAInc.onclick = function () {
-      update(i, 'a', 1);
+      update(i, "a", 1);
     };
 
     divAGroup.appendChild(btnADec);
@@ -100,14 +117,15 @@ function render() {
     tr.appendChild(tdAbsent);
 
     // Column 5: Current Percentage Label
-    const tdPct = document.createElement('td');
-    tdPct.style.color = parseFloat(currentPct) < targetPct ? 'var(--danger)' : 'var(--success)';
-    tdPct.style.fontWeight = 'bold';
+    const tdPct = document.createElement("td");
+    tdPct.style.color =
+      parseFloat(currentPct) < targetPct ? "var(--danger)" : "var(--success)";
+    tdPct.style.fontWeight = "bold";
     tdPct.textContent = `${currentPct}%`;
     tr.appendChild(tdPct);
 
     // Column 6: Goal Status (Using innerHTML for inner layout formatting safely since parameters are fixed numbers)
-    const tdGoal = document.createElement('td');
+    const tdGoal = document.createElement("td");
     if (neededFromRemaining > remaining) {
       tdGoal.innerHTML = `<span style="color:var(--danger)"><b>Impossible</b><br>Max possible: ${(((s.p + remaining) / s.total) * 100).toFixed(1)}%</span>`;
     } else {
@@ -116,12 +134,12 @@ function render() {
     tr.appendChild(tdGoal);
 
     // Column 7: Remove Row Action Trigger Button
-    const tdRemove = document.createElement('td');
-    const btnRemove = document.createElement('button');
-    btnRemove.className = 'btn';
-    btnRemove.style.color = '#94a3b8';
-    btnRemove.style.background = 'transparent';
-    btnRemove.innerHTML = '&times;';
+    const tdRemove = document.createElement("td");
+    const btnRemove = document.createElement("button");
+    btnRemove.className = "btn";
+    btnRemove.style.color = "#94a3b8";
+    btnRemove.style.background = "transparent";
+    btnRemove.innerHTML = "&times;";
     btnRemove.onclick = function () {
       removeSub(i);
     };
@@ -134,24 +152,24 @@ function render() {
   // Render Log Items cleanly without innerHTML compilation loops
   if (data.logs.length === 0) {
     // Show empty state when there are no history entries
-    const emptyMsg = document.createElement('p');
-    emptyMsg.className = 'history-empty';
-    emptyMsg.textContent = 'No attendance history yet.';
+    const emptyMsg = document.createElement("p");
+    emptyMsg.className = "history-empty";
+    emptyMsg.textContent = "No attendance history yet.";
     logBox.appendChild(emptyMsg);
   } else {
     data.logs
       .slice(-15)
       .reverse()
-      .forEach((log) => {
-        const logDiv = document.createElement('div');
-        logDiv.className = 'history-item';
+      .forEach(log => {
+        const logDiv = document.createElement("div");
+        logDiv.className = "history-item";
 
-        const spanSub = document.createElement('span');
-        const bSub = document.createElement('b');
+        const spanSub = document.createElement("span");
+        const bSub = document.createElement("b");
         bSub.textContent = log.sub; // Safe text injection
         spanSub.appendChild(bSub);
 
-        const spanType = document.createElement('span');
+        const spanType = document.createElement("span");
         spanType.textContent = log.type;
 
         logDiv.appendChild(spanSub);
@@ -160,7 +178,7 @@ function render() {
       });
   }
 
-  localStorage.setItem('att_v5', JSON.stringify(data));
+  localStorage.setItem("att_v5", JSON.stringify(data));
 
   updateChart();
 }
@@ -168,17 +186,17 @@ function render() {
 let attendanceChart = null;
 
 function updateChart() {
-  const ctx = document.getElementById('attendanceChart');
+  const ctx = document.getElementById("attendanceChart");
   if (!ctx) return;
-  
+
   let totalPresent = 0;
   let totalAbsent = 0;
-  
+
   data.subjects.forEach(s => {
     totalPresent += s.p;
     totalAbsent += s.a;
   });
-  
+
   if (totalPresent === 0 && totalAbsent === 0) {
     if (attendanceChart) {
       attendanceChart.destroy();
@@ -186,21 +204,23 @@ function updateChart() {
     }
     return;
   }
-  
+
   if (attendanceChart) {
     attendanceChart.data.datasets[0].data = [totalPresent, totalAbsent];
     attendanceChart.update();
   } else {
     attendanceChart = new Chart(ctx, {
-      type: 'pie',
+      type: "pie",
       data: {
-        labels: ['Present', 'Absent'],
-        datasets: [{
-          data: [totalPresent, totalAbsent],
-          backgroundColor: ['#16a34a', '#dc2626'],
-          hoverOffset: 4
-        }]
-      }
+        labels: ["Present", "Absent"],
+        datasets: [
+          {
+            data: [totalPresent, totalAbsent],
+            backgroundColor: ["#16a34a", "#dc2626"],
+            hoverOffset: 4,
+          },
+        ],
+      },
     });
   }
 }
@@ -210,37 +230,61 @@ function exportCSV() {
     alert("No data to export.");
     return;
   }
-  
-  let csvContent = "data:text/csv;charset=utf-8,";
-  csvContent += "Subject,Total Classes,Present,Absent,Current %,Target %\n";
-  
-  data.subjects.forEach(s => {
-    const conducted = s.p + s.a;
-    const currentPct = conducted === 0 ? 0 : ((s.p / conducted) * 100).toFixed(1);
-    csvContent += `"${s.name}",${s.total},${s.p},${s.a},${currentPct}%,${s.target}%\n`;
-  });
-  
-  const encodedUri = encodeURI(csvContent);
+  const csv = exportToCSV(data.subjects);
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
   const link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
-  link.setAttribute("download", "attendance_logs.csv");
+  link.href = URL.createObjectURL(blob);
+  link.setAttribute("download", "attendance_data.csv");
   document.body.appendChild(link);
-  
   link.click();
   document.body.removeChild(link);
 }
 
+function triggerImport() {
+  const fileInput = document.getElementById("csvFileInput");
+  if (fileInput) fileInput.click();
+}
+
+function importCSV(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const text = e.target.result;
+    const imported = parseCSV(text);
+    if (imported && imported.length > 0) {
+      if (
+        confirm(
+          `Are you sure you want to import ${imported.length} subjects? This will overwrite your current list.`
+        )
+      ) {
+        data.subjects = imported;
+        data.logs.push({
+          sub: "All Subjects",
+          type: "Imported CSV",
+          date: new Date().toLocaleTimeString(),
+        });
+        render();
+      }
+    } else {
+      alert("No valid subject data found in CSV.");
+    }
+  };
+  reader.readAsText(file);
+}
+
 function openModal() {
-  document.getElementById('addModal').style.display = 'flex';
+  document.getElementById("addModal").style.display = "flex";
 }
 
 function closeModal() {
-  document.getElementById('addModal').style.display = 'none';
-  document.getElementById('newSubjectForm').reset();
+  document.getElementById("addModal").style.display = "none";
+  document.getElementById("newSubjectForm").reset();
 }
 
 window.onclick = function (event) {
-  let modal = document.getElementById('addModal');
+  let modal = document.getElementById("addModal");
   if (event.target === modal) {
     closeModal();
   }
@@ -249,9 +293,9 @@ window.onclick = function (event) {
 function addSubject(event) {
   event.preventDefault();
 
-  const name = document.getElementById('subName').value;
-  const total = document.getElementById('subTotal').value;
-  const target = document.getElementById('subTarget').value;
+  const name = document.getElementById("subName").value;
+  const total = document.getElementById("subTotal").value;
+  const target = document.getElementById("subTarget").value;
 
   if (name && total && target) {
     data.subjects.push({
@@ -291,15 +335,15 @@ function update(i, field, val) {
 
   data.logs.push({
     sub: subject.name,
-    type: (field === 'p' ? 'P' : 'A') + (val > 0 ? '+' : '-'),
-    date: new Date().toLocaleTimeString()
+    type: (field === "p" ? "P" : "A") + (val > 0 ? "+" : "-"),
+    date: new Date().toLocaleTimeString(),
   });
 
   render();
 }
 
 function removeSub(i) {
-  if (confirm('Delete?')) {
+  if (confirm("Delete?")) {
     data.subjects.splice(i, 1);
     render();
   }
@@ -307,7 +351,7 @@ function removeSub(i) {
 
 // Clears all stored attendance history and refreshes the history list
 function clearHistory() {
-  if (!confirm('Are you sure you want to clear all history?')) return;
+  if (!confirm("Are you sure you want to clear all history?")) return;
 
   data.logs = [];
   render();

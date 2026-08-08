@@ -25,11 +25,22 @@ body {
   border-bottom: 1px solid rgba(0, 245, 255, 0.2);
 }
 
-.logo {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: 1px;
+.rules-mode-selector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.form-select {
+  background: rgba(18, 25, 45, 0.8);
+  color: #00f5ff;
+  border: 1px solid rgba(0, 245, 255, 0.4);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.95rem;
+  outline: none;
 }
 
 .logo span {
@@ -494,4 +505,67 @@ footer {
   .choice-btn { width: 80px; height: 80px; font-size: 26px; }
   .fighter { width: 70px; height: 70px; font-size: 40px; }
   .nav-links { gap: 15px; font-size: 14px; }
+}
+
+.rules-mode-selector {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.rules-mode-selector label {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #eaeaf5;
+}
+
+.rules-mode-selector select {
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 245, 255, 0.3);
+  border-radius: 6px;
+  color: #00f5ff;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  outline: none;
+}
+
+.stats-panel {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 12px 15px;
+  margin: 15px 0;
+  text-align: center;
+}
+
+.stats-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  color: #ff2e88;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.stats-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.stat-item {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  color: #eaeaf5;
+}
+
+.stat-item span {
+  font-weight: 700;
+  color: #00f5ff;
 }

@@ -10,21 +10,24 @@ The project is intentionally self-contained: no build tools, no frameworks, no e
 
 ## Folder Structure
 
-```
+```text
 2048-game/
-├── index.html   # Page shell, score display, game board container
-├── logic.js     # Pure game rules (no DOM access)
-├── script.js    # UI layer — renders the board and handles input
-└── style.css    # Layout and tile colour theming
+├── index.html          # Page shell, score display, game board container
+├── logic.js            # Pure game rules (no DOM access)
+├── storage.js          # State and high score saving/loading per grid size
+├── gameUndoManager.js  # Move history stack manager with rollback support
+├── gameThemeEngine.js  # Preset grid color themes (Classic, Dark Neon, Cyberpunk)
+├── script.js           # UI layer — renders the board and handles input
+└── style.css          # Layout and tile colour theming
 ```
 
-**`logic.js`** and **`script.js`** are deliberately separated. `logic.js` contains every rule (tile merging, board traversal, win/loss detection) and exposes a small public API. `script.js` knows nothing about game rules — it only reads state and updates the DOM. This separation allows `logic.js` to be imported in a test environment without a browser.
+**`logic.js`**, **`gameUndoManager.js`**, and **`script.js`** are deliberately separated into modular architecture. `logic.js` contains core rules, `gameUndoManager.js` handles move history stack, and `script.js` binds UI events and DOM updates.
 
 ---
 
 ## Application Flow
 
-```
+```text
 User opens index.html
         ↓
 Browser loads style.css → logic.js → script.js
@@ -53,23 +56,26 @@ Win / loss status is checked and displayed
 ## Core Components
 
 ### `index.html`
+
 Defines the static page structure: title, score cards (`#scoreValue`, `#bestScoreValue`), the board container (`#board`), a status message (`#status`), and a Restart button. The board cells are created dynamically by JavaScript.
 
 ### `logic.js`
+
 Contains all game rules. It is wrapped in a UMD (Universal Module Definition) pattern so it works both in a browser (via `window.__2048Logic`) and in Node.js (via `module.exports`), which enables unit testing without a browser.
 
 Key functions exported:
 
-| Function | Purpose |
-|---|---|
-| `createInitialState()` | Returns a fresh 4×4 board with two starting tiles |
-| `moveGameState(state, direction)` | Returns a new immutable state after applying a move |
-| `addRandomTile(state)` | Places a 2 (90% chance) or 4 (10% chance) on a random empty cell |
-| `collapseLine(line)` | Merges a single row or column in one direction; returns the merged line and the score gained |
-| `hasWon(board)` | Returns `true` if any tile is ≥ 2048 |
-| `canMove(board)` | Returns `true` if at least one valid move exists |
+| Function                          | Purpose                                                                                      |
+| --------------------------------- | -------------------------------------------------------------------------------------------- |
+| `createInitialState()`            | Returns a fresh 4×4 board with two starting tiles                                            |
+| `moveGameState(state, direction)` | Returns a new immutable state after applying a move                                          |
+| `addRandomTile(state)`            | Places a 2 (90% chance) or 4 (10% chance) on a random empty cell                             |
+| `collapseLine(line)`              | Merges a single row or column in one direction; returns the merged line and the score gained |
+| `hasWon(board)`                   | Returns `true` if any tile is ≥ 2048                                                         |
+| `canMove(board)`                  | Returns `true` if at least one valid move exists                                             |
 
 ### `script.js`
+
 The UI layer. Reads the public API from `window.__2048Logic`, handles keyboard events, and writes to the DOM.
 
 Key responsibilities:
@@ -80,6 +86,7 @@ Key responsibilities:
 - **`restartGame()`** — creates a fresh state and re-renders.
 
 ### `style.css`
+
 Handles all visual presentation. Tile colours are assigned through CSS classes named after tile values (`.tile--2`, `.tile--4`, … `.tile--2048`). Layout uses CSS Grid for the 4×4 board.
 
 ---
@@ -107,7 +114,7 @@ The best score is the only value persisted across sessions, stored in `localStor
 
 ## Event Flow
 
-```
+```text
 keydown event (arrow key / WASD)
         ↓
 handleKeydown(event)  →  maps key to direction string
@@ -143,4 +150,3 @@ None. The project is pure HTML, CSS, and JavaScript with no external libraries.
 - **Tile slide animations** — animate tiles moving across the grid before they settle.
 - **Undo** — since state is immutable, keeping a history stack would be straightforward.
 - **Keyboard shortcut hints** — surface the WASD alternative visually for new players.
-- **Persistent game state** — save the full board to `localStorage` so an in-progress game survives a page reload.

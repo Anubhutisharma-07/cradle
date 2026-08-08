@@ -1,90 +1,106 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>AI Image Classifier</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier"></script>
-</head>
-<body>
+  </head>
+  <body>
     <div class="bg-blur blur1"></div>
     <div class="bg-blur blur2"></div>
     <div class="main-layout">
-        <div class="container">
-            <div class="top-section">
-                <div class="ai-badge">
-                    AI Powered
-                </div>
-                <h1> AI Image Classifier</h1>
-                <p class="subtitle">
-                    Upload any image and let AI identify objects instantly with smart AI predictions.
-                </p>
-                
-                <div class="mode-toggle">
-                    <button id="standardModeBtn" class="mode-btn active">Standard</button>
-                    <button id="customModeBtn" class="mode-btn">Custom Training</button>
-                </div>
-            </div>
+      <div class="container">
+        <div class="top-section">
+          <div class="ai-badge">AI Powered</div>
+          <h1>AI Image Classifier</h1>
+          <button
+            id="themeToggle"
+            class="theme-toggle-btn p-2 rounded-lg hover:bg-gray-800 transition"
+            title="Toggle dark/light theme"
+            aria-label="Toggle theme"
+          >
+            🌙
+          </button>
+          <p class="subtitle">
+            Upload any image and let AI identify objects instantly with smart AI
+            predictions.
+          </p>
 
-            <!-- Standard Mode Content -->
-            <div id="standardContent">
-                <div class="upload-area">
-                    <img id="preview" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Preview">
-                    <div class="upload-content" id="uploadContent">
-                        <div class="upload-icon">
-                            📸
-                        </div>
-                        <h3>Upload Your Image</h3>
-                        <p>Choose any image to analyze</p>
-                    </div>
-                </div>
-                <div class="btn-group">
-                    <label for="imageUpload" class="upload-btn">
-                        Choose Image
-                    </label>
-                    <input type="file" id="imageUpload" accept="image/*" hidden>
-                    <button id="classifyBtn">
-                        Analyze
-                    </button>
-                </div>
-            </div>
+          <div class="mode-toggle">
+            <button id="standardModeBtn" class="mode-btn active">
+              Standard
+            </button>
+            <button id="customModeBtn" class="mode-btn">Custom Training</button>
+          </div>
+        </div>
 
-            <!-- Custom Mode Content -->
-            <div id="customContent" style="display: none;">
-                <div class="custom-controls">
-                    <div class="add-class-group">
-                        <input type="text" id="newClassName" placeholder="New Class Name (e.g. Mug)">
-                        <button id="addClassBtn">Add Class</button>
-                    </div>
-                </div>
-                <div class="classes-container" id="classesContainer">
-                    <!-- Custom class cards will go here -->
-                </div>
-                <div class="btn-group" style="margin-top: 15px;">
-                    <label for="customImageUpload" class="upload-btn">
-                        Test Image
-                    </label>
-                    <input type="file" id="customImageUpload" accept="image/*" hidden>
-                    <button id="customClassifyBtn" disabled>
-                        Predict Custom
-                    </button>
-                </div>
+        <!-- Standard Mode Content -->
+        <div id="standardContent">
+          <div class="upload-area">
+            <img
+              id="preview"
+              src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
+              alt="Preview"
+            />
+            <div class="upload-content" id="uploadContent">
+              <div class="upload-icon">📸</div>
+              <h3>Upload Your Image</h3>
+              <p>Choose any image to analyze</p>
             </div>
+          </div>
+          <div class="btn-group">
+            <label for="imageUpload" class="upload-btn"> Choose Image </label>
+            <input type="file" id="imageUpload" accept="image/*" hidden />
+            <button id="classifyBtn">Analyze</button>
+          </div>
         </div>
-        
-        <div class="prediction-panel" id="predictionPanel">
-            <div class="prediction-header">
-                <h2> Predictions</h2>
+
+        <!-- Custom Mode Content -->
+        <div id="customContent" style="display: none">
+          <div class="custom-controls">
+            <div class="add-class-group">
+              <input
+                type="text"
+                id="newClassName"
+                placeholder="New Class Name (e.g. Mug)"
+              />
+              <button id="addClassBtn">Add Class</button>
             </div>
-            <div id="result"></div>
+          </div>
+          <div class="classes-container" id="classesContainer">
+            <!-- Custom class cards will go here -->
+          </div>
+          <div class="btn-group" style="margin-top: 15px">
+            <label for="customImageUpload" class="upload-btn">
+              Test Image
+            </label>
+            <input type="file" id="customImageUpload" accept="image/*" hidden />
+            <button id="customClassifyBtn" disabled>Predict Custom</button>
+          </div>
         </div>
+      </div>
+
+      <div class="prediction-panel" id="predictionPanel">
+        <div class="prediction-header">
+          <h2>Predictions</h2>
+        </div>
+        <div id="result"></div>
+      </div>
     </div>
-     <script src="../../../projects/back-to-home.js" defer></script>
+    <script
+      src="../../../src/components/ui/BackToHome/BackToHome.js"
+      defer
+    ></script>
+    <script src="classifierEngine.js"></script>
     <script src="script.js"></script>
-</body>
+  </body>
 </html>

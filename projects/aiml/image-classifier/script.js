@@ -1,3 +1,12 @@
+const {
+  formatCustomPredictions,
+  canPredictCustom,
+  hasLowConfidence,
+  validateClassName,
+  countTrainedClasses,
+  getTrainedClasses,
+  formatConfidence,
+} = require("../projects/aiml/image-classifier/classifierEngine.js");
 const imageUpload = document.getElementById("imageUpload");
 const preview = document.getElementById("preview");
 const uploadContent = document.getElementById("uploadContent");
@@ -23,106 +32,110 @@ let isModelLoaded = false;
 let isCustomMode = false;
 let customClasses = []; // { id, name, count }
 let customTestImage = null; // img element
+let Engine = null;
 
 async function loadModel() {
-    resultDiv.innerHTML = `<p class="loading">Loading AI Model...</p>`;
-    try {
-        model = await mobilenet.load();
-        knn = knnClassifier.create();
-        isModelLoaded = true;
-        resultDiv.innerHTML = `<p class="loading">AI Model Ready</p>`;
-    } catch (error) {
-        console.error('Failed to load MobileNet model:', error);
-        resultDiv.innerHTML = `<p class="loading">Failed to load AI Model</p>`;
-    }
+  resultDiv.innerHTML = `<p class="loading">Loading AI Model...</p>`;
+  try {
+    model = await mobilenet.load();
+    knn = knnClassifier.create();
+    isModelLoaded = true;
+    resultDiv.innerHTML = `<p class="loading">AI Model Ready</p>`;
+  } catch (error) {
+    console.error("Failed to load MobileNet model:", error);
+    resultDiv.innerHTML = `<p class="loading">Failed to load AI Model</p>`;
+  }
 }
 loadModel();
 
 function resetPredictions() {
-    predictionPanel.classList.remove("active");
-    mainLayout.classList.remove("shifted");
-    resultDiv.innerHTML = "";
+  predictionPanel.classList.remove("active");
+  mainLayout.classList.remove("shifted");
+  resultDiv.innerHTML = "";
 }
 
 document.querySelectorAll(".upload-btn").forEach(btn => {
-    btn.addEventListener("click", resetPredictions);
+  btn.addEventListener("click", resetPredictions);
 });
 
 // Mode Switching
 standardModeBtn.addEventListener("click", () => {
-    isCustomMode = false;
-    standardModeBtn.classList.add("active");
-    customModeBtn.classList.remove("active");
-    standardContent.style.display = "block";
-    customContent.style.display = "none";
-    resetPredictions();
+  isCustomMode = false;
+  standardModeBtn.classList.add("active");
+  customModeBtn.classList.remove("active");
+  standardContent.style.display = "block";
+  customContent.style.display = "none";
+  resetPredictions();
 });
 
 customModeBtn.addEventListener("click", () => {
-    isCustomMode = true;
-    customModeBtn.classList.add("active");
-    standardModeBtn.classList.remove("active");
-    standardContent.style.display = "none";
-    customContent.style.display = "block";
-    resetPredictions();
+  isCustomMode = true;
+  customModeBtn.classList.add("active");
+  standardModeBtn.classList.remove("active");
+  standardContent.style.display = "none";
+  customContent.style.display = "block";
+  resetPredictions();
 });
 
 // Standard Image Upload
-imageUpload.addEventListener("change", (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        preview.src = URL.createObjectURL(file);
-        preview.style.display = "block";
-        uploadContent.style.display = "none";
-    }
+imageUpload.addEventListener("change", event => {
+  const file = event.target.files[0];
+  if (file) {
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+    uploadContent.style.display = "none";
+  }
 });
 
 // Custom Test Image Upload
-customImageUpload.addEventListener("change", (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        const url = URL.createObjectURL(file);
-        customTestImage = new Image();
-        customTestImage.src = url;
-        // Check if we can enable predict button
-        updateCustomPredictState();
-    }
+customImageUpload.addEventListener("change", event => {
+  const file = event.target.files[0];
+  if (file) {
+    const url = URL.createObjectURL(file);
+    customTestImage = new Image();
+    customTestImage.src = url;
+    // Check if we can enable predict button
+    updateCustomPredictState();
+  }
 });
 
 function updateCustomPredictState() {
-    // Need at least 2 classes, each with >0 images, and a test image
-    let validClassesCount = customClasses.filter(c => c.count > 0).length;
-    if (validClassesCount >= 2 && customTestImage) {
-        customClassifyBtn.removeAttribute('disabled');
-    } else {
-        customClassifyBtn.setAttribute('disabled', 'true');
-    }
+  if (canPredictCustom(customClasses, customTestImage)) {
+    customClassifyBtn.removeAttribute("disabled");
+  } else {
+    customClassifyBtn.setAttribute("disabled", "true");
+  }
 }
 
 // Add Class
 addClassBtn.addEventListener("click", () => {
-    const className = newClassNameInput.value.trim();
-    if (!className) return alert("Class name cannot be empty.");
-    if (customClasses.find(c => c.name === className)) return alert("Class name already exists.");
-    
-    const classObj = {
-        id: Date.now().toString(),
-        name: className,
-        count: 0
-    };
-    customClasses.push(classObj);
-    newClassNameInput.value = "";
-    renderClasses();
-    updateCustomPredictState();
+  const className = newClassNameInput.value;
+
+  const validation = validateClassName(className, customClasses);
+
+  if (!validation.valid) {
+    return alert(validation.error);
+  }
+
+  const classObj = {
+    id: Date.now().toString(),
+    name: className.trim(),
+    count: 0,
+  };
+
+  customClasses.push(classObj);
+  newClassNameInput.value = "";
+  renderClasses();
+  updateCustomPredictState();
 });
 
 function renderClasses() {
-    classesContainer.innerHTML = "";
-    customClasses.forEach(c => {
-        const card = document.createElement("div");
-        card.className = "class-card";
-        
-        card.innerHTML = `
+  classesContainer.innerHTML = "";
+  customClasses.forEach(c => {
+    const card = document.createElement("div");
+    card.className = "class-card";
+
+    card.innerHTML = `
             <div class="class-header">
                 <div class="class-title">${c.name} <span class="class-count" id="count-${c.id}">${c.count} images</span></div>
                 <button class="remove-class-btn" onclick="removeClass('${c.id}')">✕</button>
@@ -134,123 +147,124 @@ function renderClasses() {
                 </label>
             </div>
         `;
-        classesContainer.appendChild(card);
-    });
+    classesContainer.appendChild(card);
+  });
 }
 
-window.removeClass = (id) => {
-    customClasses = customClasses.filter(c => c.id !== id);
-    if (knn.getNumClasses() > 0) {
-        try {
-            knn.clearClass(id);
-        } catch (e) {}
-    }
-    renderClasses();
-    updateCustomPredictState();
+window.removeClass = id => {
+  customClasses = customClasses.filter(c => c.id !== id);
+  if (knn.getNumClasses() > 0) {
+    try {
+      knn.clearClass(id);
+    } catch (e) {}
+  }
+  renderClasses();
+  updateCustomPredictState();
 };
 
 window.addImageToClass = async (event, id) => {
-    if (!isModelLoaded) return alert("AI Model still loading...");
-    const files = event.target.files;
-    if (!files.length) return;
-    
-    const classObj = customClasses.find(c => c.id === id);
-    const imagesContainer = document.getElementById(`images-${id}`);
-    const addBtn = imagesContainer.querySelector('.add-image-btn');
-    
-    for (let file of files) {
-        const img = new Image();
-        img.src = URL.createObjectURL(file);
-        
-        await new Promise((resolve) => {
-            img.onload = () => {
-                const activation = model.infer(img, true);
-                knn.addExample(activation, id);
-                
-                classObj.count++;
-                document.getElementById(`count-${id}`).textContent = `${classObj.count} images`;
-                
-                const wrapper = document.createElement("div");
-                wrapper.className = "thumb-wrapper";
-                wrapper.innerHTML = `
+  if (!isModelLoaded) return alert("AI Model still loading...");
+  const files = event.target.files;
+  if (!files.length) return;
+
+  const classObj = customClasses.find(c => c.id === id);
+  const imagesContainer = document.getElementById(`images-${id}`);
+  const addBtn = imagesContainer.querySelector(".add-image-btn");
+
+  for (let file of files) {
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+
+    await new Promise(resolve => {
+      img.onload = () => {
+        const activation = model.infer(img, true);
+        knn.addExample(activation, id);
+
+        classObj.count++;
+        document.getElementById(`count-${id}`).textContent =
+          `${classObj.count} images`;
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "thumb-wrapper";
+        wrapper.innerHTML = `
                     <img src="${img.src}">
                 `;
-                // Add before the "+" button
-                imagesContainer.insertBefore(wrapper, addBtn);
-                resolve();
-            };
-        });
-    }
-    
-    event.target.value = ""; // Reset input
-    updateCustomPredictState();
+        // Add before the "+" button
+        imagesContainer.insertBefore(wrapper, addBtn);
+        resolve();
+      };
+    });
+  }
+
+  event.target.value = ""; // Reset input
+  updateCustomPredictState();
 };
 
 // Prediction Logic
 async function performPrediction() {
-    if (!isModelLoaded) {
-        alert("AI Model is still loading...");
+  if (!isModelLoaded) {
+    alert("AI Model is still loading...");
+    return;
+  }
+
+  predictionPanel.classList.add("active");
+  mainLayout.classList.add("shifted");
+  resultDiv.innerHTML = `<p class="loading">🔍 Analyzing...</p>`;
+
+  try {
+    if (!isCustomMode) {
+      // Standard Inference
+      if (!preview.src || preview.src.includes("data:image/gif")) {
+        alert("Please upload an image first!");
+        resetPredictions();
         return;
-    }
+      }
+      const predictions = await model.classify(preview);
+      renderPredictions(
+        predictions.map(p => ({
+          className: p.className,
+          probability: p.probability,
+        }))
+      );
+    } else {
+      // Custom Inference
+      if (!customTestImage) {
+        alert("Please upload a test image first!");
+        resetPredictions();
+        return;
+      }
+      const activation = model.infer(customTestImage, true);
+      const result = await knn.predictClass(activation);
 
-    predictionPanel.classList.add("active");
-    mainLayout.classList.add("shifted");
-    resultDiv.innerHTML = `<p class="loading">🔍 Analyzing...</p>`;
+      // Format for rendering
+      const formatted = formatCustomPredictions(
+  result.confidences,
+  customClasses
+);
 
-    try {
-        if (!isCustomMode) {
-            // Standard Inference
-            if (!preview.src || preview.src.includes("data:image/gif")) {
-                alert("Please upload an image first!");
-                resetPredictions();
-                return;
-            }
-            const predictions = await model.classify(preview);
-            renderPredictions(predictions.map(p => ({
-                className: p.className,
-                probability: p.probability
-            })));
-        } else {
-            // Custom Inference
-            if (!customTestImage) {
-                alert("Please upload a test image first!");
-                resetPredictions();
-                return;
-            }
-            const activation = model.infer(customTestImage, true);
-            const result = await knn.predictClass(activation);
-            
-            // Format for rendering
-            const formatted = Object.entries(result.confidences).map(([classId, conf]) => {
-                const classObj = customClasses.find(c => c.id === classId);
-                return {
-                    className: classObj ? classObj.name : "Unknown",
-                    probability: conf
-                };
-            }).sort((a, b) => b.probability - a.probability);
-            
-            renderPredictions(formatted);
-        }
-    } catch (error) {
-        resultDiv.innerHTML = `<p class="loading">❌ Error analyzing image</p>`;
-        console.error(error);
+
+      renderPredictions(formatted);
     }
+  } catch (error) {
+    resultDiv.innerHTML = `<p class="loading">❌ Error analyzing image</p>`;
+    console.error(error);
+  }
 }
 
 function renderPredictions(predictions) {
-    resultDiv.innerHTML = "";
-    if (predictions[0].probability < 0.1) {
-        resultDiv.innerHTML = `<p class="loading">Low confidence prediction. Try providing more training data or a clearer image.</p>`;
-    }
-    predictions.forEach((prediction, index) => {
-        if (prediction.probability === 0) return; // Hide 0% in custom mode
-        
-        const confidence = (prediction.probability * 100).toFixed(2);
-        const predictionCard = document.createElement("div");
-        predictionCard.className = "prediction";
-        predictionCard.style.animationDelay = `${index * 0.08}s`;
+  resultDiv.innerHTML = "";
+  if (predictions[0].probability < 0.1) {
+    resultDiv.innerHTML = `<p class="loading">Low confidence prediction. Try providing more training data or a clearer image.</p>`;
+  }
+  predictions.forEach((prediction, index) => {
+    if (prediction.probability === 0) return; // Hide 0% in custom mode
 
-        predictionCard.innerHTML = `
+   const confidence = formatConfidence(prediction.probability);
+    const predictionCard = document.createElement("div");
+    predictionCard.className = "prediction";
+    predictionCard.style.animationDelay = `${index * 0.08}s`;
+
+    predictionCard.innerHTML = `
             <div class="prediction-top">
                 <div class="class-name">${prediction.className}</div>
                 <div class="confidence">${confidence}%</div>
@@ -259,8 +273,8 @@ function renderPredictions(predictions) {
                 <div class="fill" style="width: ${confidence}%"></div>
             </div>
         `;
-        resultDiv.appendChild(predictionCard);
-    });
+    resultDiv.appendChild(predictionCard);
+  });
 }
 
 classifyBtn.addEventListener("click", performPrediction);

@@ -1,234 +1,365 @@
 :root {
-    --bg: #f8fafc;
-    --card: #ffffff;
-    --border: #dbe2ea;
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --border: #dbe2ea;
 }
 
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.header-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.header-titles h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+html.light-theme {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --text: #111827;
+  --border: #d1d5db;
+  --board: #edf2f7;
+  --button: #2563eb;
+}
+
+html:not(.light-theme) body {
+  background: #0b1220;
+  color: #f8fafc;
+}
+
+html:not(.light-theme) .card {
+  background: #1b2233;
+  border-color: #374151;
+}
+
+html:not(.light-theme) #board {
+  background: #263548;
+}
+
+html:not(.light-theme) .btn {
+  background: #2563eb;
+  color: white;
+  border: none;
+}
+
+html:not(.light-theme) .btn:hover {
+  background: #1d4ed8;
+}
+
+html:not(.light-theme) .analytics-card,
+html:not(.light-theme) .stat-item {
+  background: #1b2233;
+  border-color: #374151;
+}
+
+html:not(.light-theme) .chart-bar-bg {
+  background: #374151;
+}
+
+html:not(.light-theme) .stat-label {
+  color: #94a3b8;
+}
 body {
-    margin: 20px;
-    font-family: Segoe UI, sans-serif;
-    background: var(--bg);
+  margin: 20px;
+  font-family:
+    Segoe UI,
+    sans-serif;
+  background: var(--bg);
 }
 
 .container {
-    max-width: 1400px;
-    margin: auto;
+  max-width: 1400px;
+  margin: auto;
 }
 
 .card {
-    background: var(--card);
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
 }
 
 .controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
 }
 
 .control-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(31, 41, 55, 0.4);
+  border: 1px solid rgba(107, 114, 128, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle-btn:hover {
+  background-color: rgba(75, 85, 99, 0.5);
+  border-color: rgba(107, 114, 128, 0.6);
+}
+
+html.light-theme .theme-toggle-btn {
+  background-color: rgba(209, 213, 219, 0.4);
+  border-color: rgba(107, 114, 128, 0.3);
+}
+
+html.light-theme .theme-toggle-btn:hover {
+  background-color: rgba(229, 231, 235, 0.6);
+  border-color: rgba(107, 114, 128, 0.6);
+}
 .btn {
-    cursor: pointer;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-weight: 600;
+  cursor: pointer;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
 }
 
 #boardWrapper {
-    overflow: auto;
+  overflow: auto;
 }
 
 #board {
-    display: grid;
-    gap: 1px;
-    width: 100%;
-    max-width: 500px;
-    margin: auto;
-    background: #94a3b8;
-    border: 2px solid #64748b;
-    border-radius: 4px;
-    padding: 1px;
+  display: grid;
+  gap: 1px;
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+  background: #94a3b8;
+  border: 2px solid #64748b;
+  border-radius: 4px;
+  padding: 1px;
+}
+html:not(.light-theme) select {
+  background: #111827;
+  color: #f8fafc;
+  border: 1px solid #4b5563;
 }
 
+html:not(.light-theme) option {
+  background: #111827;
+  color: #f8fafc;
+}
 .cell {
-    aspect-ratio: 1;
-    width: 100%;
-    min-width: 28px;
-    background: #f1f5f9;
-    border: none;
+  aspect-ratio: 1;
+  width: 100%;
+  min-width: 28px;
+  background: #f1f5f9;
+  border: none;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  cursor: pointer;
 
-    cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
 
-    font-weight: 700;
-    font-size: 14px;
-
-    transition: 0.15s;
+  transition: 0.15s;
 }
 
 .cell:hover {
-    filter: brightness(0.95);
+  filter: brightness(0.95);
 }
 
 .cell.hint {
-    outline: 3px solid #f97316;
-    outline-offset: -3px;
-    z-index: 10;
-    position: relative;
-    box-shadow: inset 0 0 10px rgba(249, 115, 22, 0.5);
+  outline: 3px solid #f97316;
+  outline-offset: -3px;
+  z-index: 10;
+  position: relative;
+  box-shadow: inset 0 0 10px rgba(249, 115, 22, 0.5);
+}
+.cell::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  transform: translate(-50%, -50%);
+  z-index: 1;
 }
 
 .ai-thinking {
-    pointer-events: none;
-    opacity: 0.8;
+  pointer-events: none;
+  opacity: 0.8;
 }
 
 .red {
-    background: #ef4444;
-    color: white;
+  background: #ef4444;
+  color: white;
 }
 
 .blue {
-    background: #3b82f6;
-    color: white;
+  background: #3b82f6;
+  color: white;
 }
 
 .green {
-    background: #22c55e;
-    color: white;
+  background: #22c55e;
+  color: white;
 }
 
 .yellow {
-    background: #eab308;
-    color: black;
+  background: #eab308;
+  color: black;
 }
 
 #playerStats {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .player-card {
-    padding: 10px 16px;
-    border-radius: 8px;
-    color: white;
-    font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
 }
 
 .player-card.red {
-    background: #ef4444;
+  background: #ef4444;
 }
 
 .player-card.blue {
-    background: #3b82f6;
+  background: #3b82f6;
 }
 
 .player-card.green {
-    background: #22c55e;
+  background: #22c55e;
 }
 
 .player-card.yellow {
-    background: #eab308;
-    color: black;
+  background: #eab308;
+  color: black;
 }
 
 .analytics-section {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .empty-state {
-    color: #64748b;
-    font-style: italic;
+  color: #64748b;
+  font-style: italic;
 }
 
 .analytics-card {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    padding: 16px;
-    border-radius: 8px;
-    margin-bottom: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 12px;
 }
 
 .analytics-card h3 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 16px;
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 16px;
 }
 
 .chart-bar {
-    display: flex;
-    align-items: center;
-    margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
 }
 
 .chart-label {
-    width: 60px;
-    font-size: 14px;
-    font-weight: 600;
-    text-transform: capitalize;
+  width: 60px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: capitalize;
 }
 
 .chart-bar-bg {
-    flex: 1;
-    background: #e2e8f0;
-    height: 12px;
-    border-radius: 6px;
-    overflow: hidden;
-    margin: 0 10px;
+  flex: 1;
+  background: #e2e8f0;
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0 10px;
 }
 
 .chart-bar-fill {
-    height: 100%;
-    transition: width 0.3s ease;
+  height: 100%;
+  transition: width 0.3s ease;
 }
 
 .chart-value {
-    font-size: 12px;
-    width: 30px;
-    text-align: right;
+  font-size: 12px;
+  width: 30px;
+  text-align: right;
 }
 
 .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 10px;
-    margin-bottom: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 15px;
 }
 
 .stat-item {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    padding: 10px;
-    border-radius: 6px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 10px;
+  border-radius: 6px;
 }
 
 .stat-label {
-    font-size: 12px;
-    color: #64748b;
-    display: block;
+  font-size: 12px;
+  color: #64748b;
+  display: block;
 }
 
 .stat-val {
-    font-size: 18px;
-    font-weight: 700;
+  font-size: 18px;
+  font-weight: 700;
+}
+@media (max-width: 600px) {
+  body {
+    margin: 12px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .header-titles h1 {
+    font-size: 22px;
+  }
+
+  .header-titles p {
+    font-size: 13px;
+  }
 }

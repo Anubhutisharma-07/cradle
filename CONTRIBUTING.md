@@ -13,6 +13,7 @@ Please take a few minutes to read these guidelines before getting started.
 - [Adding a New Project](#adding-a-new-project)
 - [Coding Guidelines](#coding-guidelines)
 - [Documentation Guidelines](#documentation-guidelines)
+- [Architecture Documentation](#architecture-documentation)
 - [Branch Naming Guidelines](#branch-naming-guidelines)
 - [Commit Message Guidelines](#commit-message-guidelines)
 - [Testing](#testing)
@@ -21,7 +22,6 @@ Please take a few minutes to read these guidelines before getting started.
 - [Suggesting Features](#suggesting-features)
 - [Need Help?](#need-help)
 - [Thank You](#thank-you)
-
 
 ## Ways to Contribute
 
@@ -120,6 +120,8 @@ A useful README usually includes:
 - Controls or interaction details if relevant
 - Any credits or dependencies used
 
+Every new project should also include an `ARCHITECTURE.md` inside its own folder, following the standardized template. See [Architecture Documentation](#architecture-documentation) for full instructions.
+
 ### Assets and static files
 
 - Store project-specific assets inside the project's own folder.
@@ -134,6 +136,12 @@ A useful README usually includes:
 - Avoid unnecessary global styles or scripts that affect other projects.
 - Add comments for non-obvious logic when helpful.
 
+### Licensing and Third-Party Assets
+
+- Every project must clearly specify its licensing (e.g., MIT) inside its `ARCHITECTURE.md` file.
+- If you use any third-party assets (images, icons, fonts, audio, code snippets), you must provide explicit attribution in the same section, including links to the source and stating the asset's license.
+- Avoid using copyrighted assets without a clear open-source or permissive license.
+
 ### New Project Checklist
 
 Before opening a Pull Request, review the following checklist:
@@ -142,7 +150,9 @@ Before opening a Pull Request, review the following checklist:
 - [ ] The project folder has a clear and descriptive name.
 - [ ] Project-specific files are organized within the project folder.
 - [ ] Assets are stored in an appropriate location.
-- [ ] README documentation has been added where appropriate.
+- [ ] The project explicitly specifies its licensing and includes attribution for any third-party assets.
+- [ ] `README.md` has been added inside the project folder.
+- [ ] `ARCHITECTURE.md` has been added following the [standardized template](ARCHITECTURE_TEMPLATE.md).
 - [ ] The project works correctly locally.
 - [ ] Existing projects and unrelated files were not unnecessarily modified.
 - [ ] The project follows the repository's contribution guidelines.
@@ -151,7 +161,7 @@ Before opening a Pull Request, review the following checklist:
 
 ## Coding Guidelines
 
-Please follow the existing coding style throughout the repository.
+Please follow the existing coding style throughout the repository. Code formatting is enforced using **Prettier**.
 
 - Write clean, readable, and maintainable code.
 - Use meaningful variable and file names.
@@ -159,6 +169,13 @@ Please follow the existing coding style throughout the repository.
 - Avoid unrelated changes in the same Pull Request.
 - Remove unused code before submitting.
 - Update documentation whenever your changes affect functionality.
+
+### Code Formatting
+
+We use Prettier to maintain a consistent style across the codebase. Before submitting a pull request, please ensure your changes are formatted:
+
+- **Format Code**: Run `npm run format` to auto-format your changes.
+- **Check Formatting**: Run `npm run check-format` to verify all files are formatted correctly.
 
 ---
 
@@ -173,6 +190,53 @@ You can contribute by:
 - Updating outdated information
 - Adding missing documentation
 - Providing examples where helpful
+
+---
+
+## Architecture Documentation
+
+Every project in Cradle should include an `ARCHITECTURE.md` file inside its own folder. This helps contributors understand how a project is structured before reading any source code.
+
+A standardized template is provided at the repository root:
+
+```text
+ARCHITECTURE_TEMPLATE.md
+```
+
+### How to use the template
+
+1. Copy `ARCHITECTURE_TEMPLATE.md` from the repository root into your project folder.
+2. Rename the copy to `ARCHITECTURE.md`.
+3. Replace every placeholder with details specific to your project.
+4. Delete any section that does not apply to your project.
+5. Remove the notice block at the top of the template before submitting.
+
+### What to document
+
+A good `ARCHITECTURE.md` covers:
+
+- **Overview** — what the project does, in 2–4 sentences
+- **Purpose & Goals** — what problem it solves or what it demonstrates
+- **Folder Structure** — a tree view of all important files with inline descriptions
+- **System / Project Architecture Overview** — how the major parts fit together
+- **Component Breakdown** — the role of each file or module
+- **Data Flow / Execution Flow** — what happens from page load to user interaction
+- **Key Features** — notable features a contributor would notice
+- **Technologies Used** — languages, libraries, and APIs
+- **File Responsibilities** — key functions and variables per file
+- **Design Decisions** — non-obvious choices and the reasoning behind them
+- **Dependencies** — external libraries and how they are loaded
+- **Future Improvements** — ideas without commitments
+- **Known Limitations** — honest current shortcomings
+- **Development Notes** — practical notes for running and modifying the project
+- **References** — external resources that shaped the implementation
+
+### Tips
+
+- Only document what actually exists — do not invent architecture.
+- Keep explanations beginner-friendly. Assume the reader is seeing the project for the first time.
+- Use the arrow-step format for flow diagrams (see existing examples in `projects/games/`).
+- Use tables for component breakdowns and dependency lists.
 
 ---
 
