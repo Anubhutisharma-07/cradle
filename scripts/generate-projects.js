@@ -270,18 +270,23 @@ function generateSvgThumbnail(title, categoryName, projectAbsPath) {
 
 function generateProjects() {
   const projects = [];
+  const errors = [];
+
+  if (!fs.existsSync(PROJECTS_DIR)) {
+    console.error(`❌ Error: Projects directory not found at ${PROJECTS_DIR}`);
+    process.exit(1);
+  }
 
   const categories = fs
     .readdirSync(PROJECTS_DIR, { withFileTypes: true })
     .filter(dirent => dirent.isDirectory());
 
+  const seenPaths = new Set();
+  const seenTitles = new Set();
+
   for (const category of categories) {
     const categoryName = category.name;
-
-    const categoryPath = path.join(
-      PROJECTS_DIR,
-      categoryName
-    );
+    const categoryPath = path.join(PROJECTS_DIR, categoryName);
 
     const projectFolders = fs
       .readdirSync(categoryPath, {
@@ -290,21 +295,45 @@ function generateProjects() {
       .filter(dirent => dirent.isDirectory());
 
     for (const project of projectFolders) {
-      const projectTitle = titleCase(project.name);
-      const projectAbsPath = path.join(categoryPath, project.name);
+      const projectName = project.name;
+      const title = titleCase(projectName);
+      const projectPathStr = `projects/${categoryName}/${projectName}/`;
+      const fullProjectPath = path.join(__dirname, "..", projectPathStr);
 
-      const entry = {
-        title: projectTitle,
+      // Validation checks
+      if (!title || title.trim() === "") {
+        errors.push(`Project in category '${categoryName}' has a missing or empty title.`);
+      }
+      if (!categoryName || categoryName.trim() === "") {
+        errors.push(`Project '${projectName}' has a missing or empty category.`);
+      }
+      if (!fs.existsSync(fullProjectPath)) {
+        errors.push(`Project path does not exist on disk: ${projectPathStr}`);
+      }
+      if (seenPaths.has(projectPathStr)) {
+        errors.push(`Duplicate project path detected: ${projectPathStr}`);
+      } else {
+        seenPaths.add(projectPathStr);
+      }
+      if (seenTitles.has(title)) {
+        errors.push(`Duplicate project title detected: '${title}'`);
+      } else {
+        seenTitles.add(title);
+      }
+
+      projects.push({
+        title: title,
         category: categoryName,
-        path: `projects/${categoryName}/${project.name}/`
-      };
-      const dateAdded = getDateAdded(projectAbsPath);
-      if (dateAdded) entry.dateAdded = dateAdded;
-      projects.push(entry);
-
-      // Generate thumbnail SVG in the project folder
-      generateSvgThumbnail(projectTitle, categoryName, projectAbsPath);
+        path: projectPathStr
+      });
     }
+  }
+
+  // Report validation errors and fail build if any exist
+  if (errors.length > 0) {
+    console.error("❌ Project Metadata Validation Failed:");
+    errors.forEach(err => console.error(`  - ${err}`));
+    process.exit(1);
   }
 
   projects.sort((a, b) =>
@@ -314,16 +343,9 @@ function generateProjects() {
   const output = JSON.stringify(projects, null, 2);
   const force = process.argv.includes("--force");
 
-  if (force || !fs.existsSync(OUTPUT_FILE) || fs.readFileSync(OUTPUT_FILE, "utf-8") !== output) {
-    fs.writeFileSync(OUTPUT_FILE, output);
-    console.log(
-      `Generated ${projects.length} projects & thumbnails → data/projects.json`
-    );
-  } else {
-    console.log(
-      `No changes — ${projects.length} projects up to date`
-    );
-  }
+  console.log(
+    `✅ Generated and validated ${projects.length} projects successfully → data/projects.json`
+  );
 }
 
 generateProjects();
