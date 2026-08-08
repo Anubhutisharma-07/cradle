@@ -1,3 +1,4 @@
+import { NOTES, NOTE_NAMES } from "./waveformEngine.js";
 /**
  * Audio Waveform & Tone Generator — Main Script
  *
@@ -20,40 +21,6 @@ const ctx = canvas.getContext("2d");
 const canvasMeta = document.getElementById("canvasMeta");
 const pianoEl = document.getElementById("piano");
 
-/* ──── Audio State ─────────────────────────────────────────────────── */
-
-let audioCtx = null;
-let oscillator = null;
-let gainNode = null;
-let analyser = null;
-let dataArray = null;
-let isPlaying = false;
-let animId = null;
-let currentWave = "sine";
-let currentFreq = 440;
-let currentVol = 0.6;
-
-/* ──── Note Frequencies (C4–B4, equal temperament, A4 = 440 Hz) ──── */
-
-const NOTES = [
-  { note: "C4", freq: 261.63 },
-  { note: "D4", freq: 293.66 },
-  { note: "E4", freq: 329.63 },
-  { note: "F4", freq: 349.23 },
-  { note: "G4", freq: 392.0 },
-  { note: "A4", freq: 440.0 },
-  { note: "B4", freq: 493.88 },
-];
-
-const NOTE_NAMES = {
-  C4: 261.63,
-  D4: 293.66,
-  E4: 329.63,
-  F4: 349.23,
-  G4: 392.0,
-  A4: 440.0,
-  B4: 493.88,
-};
 
 /* ──── Audio Helpers ──────────────────────────────────────────────── */
 
