@@ -599,13 +599,22 @@
       aria-atomic="true"
     ></div>
 
+    <!-- ===================== Scripts ===================== -->
+    <!--
+      Script load order matters: shapeEngine.js MUST be loaded before
+      script.js because script.js calls ShapeEngine.generateClipPathCSS()
+      at runtime. We use classic scripts (not `defer`) so the browser
+      executes them strictly in document order, guaranteeing ShapeEngine
+      is defined before script.js runs its first render pass.
+    -->
     <!-- Shared BackToHome UI Component -->
     <script
       src="../../../src/components/ui/BackToHome/BackToHome.js"
       defer
     ></script>
-    <!-- Application Core logic -->
+    <!-- Core shape calculation engine — required by script.js -->
     <script src="shapeEngine.js"></script>
+    <!-- Application DOM logic — depends on ShapeEngine being defined -->
     <script src="script.js"></script>
   </body>
 </html>

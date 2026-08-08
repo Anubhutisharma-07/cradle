@@ -2,6 +2,28 @@
    CSS Shape Designer Core Application Engine
    ========================================================================== */
 
+/**
+ * Defensive guard: verify ShapeEngine loaded before script.js.
+ *
+ * index.html loads shapeEngine.js before script.js (classic scripts in
+ * document order), so under normal circumstances ShapeEngine is defined
+ * by the time this file runs. If shapeEngine.js failed to load (e.g.
+ * 404, network error, file renamed), the next call to
+ * ShapeEngine.generateClipPathCSS() would throw a cryptic
+ * ReferenceError deep inside the render loop. We surface a clear
+ * error message instead so the failure is easy to diagnose.
+ *
+ * See: https://github.com/Facelessism/cradle/issues/434
+ */
+if (typeof ShapeEngine === "undefined") {
+  throw new Error(
+    "[css-shape-designer] shapeEngine.js failed to load. " +
+      "Ensure <script src=\"shapeEngine.js\"></script> appears before " +
+      "<script src=\"script.js\"></script> in index.html. " +
+      "See issue #434."
+  );
+}
+
 const state = {
   selectedShape: "polygon", // 'polygon' | 'blob' | 'circle' | 'ellipse'
 
