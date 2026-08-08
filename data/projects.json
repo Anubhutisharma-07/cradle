@@ -66,15 +66,15 @@
     "dateAdded": "2026-06-18T12:02:12+05:30"
   },
   {
-    "title": "Color Contrast Checker",
-    "category": "dev-tools",
-    "path": "projects/dev-tools/color-contrast-checker/"
-  },
-  {
     "title": "CPU Emulator",
     "category": "dev-tools",
     "path": "projects/dev-tools/cpu-emulator/",
     "dateAdded": "2026-06-18T12:02:12+05:30"
+  },
+  {
+    "title": "CSS Clamp Calculator",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/css-clamp-calculator/"
   },
   {
     "title": "CSS Shape Designer",
@@ -85,7 +85,8 @@
   {
     "title": "CSV Data Cleaner",
     "category": "file-tools",
-    "path": "projects/file-tools/csv-data-cleaner/"
+    "path": "projects/file-tools/csv-data-cleaner/",
+    "dateAdded": "2026-08-07T23:13:17+05:30"
   },
   {
     "title": "Dot Game",
