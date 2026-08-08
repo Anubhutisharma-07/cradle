@@ -95,12 +95,16 @@ function inlineWordDiff(oldLine, newLine) {
   return { leftHtml, rightHtml };
 }
 
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = {
+(function (root) {
+  const api = {
     diffArrays,
     toLines,
     toWordTokens,
     escapeHtml,
     inlineWordDiff,
   };
-}
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = api;
+  }
+  root.DiffEngine = api;
+})(typeof self !== "undefined" ? self : this);

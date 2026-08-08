@@ -1,4 +1,4 @@
-import { NOTES, NOTE_NAMES } from "./waveformEngine.js";
+const { NOTES, NOTE_NAMES } = WaveformEngine;
 /**
  * Audio Waveform & Tone Generator — Main Script
  *

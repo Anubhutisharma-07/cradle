@@ -321,3 +321,50 @@ test("validateArchitectureStructure returns an array when run against real proje
     }
   }
 });
+
+// ---------------------------------------------------------------------------
+// Issue #305: Redundant README.md next to ARCHITECTURE.md
+// ---------------------------------------------------------------------------
+
+/**
+ * Returns the absolute paths of every mini project directory under the
+ * repo's projects/ tree. Reused here so this test stays in sync with the
+ * production discovery logic in scripts/validate-architecture-docs.js.
+ */
+function listAllProjectDirectories() {
+  const projectsRoot = path.resolve(__dirname, "..", "projects");
+  const result = [];
+
+  for (const category of fs.readdirSync(projectsRoot, { withFileTypes: true })) {
+    if (!category.isDirectory()) continue;
+    const categoryPath = path.join(projectsRoot, category.name);
+    for (const mini of fs.readdirSync(categoryPath, { withFileTypes: true })) {
+      if (!mini.isDirectory()) continue;
+      result.push(path.join(categoryPath, mini.name));
+    }
+  }
+
+  return result.sort();
+}
+
+test("Issue #305: no mini project has both a README.md and an ARCHITECTURE.md", () => {
+  const repoRoot = path.resolve(__dirname, "..");
+  const offenders = [];
+
+  for (const projectDir of listAllProjectDirectories()) {
+    const hasReadme = fs.existsSync(path.join(projectDir, "README.md"));
+    const hasArchitecture = fs.existsSync(path.join(projectDir, "ARCHITECTURE.md"));
+
+    if (hasReadme && hasArchitecture) {
+      offenders.push(path.relative(repoRoot, projectDir).replace(/\\/g, "/"));
+    }
+  }
+
+  assert.deepEqual(
+    offenders,
+    [],
+    "Mini projects should keep a single ARCHITECTURE.md and not also " +
+      "carry a README.md. Offending projects:\n  " +
+      offenders.join("\n  ")
+  );
+});
