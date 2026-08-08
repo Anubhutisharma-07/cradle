@@ -681,12 +681,7 @@ function todayISO() {
 }
 
 function escapeHtml(str) {
-  if (!str) return "";
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+  return CradleEscape.escapeHtml(str);
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -753,7 +748,7 @@ function initEvents() {
 
   // Keyboard: close modals on Escape
   document.addEventListener("keydown", e => {
-    if (e.key === "Escape") {
+    if (e.key === "Escape" || e.key === "Esc") {
       if (!ui.bookModal.hidden) closeBookModal();
       if (!ui.sessionModal.hidden) closeSessionModal();
       if (!ui.detailModal.hidden) ui.detailModal.hidden = true;

@@ -19,8 +19,46 @@ Or load only what you need:
 
 ```html
 <link rel="stylesheet" href="/src/components/ui/tokens.css" />
+<script src="/src/components/ui/escapeHtml.js"></script>
 <script src="/src/components/ui/ThemeToggle/ThemeToggle.js" defer></script>
 <script src="/src/components/ui/Button/Button.js" defer></script>
+```
+
+---
+
+## Utilities
+
+| Utility    | File                | Global         |
+| ---------- | ------------------- | -------------- |
+| EscapeHtml | `escapeHtml.js`     | `CradleEscape` |
+
+## EscapeHtml
+
+Shared HTML escaping helper, reused across the projects that render
+user-controlled text via `innerHTML`. Escapes `& < > " '` and coerces
+`null`/`undefined` to `""`.
+
+### Usage (HTML)
+
+```html
+<script src="/src/components/ui/escapeHtml.js"></script>
+<script>
+  el.innerHTML = `<p>${CradleEscape.escapeHtml(userInput)}</p>`;
+</script>
+```
+
+### Usage (barrel)
+
+```js
+CradleUI.load("escapeHtml").then(() => {
+  el.innerHTML = CradleEscape.escapeHtml(userInput);
+});
+```
+
+### Usage (Node / tests)
+
+```js
+const { escapeHtml } = require("src/components/ui/escapeHtml.js");
 ```
 
 ---
@@ -311,6 +349,7 @@ src/
 └── components/
     └── ui/
         ├── tokens.css                ← Design tokens (CSS variables)
+        ├── escapeHtml.js             ← Shared HTML escaping utility
         ├── index.js                  ← Barrel: loads all components
         ├── README.md                 ← This file
         ├── Button/

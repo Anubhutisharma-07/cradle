@@ -139,11 +139,7 @@ function renderRows(container, items, storeType) {
 }
 
 function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+  return CradleEscape.escapeHtml(str);
 }
 
 function deleteItem(storeType, key) {

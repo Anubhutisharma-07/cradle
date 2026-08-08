@@ -171,11 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function escapeHtml(str) {
-    return (str || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
+    return CradleEscape.escapeHtml(str);
   }
 
   // Attach Drag & Resize Event Handlers

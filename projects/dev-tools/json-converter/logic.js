@@ -404,13 +404,10 @@ function highlightJSON(text) {
 /*  Helpers                                                           */
 /* ------------------------------------------------------------------ */
 
-function escapeHtml(str) {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
+const escapeHtml =
+  typeof window !== "undefined" && window.CradleEscape
+    ? window.CradleEscape.escapeHtml
+    : require("../../../src/components/ui/escapeHtml.js").escapeHtml;
 
 /* ------------------------------------------------------------------ */
 /*  Module Exports (for Node.js tests)                                */
