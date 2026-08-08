@@ -89,6 +89,7 @@ DOM re-renders from state (no partial patching)
 - Average reading speed (pages/hour) and longest streak
 - Export to JSON / Import from JSON for data portability
 - Reading streak detection: current and longest consecutive-day streaks
+- Keyboard shortcuts: `Escape` to close modal dialogs
 
 ---
 

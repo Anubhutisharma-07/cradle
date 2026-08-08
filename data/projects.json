@@ -66,6 +66,11 @@
     "dateAdded": "2026-06-18T12:02:12+05:30"
   },
   {
+    "title": "Color Contrast Checker",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/color-contrast-checker/"
+  },
+  {
     "title": "CPU Emulator",
     "category": "dev-tools",
     "path": "projects/dev-tools/cpu-emulator/",
@@ -76,6 +81,11 @@
     "category": "editor",
     "path": "projects/editor/css-shape-designer/",
     "dateAdded": "2026-07-25T09:18:49+05:30"
+  },
+  {
+    "title": "CSV Data Cleaner",
+    "category": "file-tools",
+    "path": "projects/file-tools/csv-data-cleaner/"
   },
   {
     "title": "Dot Game",
@@ -212,7 +222,8 @@
   {
     "title": "Text Diff Checker",
     "category": "dev-tools",
-    "path": "projects/dev-tools/text-diff-checker/"
+    "path": "projects/dev-tools/text-diff-checker/",
+    "dateAdded": "2026-08-06T09:32:02+05:30"
   },
   {
     "title": "Time Blocking Planner",

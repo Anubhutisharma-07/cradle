@@ -143,10 +143,11 @@ function titleCase(str) {
     "Css": "CSS",
     "Json": "JSON",
     "Url": "URL",
-    "Html": "HTML"
+    "Html": "HTML",
+    "Csv": "CSV"
   };
 
-  return title.replace(/\b(Ai|Ascii|Cpu|Qr|Css|Json|Url|Html)\b/g, match => acronyms[match]);
+  return title.replace(/\b(Ai|Ascii|Cpu|Qr|Css|Json|Url|Html|Csv)\b/g, match => acronyms[match]);
 }
 
 function wrapText(text, maxChars = 20) {
