@@ -6,7 +6,7 @@ const {
   countTrainedClasses,
   getTrainedClasses,
   formatConfidence,
-} = require("../projects/aiml/image-classifier/classifierEngine.js");
+} = ClassifierEngine;
 const imageUpload = document.getElementById("imageUpload");
 const preview = document.getElementById("preview");
 const uploadContent = document.getElementById("uploadContent");

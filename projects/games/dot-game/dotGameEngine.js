@@ -67,12 +67,17 @@ function getValidMoves(board, player) {
   return validMoves;
 }
 
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = {
+// UMD wrapper — exposes DotGameEngine on window (browser) and module.exports (Node tests).
+(function (root) {
+  const api = {
     createBoard,
     getCapacity,
     hasPieces,
     getRandomMove,
     getValidMoves,
   };
-}
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = api;
+  }
+  root.DotGameEngine = api;
+})(typeof self !== "undefined" ? self : this);
