@@ -88,7 +88,7 @@ function gpsToDecimal(coordinates, reference) {
     decimal *= -1;
   }
 
-  return decimal;
+  return Number(decimal.toFixed(6));
 }
 
 function metadataToJSON(metadata) {
@@ -656,6 +656,24 @@ function parseTIFF(view, tiffStart) {
   return metadata;
 }
 
+function formatExposureTime(value) {
+  const num = Number(value);
+  if (!Number.isFinite(num) || num <= 0) return null;
+  return num >= 1 ? `${Number(num.toFixed(3))} s` : `1/${Math.round(1 / num)} s`;
+}
+
+function formatFNumber(value) {
+  const num = Number(value);
+  if (!Number.isFinite(num) || num <= 0) return null;
+  return `f/${Number(num.toFixed(1))}`;
+}
+
+function formatFocalLength(value) {
+  const num = Number(value);
+  if (!Number.isFinite(num) || num <= 0 || num > 1000) return null;
+  return `${Number(num.toFixed(1))} mm`;
+}
+
 /* --------------------------------
    Metadata Normalization
 -------------------------------- */
@@ -693,68 +711,49 @@ function normalizeMetadata(raw) {
     metadata.software = software;
   }
 
-  if (
-    Number.isFinite(
-      Number(raw.exposureTime)
-    )
-  ) {
-    const value =
-      Number(raw.exposureTime);
+if (
+  Number.isFinite(
+    Number(raw.exposureTime)
+  )
+) {
+  const formatted = formatExposureTime(raw.exposureTime);
+  if (formatted) metadata.exposureTime = formatted;
+}
 
-    if (value > 0) {
-      metadata.exposureTime =
-        value >= 1
-          ? `${Number(value.toFixed(3))} s`
-          : `1/${Math.round(1 / value)} s`;
-    }
-  }
+const rawFNumber = raw.fNumber ?? raw.apertureValue;
+if (
+  Number.isFinite(
+    Number(rawFNumber)
+  )
+) {
+  const formatted = formatFNumber(rawFNumber);
+  if (formatted) metadata.fNumber = formatted;
+}
 
-  if (
-    Number.isFinite(
-      Number(raw.fNumber)
-    )
-  ) {
-    const value =
-      Number(raw.fNumber);
-
-    if (value > 0) {
-      metadata.fNumber =
-        `f/${Number(value.toFixed(1))}`;
-    }
-  }
+if (
+  Number.isFinite(
+    Number(raw.iso)
+  )
+) {
+  const value =
+    Number(raw.iso);
 
   if (
-    Number.isFinite(
-      Number(raw.iso)
-    )
+    value > 0 &&
+    value <= 100000
   ) {
-    const value =
-      Number(raw.iso);
-
-    if (
-      value > 0 &&
-      value <= 100000
-    ) {
-      metadata.iso = value;
-    }
+    metadata.iso = value;
   }
+}
 
-  if (
-    Number.isFinite(
-      Number(raw.focalLength)
-    )
-  ) {
-    const value =
-      Number(raw.focalLength);
-
-    if (
-      value > 0 &&
-      value <= 1000
-    ) {
-      metadata.focalLength =
-        `${Number(value.toFixed(1))} mm`;
-    }
-  }
+if (
+  Number.isFinite(
+    Number(raw.focalLength)
+  )
+) {
+  const formatted = formatFocalLength(raw.focalLength);
+  if (formatted) metadata.focalLength = formatted;
+}
 
   if (
     raw.latitude &&
@@ -837,6 +836,18 @@ function normalizeMetadata(raw) {
     if (orientation) {
       metadata.orientation =
         orientation;
+    }
+  }
+
+  const colorSpaceNames = {
+    1: "sRGB",
+    65535: "Uncalibrated",
+  };
+
+  if (raw.colorSpace !== undefined) {
+    const colorSpace = colorSpaceNames[raw.colorSpace];
+    if (colorSpace) {
+      metadata.colorSpace = colorSpace;
     }
   }
 
@@ -924,6 +935,11 @@ if (
   module.exports = {
     formatFileSize,
     gpsToDecimal,
+    dmsToDecimal: gpsToDecimal,
+    normalizeMetadata,
+    formatExposureTime,
+    formatFNumber,
+    formatFocalLength,
     getMetadataGroups,
     metadataToJSON,
     parse,
