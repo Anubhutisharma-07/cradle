@@ -30,7 +30,7 @@ let boardSize = 8;
 let state = {};
 let matchHistory = [];
 try {
-  matchHistory = JSON.parse(localStorage.getItem("dotGameHistory")) || [];
+  matchHistory = JSON.parse(localStorage.getItem("cradle_dot_game_history") || localStorage.getItem("dotGameHistory")) || [];
 } catch {
   matchHistory = [];
 }
@@ -103,7 +103,7 @@ function renderBoard() {
 }
 
 function initTheme() {
-  const savedTheme = localStorage.getItem("neuralforge_theme") || "dark";
+  const savedTheme = localStorage.getItem("cradle_theme") || localStorage.getItem("neuralforge_theme") || "dark";
   setTheme(savedTheme);
 }
 
@@ -115,12 +115,12 @@ function setTheme(theme) {
     html.classList.add("light-theme");
     if (themeBtn)
       themeBtn.innerHTML = '<i class="fas fa-sun text-orange-400"></i>';
-    localStorage.setItem("neuralforge_theme", "light");
+    localStorage.setItem("cradle_theme", "light");
   } else {
     html.classList.remove("light-theme");
     if (themeBtn)
       themeBtn.innerHTML = '<i class="fas fa-moon text-yellow-400"></i>';
-    localStorage.setItem("neuralforge_theme", "dark");
+    localStorage.setItem("cradle_theme", "dark");
   }
 }
 
@@ -494,7 +494,7 @@ function saveMatchHistory() {
   matchHistory.unshift(historyEntry); // Add to beginning
   if (matchHistory.length > 10) matchHistory.pop(); // Keep last 10
 
-  localStorage.setItem("dotGameHistory", JSON.stringify(matchHistory));
+  localStorage.setItem("cradle_dot_game_history", JSON.stringify(matchHistory));
 }
 
 function renderAnalytics() {
