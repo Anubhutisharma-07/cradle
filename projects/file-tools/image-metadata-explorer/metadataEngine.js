@@ -36,12 +36,154 @@ const TYPE_SIZES = {
   10: 8,
 };
 
+/* --------------------------------
+   Utility Functions
+-------------------------------- */
+
+function formatFileSize(bytes) {
+  if (!Number.isFinite(bytes) || bytes < 0) {
+    return "0 Bytes";
+  }
+
+  if (bytes < 1024) {
+    return `${bytes} Bytes`;
+  }
+
+  if (bytes < 1024 * 1024) {
+    return `${Math.round(bytes / 1024)} KB`;
+  }
+
+  if (bytes < 1024 * 1024 * 1024) {
+    return `${Math.round(bytes / (1024 * 1024))} MB`;
+  }
+
+  return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
+}
+
+function gpsToDecimal(coordinates, reference) {
+  if (!Array.isArray(coordinates) || coordinates.length < 3) {
+    return null;
+  }
+
+  const degrees = Number(coordinates[0]);
+  const minutes = Number(coordinates[1]);
+  const seconds = Number(coordinates[2]);
+
+  if (
+    !Number.isFinite(degrees) ||
+    !Number.isFinite(minutes) ||
+    !Number.isFinite(seconds)
+  ) {
+    return null;
+  }
+
+  let decimal =
+    degrees +
+    minutes / 60 +
+    seconds / 3600;
+
+  const direction = String(reference || "").toUpperCase();
+
+  if (direction === "S" || direction === "W") {
+    decimal *= -1;
+  }
+
+  return decimal;
+}
+
+function metadataToJSON(metadata) {
+  return JSON.stringify(metadata, null, 2);
+}
+
+function getMetadataGroups(metadata) {
+  if (!metadata || typeof metadata !== "object") {
+    return [];
+  }
+
+  const groups = [
+    {
+      title: "Camera",
+      items: [],
+    },
+    {
+      title: "Capture",
+      items: [],
+    },
+    {
+      title: "Location",
+      items: [],
+    },
+    {
+      title: "Other",
+      items: [],
+    },
+  ];
+
+  const cameraKeys = [
+    "make",
+    "model",
+    "lensModel",
+  ];
+
+  const captureKeys = [
+    "dateTaken",
+    "orientation",
+    "iso",
+    "exposureTime",
+    "fNumber",
+    "focalLength",
+  ];
+
+  const locationKeys = [
+    "latitude",
+    "longitude",
+    "altitude",
+  ];
+
+  Object.entries(metadata).forEach(([key, value]) => {
+    if (
+      value === null ||
+      value === undefined ||
+      value === ""
+    ) {
+      return;
+    }
+
+    let group;
+
+    if (cameraKeys.includes(key)) {
+      group = groups[0];
+    } else if (captureKeys.includes(key)) {
+      group = groups[1];
+    } else if (locationKeys.includes(key)) {
+      group = groups[2];
+    } else {
+      group = groups[3];
+    }
+
+    group.items.push({
+      key,
+      value,
+    });
+  });
+
+  return groups.filter(
+    (group) => group.items.length > 0
+  );
+}
+
+/* --------------------------------
+   String Helpers
+-------------------------------- */
+
 function isValidString(value) {
   if (typeof value !== "string") {
     return false;
   }
 
-  const cleaned = value.replace(/[\x00-\x1f\x7f]/g, "").trim();
+  const cleaned = value
+    .replace(/[\x00-\x1f\x7f]/g, "")
+    .trim();
 
   return cleaned.length > 0;
 }
@@ -74,7 +216,6 @@ function readString(view, offset, length) {
       break;
     }
 
-    // Ignore invalid control characters.
     if (char >= 32 && char <= 126) {
       value += String.fromCharCode(char);
     }
@@ -83,7 +224,17 @@ function readString(view, offset, length) {
   return cleanString(value);
 }
 
-function readValue(view, type, count, valueFieldOffset, littleEndian) {
+/* --------------------------------
+   TIFF Value Reader
+-------------------------------- */
+
+function readValue(
+  view,
+  type,
+  count,
+  valueFieldOffset,
+  littleEndian
+) {
   const size = TYPE_SIZES[type];
 
   if (!size || !Number.isFinite(count) || count <= 0) {
@@ -97,7 +248,10 @@ function readValue(view, type, count, valueFieldOffset, littleEndian) {
   if (totalSize <= 4) {
     valueOffset = valueFieldOffset;
   } else {
-    if (valueFieldOffset + 4 > view.byteLength) {
+    if (
+      valueFieldOffset + 4 >
+      view.byteLength
+    ) {
       return null;
     }
 
@@ -109,14 +263,19 @@ function readValue(view, type, count, valueFieldOffset, littleEndian) {
 
   if (
     valueOffset < 0 ||
-    valueOffset + totalSize > view.byteLength
+    valueOffset + totalSize >
+      view.byteLength
   ) {
     return null;
   }
 
   switch (type) {
     case 2:
-      return readString(view, valueOffset, count);
+      return readString(
+        view,
+        valueOffset,
+        count
+      );
 
     case 3: {
       const values = [];
@@ -130,7 +289,9 @@ function readValue(view, type, count, valueFieldOffset, littleEndian) {
         );
       }
 
-      return count === 1 ? values[0] : values;
+      return count === 1
+        ? values[0]
+        : values;
     }
 
     case 4: {
@@ -145,7 +306,9 @@ function readValue(view, type, count, valueFieldOffset, littleEndian) {
         );
       }
 
-      return count === 1 ? values[0] : values;
+      return count === 1
+        ? values[0]
+        : values;
     }
 
     case 5: {
@@ -162,14 +325,16 @@ function readValue(view, type, count, valueFieldOffset, littleEndian) {
           littleEndian
         );
 
-        if (denominator === 0) {
-          values.push(null);
-        } else {
-          values.push(numerator / denominator);
-        }
+        values.push(
+          denominator === 0
+            ? null
+            : numerator / denominator
+        );
       }
 
-      return count === 1 ? values[0] : values;
+      return count === 1
+        ? values[0]
+        : values;
     }
 
     case 1:
@@ -178,11 +343,15 @@ function readValue(view, type, count, valueFieldOffset, littleEndian) {
 
       for (let i = 0; i < count; i++) {
         values.push(
-          view.getUint8(valueOffset + i)
+          view.getUint8(
+            valueOffset + i
+          )
         );
       }
 
-      return count === 1 ? values[0] : values;
+      return count === 1
+        ? values[0]
+        : values;
     }
 
     case 9: {
@@ -197,7 +366,9 @@ function readValue(view, type, count, valueFieldOffset, littleEndian) {
         );
       }
 
-      return count === 1 ? values[0] : values;
+      return count === 1
+        ? values[0]
+        : values;
     }
 
     case 10: {
@@ -221,7 +392,9 @@ function readValue(view, type, count, valueFieldOffset, littleEndian) {
         );
       }
 
-      return count === 1 ? values[0] : values;
+      return count === 1
+        ? values[0]
+        : values;
     }
 
     default:
@@ -229,7 +402,16 @@ function readValue(view, type, count, valueFieldOffset, littleEndian) {
   }
 }
 
-function readIFD(view, offset, littleEndian, tagMap) {
+/* --------------------------------
+   IFD Reader
+-------------------------------- */
+
+function readIFD(
+  view,
+  offset,
+  littleEndian,
+  tagMap
+) {
   const metadata = {};
 
   if (
@@ -247,9 +429,13 @@ function readIFD(view, offset, littleEndian, tagMap) {
   const entriesStart = offset + 2;
 
   for (let i = 0; i < entryCount; i++) {
-    const entryOffset = entriesStart + i * 12;
+    const entryOffset =
+      entriesStart + i * 12;
 
-    if (entryOffset + 12 > view.byteLength) {
+    if (
+      entryOffset + 12 >
+      view.byteLength
+    ) {
       break;
     }
 
@@ -290,12 +476,15 @@ function readIFD(view, offset, littleEndian, tagMap) {
   return metadata;
 }
 
+/* --------------------------------
+   JPEG EXIF Detection
+-------------------------------- */
+
 function findExifSegment(view) {
   if (view.byteLength < 4) {
     return -1;
   }
 
-  // JPEG signature.
   if (
     view.getUint8(0) !== 0xff ||
     view.getUint8(1) !== 0xd8
@@ -305,13 +494,19 @@ function findExifSegment(view) {
 
   let offset = 2;
 
-  while (offset + 4 <= view.byteLength) {
-    if (view.getUint8(offset) !== 0xff) {
+  while (
+    offset + 4 <=
+    view.byteLength
+  ) {
+    if (
+      view.getUint8(offset) !== 0xff
+    ) {
       offset++;
       continue;
     }
 
-    const marker = view.getUint8(offset + 1);
+    const marker =
+      view.getUint8(offset + 1);
 
     if (marker === 0xda) {
       break;
@@ -325,39 +520,56 @@ function findExifSegment(view) {
       continue;
     }
 
-    const segmentLength = view.getUint16(
-      offset + 2,
-      false
-    );
+    const segmentLength =
+      view.getUint16(
+        offset + 2,
+        false
+      );
 
     if (segmentLength < 2) {
       break;
     }
 
     if (marker === 0xe1) {
-      const exifStart = offset + 4;
+      const exifStart =
+        offset + 4;
 
       if (
-        exifStart + 6 <= view.byteLength &&
-        view.getUint8(exifStart) === 0x45 &&
-        view.getUint8(exifStart + 1) === 0x78 &&
-        view.getUint8(exifStart + 2) === 0x69 &&
-        view.getUint8(exifStart + 3) === 0x66 &&
-        view.getUint8(exifStart + 4) === 0x00 &&
-        view.getUint8(exifStart + 5) === 0x00
+        exifStart + 6 <=
+          view.byteLength &&
+        view.getUint8(exifStart) ===
+          0x45 &&
+        view.getUint8(exifStart + 1) ===
+          0x78 &&
+        view.getUint8(exifStart + 2) ===
+          0x69 &&
+        view.getUint8(exifStart + 3) ===
+          0x66 &&
+        view.getUint8(exifStart + 4) ===
+          0x00 &&
+        view.getUint8(exifStart + 5) ===
+          0x00
       ) {
         return exifStart + 6;
       }
     }
 
-    offset += 2 + segmentLength;
+    offset +=
+      2 + segmentLength;
   }
 
   return -1;
 }
 
+/* --------------------------------
+   TIFF Parser
+-------------------------------- */
+
 function parseTIFF(view, tiffStart) {
-  if (tiffStart + 8 > view.byteLength) {
+  if (
+    tiffStart + 8 >
+    view.byteLength
+  ) {
     return {};
   }
 
@@ -386,10 +598,11 @@ function parseTIFF(view, tiffStart) {
     return {};
   }
 
-  const firstIFDOffset = view.getUint32(
-    tiffStart + 4,
-    littleEndian
-  );
+  const firstIFDOffset =
+    view.getUint32(
+      tiffStart + 4,
+      littleEndian
+    );
 
   const ifdOffset =
     tiffStart + firstIFDOffset;
@@ -409,91 +622,84 @@ function parseTIFF(view, tiffStart) {
   );
 
   if (metadata.exifOffset) {
-    const exifMetadata = readIFD(
-      view,
-      tiffStart + metadata.exifOffset,
-      littleEndian,
-      TAGS
-    );
+    const exifMetadata =
+      readIFD(
+        view,
+        tiffStart +
+          metadata.exifOffset,
+        littleEndian,
+        TAGS
+      );
 
-    Object.assign(metadata, exifMetadata);
+    Object.assign(
+      metadata,
+      exifMetadata
+    );
   }
 
   if (metadata.gpsOffset) {
-    const gpsMetadata = readIFD(
-      view,
-      tiffStart + metadata.gpsOffset,
-      littleEndian,
-      GPS_TAGS
-    );
+    const gpsMetadata =
+      readIFD(
+        view,
+        tiffStart +
+          metadata.gpsOffset,
+        littleEndian,
+        GPS_TAGS
+      );
 
-    Object.assign(metadata, gpsMetadata);
+    Object.assign(
+      metadata,
+      gpsMetadata
+    );
   }
 
   return metadata;
 }
 
-function dmsToDecimal(values, reference) {
-  if (!Array.isArray(values) || values.length < 3) {
-    return null;
-  }
-
-  const degrees = Number(values[0]);
-  const minutes = Number(values[1]);
-  const seconds = Number(values[2]);
-
-  if (
-    !Number.isFinite(degrees) ||
-    !Number.isFinite(minutes) ||
-    !Number.isFinite(seconds)
-  ) {
-    return null;
-  }
-
-  if (
-    minutes < 0 ||
-    minutes >= 60 ||
-    seconds < 0 ||
-    seconds >= 60
-  ) {
-    return null;
-  }
-
-  let decimal =
-    degrees +
-    minutes / 60 +
-    seconds / 3600;
-
-  const direction =
-    String(reference || "").toUpperCase();
-
-  if (direction === "S" || direction === "W") {
-    decimal *= -1;
-  }
-
-  return Number(decimal.toFixed(6));
-}
+/* --------------------------------
+   Metadata Normalization
+-------------------------------- */
 
 function normalizeMetadata(raw) {
   const metadata = {};
 
-  if (!raw || typeof raw !== "object") {
+  if (
+    !raw ||
+    typeof raw !== "object"
+  ) {
     return metadata;
   }
 
   const make = cleanString(raw.make);
   const model = cleanString(raw.model);
-  const lensModel = cleanString(raw.lensModel);
-  const software = cleanString(raw.software);
+  const lensModel =
+    cleanString(raw.lensModel);
+  const software =
+    cleanString(raw.software);
 
-  if (make) metadata.make = make;
-  if (model) metadata.model = model;
-  if (lensModel) metadata.lensModel = lensModel;
-  if (software) metadata.software = software;
+  if (make) {
+    metadata.make = make;
+  }
 
-  // Exposure time
-  if (Number.isFinite(Number(raw.exposureTime))) {
-    const value = Number(raw.exposureTime);
+  if (model) {
+    metadata.model = model;
+  }
+
+  if (lensModel) {
+    metadata.lensModel = lensModel;
+  }
+
+  if (software) {
+    metadata.software = software;
+  }
+
+  if (
+    Number.isFinite(
+      Number(raw.exposureTime)
+    )
+  ) {
+    const value =
+      Number(raw.exposureTime);
 
     if (value > 0) {
       metadata.exposureTime =
@@ -503,9 +709,13 @@ function normalizeMetadata(raw) {
     }
   }
 
-  // F-number
-  if (Number.isFinite(Number(raw.fNumber))) {
-    const value = Number(raw.fNumber);
+  if (
+    Number.isFinite(
+      Number(raw.fNumber)
+    )
+  ) {
+    const value =
+      Number(raw.fNumber);
 
     if (value > 0) {
       metadata.fNumber =
@@ -513,54 +723,82 @@ function normalizeMetadata(raw) {
     }
   }
 
-  // ISO
-  if (Number.isFinite(Number(raw.iso))) {
-    const value = Number(raw.iso);
+  if (
+    Number.isFinite(
+      Number(raw.iso)
+    )
+  ) {
+    const value =
+      Number(raw.iso);
 
-    if (value > 0 && value <= 100000) {
+    if (
+      value > 0 &&
+      value <= 100000
+    ) {
       metadata.iso = value;
     }
   }
 
-  // Focal length
-  if (Number.isFinite(Number(raw.focalLength))) {
-    const value = Number(raw.focalLength);
+  if (
+    Number.isFinite(
+      Number(raw.focalLength)
+    )
+  ) {
+    const value =
+      Number(raw.focalLength);
 
-    // Ignore clearly invalid values.
-    if (value > 0 && value <= 1000) {
+    if (
+      value > 0 &&
+      value <= 1000
+    ) {
       metadata.focalLength =
         `${Number(value.toFixed(1))} mm`;
     }
   }
 
-  // GPS
-  if (raw.latitude && raw.latitudeRef) {
-    const latitude = dmsToDecimal(
-      raw.latitude,
-      raw.latitudeRef
-    );
+  if (
+    raw.latitude &&
+    raw.latitudeRef
+  ) {
+    const latitude =
+      gpsToDecimal(
+        raw.latitude,
+        raw.latitudeRef
+      );
 
     if (latitude !== null) {
-      metadata.latitude = latitude;
+      metadata.latitude =
+        latitude;
     }
   }
 
-  if (raw.longitude && raw.longitudeRef) {
-    const longitude = dmsToDecimal(
-      raw.longitude,
-      raw.longitudeRef
-    );
+  if (
+    raw.longitude &&
+    raw.longitudeRef
+  ) {
+    const longitude =
+      gpsToDecimal(
+        raw.longitude,
+        raw.longitudeRef
+      );
 
     if (longitude !== null) {
-      metadata.longitude = longitude;
+      metadata.longitude =
+        longitude;
     }
   }
 
-  // Altitude
-  if (Number.isFinite(Number(raw.altitude))) {
-    let altitude = Number(raw.altitude);
+  if (
+    Number.isFinite(
+      Number(raw.altitude)
+    )
+  ) {
+    let altitude =
+      Number(raw.altitude);
 
-    if (Number(raw.altitudeRef) === 1) {
+    if (
+      Number(raw.altitudeRef) === 1
+    ) {
       altitude *= -1;
     }
 
@@ -568,16 +806,15 @@ function normalizeMetadata(raw) {
       `${Number(altitude.toFixed(1))} m`;
   }
 
-  // Date
   const dateTaken =
     cleanString(raw.dateTaken) ||
     cleanString(raw.dateTime);
 
   if (dateTaken) {
-    metadata.dateTaken = dateTaken;
+    metadata.dateTaken =
+      dateTaken;
   }
 
-  // Orientation
   const orientationNames = {
     1: "Normal",
     2: "Mirrored horizontally",
@@ -589,52 +826,106 @@ function normalizeMetadata(raw) {
     8: "Rotated 270° clockwise",
   };
 
-  if (raw.orientation !== undefined) {
+  if (
+    raw.orientation !== undefined
+  ) {
     const orientation =
-      orientationNames[raw.orientation];
+      orientationNames[
+        raw.orientation
+      ];
 
     if (orientation) {
-      metadata.orientation = orientation;
+      metadata.orientation =
+        orientation;
     }
   }
 
   return metadata;
 }
 
+/* --------------------------------
+   Main Parser
+-------------------------------- */
+
 async function parse(file) {
   if (!file) {
-    throw new Error("No image file provided.");
+    throw new Error(
+      "No image file provided."
+    );
   }
 
-  if (typeof file.arrayBuffer !== "function") {
-    throw new Error("Invalid image file.");
+  if (
+    typeof file.arrayBuffer !==
+    "function"
+  ) {
+    throw new Error(
+      "Invalid image file."
+    );
   }
 
-  const buffer = await file.arrayBuffer();
+  const buffer =
+    await file.arrayBuffer();
 
-  if (!buffer || buffer.byteLength === 0) {
-    throw new Error("The image file is empty.");
+  if (
+    !buffer ||
+    buffer.byteLength === 0
+  ) {
+    throw new Error(
+      "The image file is empty."
+    );
   }
 
-  const view = new DataView(buffer);
+  const view =
+    new DataView(buffer);
 
-  const tiffStart = findExifSegment(view);
+  const tiffStart =
+    findExifSegment(view);
 
   if (tiffStart === -1) {
     return {};
   }
 
-  const rawMetadata = parseTIFF(
-    view,
-    tiffStart
-  );
+  const rawMetadata =
+    parseTIFF(
+      view,
+      tiffStart
+    );
 
-  return normalizeMetadata(rawMetadata);
+  return normalizeMetadata(
+    rawMetadata
+  );
 }
 
-module.exports = {
+/* --------------------------------
+   Browser API
+-------------------------------- */
+
+const ImageMetadataEngine = {
+  parse,
   formatFileSize,
   gpsToDecimal,
   getMetadataGroups,
   metadataToJSON,
 };
+
+if (typeof globalThis !== "undefined") {
+  globalThis.ImageMetadataEngine =
+    ImageMetadataEngine;
+}
+
+/* --------------------------------
+   Node.js API
+-------------------------------- */
+
+if (
+  typeof module !== "undefined" &&
+  module.exports
+) {
+  module.exports = {
+    formatFileSize,
+    gpsToDecimal,
+    getMetadataGroups,
+    metadataToJSON,
+    parse,
+  };
+}
