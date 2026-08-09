@@ -9,7 +9,14 @@ function saveGameState(size, state) {
 function loadGameState(size) {
   if (!size) return null;
   const item = localStorage.getItem(STATE_KEY_PREFIX + size);
-  return item ? JSON.parse(item) : null;
+
+  if (!item) return null;
+
+  try {
+    return JSON.parse(item);
+  } catch {
+    return null;
+  }
 }
 
 function clearGameState(size) {
