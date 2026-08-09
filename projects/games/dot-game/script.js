@@ -28,8 +28,12 @@ document.getElementById("difficultyGroup").style.display =
 
 let boardSize = 8;
 let state = {};
-let matchHistory = JSON.parse(localStorage.getItem("dotGameHistory")) || [];
-
+let matchHistory = [];
+try {
+  matchHistory = JSON.parse(localStorage.getItem("dotGameHistory")) || [];
+} catch {
+  matchHistory = [];
+}
 function updateGridValue(size) {
   gridValueElement.textContent = `${size} × ${size}`;
 }
