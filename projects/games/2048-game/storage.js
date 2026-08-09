@@ -1,5 +1,7 @@
-const STATE_KEY_PREFIX = "2048_game_state_";
-const BEST_KEY_PREFIX = "2048_best_score_";
+const STATE_KEY_PREFIX = "cradle_2048_game_state_";
+const BEST_KEY_PREFIX = "cradle_2048_best_score_";
+const LEGACY_STATE_KEY_PREFIX = "2048_game_state_";
+const LEGACY_BEST_KEY_PREFIX = "2048_best_score_";
 
 function saveGameState(size, state) {
   if (!size) return;
@@ -8,7 +10,7 @@ function saveGameState(size, state) {
 
 function loadGameState(size) {
   if (!size) return null;
-  const item = localStorage.getItem(STATE_KEY_PREFIX + size);
+  const item = localStorage.getItem(STATE_KEY_PREFIX + size) || localStorage.getItem(LEGACY_STATE_KEY_PREFIX + size);
 
   if (!item) return null;
 
@@ -22,6 +24,7 @@ function loadGameState(size) {
 function clearGameState(size) {
   if (!size) return;
   localStorage.removeItem(STATE_KEY_PREFIX + size);
+  localStorage.removeItem(LEGACY_STATE_KEY_PREFIX + size);
 }
 
 function saveBestScore(size, score) {
@@ -36,7 +39,7 @@ function saveBestScore(size, score) {
 
 function getBestScore(size) {
   if (!size) return 0;
-  const val = localStorage.getItem(BEST_KEY_PREFIX + size);
+  const val = localStorage.getItem(BEST_KEY_PREFIX + size) || localStorage.getItem(LEGACY_BEST_KEY_PREFIX + size);
   return val ? parseInt(val, 10) : 0;
 }
 

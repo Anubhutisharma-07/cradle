@@ -1,6 +1,7 @@
 // Cannon Storage System for persisting high scores and defense streaks
 
-const STORAGE_KEY = "cannonShootingStats";
+const STORAGE_KEY = "cradle_cannon_stats";
+const LEGACY_STORAGE_KEY = "cannonShootingStats";
 
 function getInitialStats() {
   return {
@@ -16,7 +17,7 @@ function getInitialStats() {
 function loadStats() {
   if (typeof localStorage === "undefined") return getInitialStats();
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
     if (!raw) return getInitialStats();
     return { ...getInitialStats(), ...JSON.parse(raw) };
   } catch (e) {
