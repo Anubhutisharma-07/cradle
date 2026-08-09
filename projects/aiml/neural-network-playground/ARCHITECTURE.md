@@ -167,13 +167,11 @@ Example:
 - **UMD wrapper in logic.js** — allows the same file to be loaded in a browser
   via a script tag and imported in Node.js for unit testing.
 - **No framework** — kept vanilla to minimize the learning curve for contributors
-  and avoid a build step.
--->
+## Design Decisions
 
-<!-- - Decision 1 and the reason for it -->
-<!-- - Decision 2 and the reason for it -->
+- **Engine Modules vs. Inline Logic Rationale**: Core mathematical operations, neural network forward pass, backpropagation, and weight updates are isolated in `nnEngine.js` with UMD exports. This decouples business logic from DOM state, allowing headless unit testing via `node --test` while `script.js` handles interactive Canvas rendering and UI event listeners.
 
-<!-- --- -->
+---
 
 ## Dependencies
 

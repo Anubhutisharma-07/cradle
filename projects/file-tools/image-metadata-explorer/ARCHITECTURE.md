@@ -44,3 +44,9 @@ Raw image bytes
 EXIF parser reads those bytes
    ↓
 Metadata is separated into values
+
+---
+
+## Design Decisions
+
+- **Engine Modules vs. Inline Logic Rationale**: EXIF parsing, binary ArrayBuffer TIFF parsing, GPS conversion, and data normalization are isolated in `metadataEngine.js` with UMD exports. This separates core binary parsing from DOM manipulation, allowing `metadataEngine.js` to be unit-tested headlessly via `node --test` while `script.js` manages drag-and-drop file uploads, image previews, and UI rendering.
