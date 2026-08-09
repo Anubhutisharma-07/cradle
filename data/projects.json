@@ -66,6 +66,12 @@
     "dateAdded": "2026-06-18T12:02:12+05:30"
   },
   {
+    "title": "Color Contrast Checker",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/color-contrast-checker/",
+    "dateAdded": "2026-08-07T23:15:16+05:30"
+  },
+  {
     "title": "CPU Emulator",
     "category": "dev-tools",
     "path": "projects/dev-tools/cpu-emulator/",
@@ -74,7 +80,8 @@
   {
     "title": "CSS Clamp Calculator",
     "category": "dev-tools",
-    "path": "projects/dev-tools/css-clamp-calculator/"
+    "path": "projects/dev-tools/css-clamp-calculator/",
+    "dateAdded": "2026-08-07T23:54:44+05:30"
   },
   {
     "title": "CSS Shape Designer",
