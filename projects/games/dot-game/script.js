@@ -199,6 +199,49 @@ function getBestMove(board, player, difficulty = "medium") {
   ];
 }
 
+function countPlayerCells(player) {
+  let count = 0;
+  for (let row = 0; row < boardSize; row++) {
+    for (let col = 0; col < boardSize; col++) {
+      if (state.board[row][col].owner === player) count++;
+    }
+  }
+  return count;
+}
+
+// Advance to the next player. Once every player has had an opening move,
+// skip any player who has been eliminated (owns no cells).
+function nextTurn() {
+  const total = state.players.length;
+  const openingDone = state.analytics.moves > total;
+  for (let step = 1; step <= total; step++) {
+    const idx = (state.currentPlayer + step) % total;
+    if (!openingDone || countPlayerCells(state.players[idx]) > 0) {
+      state.currentPlayer = idx;
+      return;
+    }
+  }
+  state.currentPlayer = (state.currentPlayer + 1) % total;
+}
+
+// Play the AI's move in Player-vs-AI mode. Setting isAiTurnProcessing lets
+// addDot's "human click during AI turn" guard allow this move through.
+function handleAiTurn() {
+  if (!state.isActive) return;
+  if (state.gameMode !== "pvai") return;
+  if (state.players[state.currentPlayer] === COLORS[0]) return;
+
+  state.isAiTurnProcessing = true;
+  const move = getBestMove(
+    state.board,
+    state.players[state.currentPlayer],
+    difficultyElement.value,
+  );
+  state.isAiTurnProcessing = false;
+
+  if (move) addDot(move.row, move.col);
+}
+
 function addDot(row, col) {
   if (!state.isActive) return;
 
