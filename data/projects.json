@@ -214,5 +214,10 @@
     "title": "URL Parser",
     "category": "dev-tools",
     "path": "projects/dev-tools/url-parser/"
+  },
+  {
+    "title": "Sudoku Solver",
+    "category": "games",
+    "path": "projects/games/sudoku-solver/"
   }
 ]

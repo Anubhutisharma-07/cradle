@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+        content="Interactive Sudoku Solver and Generator with multiple difficulty levels, hints, validation, and automatic solving.">
+
+    <title>Sudoku Solver & Generator</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="app">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="title-area">
+                <span class="icon">🧩</span>
+
+                <div>
+                    <h1>Sudoku Solver</h1>
+                    <p>Generate, solve, and master Sudoku puzzles.</p>
+                </div>
+            </div>
+
+            <div class="status-badge" id="statusBadge">
+                Ready
+            </div>
+        </header>
+
+
+        <!-- Controls -->
+        <section class="controls-card">
+
+            <div class="control-group">
+                <label for="difficulty">Difficulty</label>
+
+                <select id="difficulty">
+                    <option value="easy">Easy</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+
+            <div class="button-group">
+
+                <button class="btn primary" id="generateBtn">
+                    ✨ New Puzzle
+                </button>
+
+                <button class="btn secondary" id="solveBtn">
+                    🧠 Solve
+                </button>
+
+                <button class="btn secondary" id="hintBtn">
+                    💡 Hint
+                </button>
+
+                <button class="btn danger" id="resetBtn">
+                    ↻ Reset
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- Game Information -->
+        <section class="game-info">
+
+            <div class="info-item">
+                <span class="info-label">Difficulty</span>
+                <strong id="difficultyDisplay">Medium</strong>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Filled</span>
+                <strong>
+                    <span id="filledCount">0</span>/81
+                </strong>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Hints</span>
+                <strong id="hintCount">3</strong>
+            </div>
+
+        </section>
+
+
+        <!-- Sudoku Board -->
+        <section class="board-wrapper">
+
+            <div id="sudokuBoard" class="sudoku-board" aria-label="Sudoku board"></div>
+
+        </section>
+
+
+        <!-- Message -->
+        <div id="message" class="message" role="status" aria-live="polite">
+            Generate a puzzle to start playing.
+        </div>
+
+
+        <!-- Instructions -->
+        <section class="instructions">
+
+            <h2>How to Play</h2>
+
+            <div class="instruction-grid">
+
+                <div class="instruction">
+                    <span>1</span>
+                    <p>Select a difficulty and generate a puzzle.</p>
+                </div>
+
+                <div class="instruction">
+                    <span>2</span>
+                    <p>Enter numbers from 1 to 9 into empty cells.</p>
+                </div>
+
+                <div class="instruction">
+                    <span>3</span>
+                    <p>Use hints or solve the puzzle automatically.</p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Footer -->
+        <footer>
+            <p>
+                Sudoku Solver & Generator
+            </p>
+        </footer>
+
+    </main>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
