@@ -233,7 +233,7 @@ function renderPreview(invoice, totals) {
 
 function renderLogo(invoice) {
   if (invoice.logo) {
-    return `<img class="logo-preview" src="${invoice.logo}" alt="Business logo" />`;
+    return `<img class="logo-preview" src="${escapeHtml(invoice.logo)}" alt="Business logo" />`;
   }
 
   const initials = (invoice.businessName || "IN")
