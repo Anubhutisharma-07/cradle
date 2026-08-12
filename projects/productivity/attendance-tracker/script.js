@@ -54,9 +54,9 @@ function render() {
     inputTotal.type = "number";
     inputTotal.value = s.total;
     inputTotal.style.width = "50px";
-    inputTotal.onchange = function () {
-      updateTotal(i, this.value);
-    };
+    inputTotal.addEventListener("change", () =>
+      updateTotal(i, inputTotal.value)
+    );
     tdTotal.appendChild(inputTotal);
     tr.appendChild(tdTotal);
 
@@ -68,9 +68,7 @@ function render() {
     const btnPDec = document.createElement("button");
     btnPDec.className = "btn btn-dec";
     btnPDec.textContent = "-";
-    btnPDec.onclick = function () {
-      update(i, "p", -1);
-    };
+    btnPDec.addEventListener("click", () => update(i, "p", -1));
 
     const spanP = document.createElement("span");
     spanP.textContent = s.p;
@@ -78,9 +76,7 @@ function render() {
     const btnPInc = document.createElement("button");
     btnPInc.className = "btn btn-inc";
     btnPInc.textContent = "+";
-    btnPInc.onclick = function () {
-      update(i, "p", 1);
-    };
+    btnPInc.addEventListener("click", () => update(i, "p", 1));
 
     divPGroup.appendChild(btnPDec);
     divPGroup.appendChild(spanP);
@@ -96,9 +92,7 @@ function render() {
     const btnADec = document.createElement("button");
     btnADec.className = "btn btn-dec";
     btnADec.textContent = "-";
-    btnADec.onclick = function () {
-      update(i, "a", -1);
-    };
+    btnADec.addEventListener("click", () => update(i, "a", -1));
 
     const spanA = document.createElement("span");
     spanA.textContent = s.a;
@@ -106,9 +100,7 @@ function render() {
     const btnAInc = document.createElement("button");
     btnAInc.className = "btn btn-inc";
     btnAInc.textContent = "+";
-    btnAInc.onclick = function () {
-      update(i, "a", 1);
-    };
+    btnAInc.addEventListener("click", () => update(i, "a", 1));
 
     divAGroup.appendChild(btnADec);
     divAGroup.appendChild(spanA);
@@ -140,9 +132,7 @@ function render() {
     btnRemove.style.color = "#94a3b8";
     btnRemove.style.background = "transparent";
     btnRemove.innerHTML = "&times;";
-    btnRemove.onclick = function () {
-      removeSub(i);
-    };
+    btnRemove.addEventListener("click", () => removeSub(i));
     tdRemove.appendChild(btnRemove);
     tr.appendChild(tdRemove);
 
@@ -283,12 +273,12 @@ function closeModal() {
   document.getElementById("newSubjectForm").reset();
 }
 
-window.onclick = function (event) {
+window.addEventListener("click", event => {
   let modal = document.getElementById("addModal");
   if (event.target === modal) {
     closeModal();
   }
-};
+});
 
 function addSubject(event) {
   event.preventDefault();
@@ -356,5 +346,25 @@ function clearHistory() {
   data.logs = [];
   render();
 }
+
+document
+  .querySelector(".btn-export-action")
+  .addEventListener("click", exportCSV);
+document
+  .querySelector(".btn-import-action")
+  .addEventListener("click", triggerImport);
+document
+  .getElementById("csvFileInput")
+  .addEventListener("change", importCSV);
+document
+  .getElementById("btn-new-subject")
+  .addEventListener("click", openModal);
+document
+  .querySelector(".btn-clear-history-action")
+  .addEventListener("click", clearHistory);
+document.querySelector(".close-btn").addEventListener("click", closeModal);
+document
+  .getElementById("newSubjectForm")
+  .addEventListener("submit", addSubject);
 
 render();
