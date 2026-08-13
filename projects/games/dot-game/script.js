@@ -99,7 +99,7 @@ function renderBoard() {
 }
 
 function initTheme() {
-  const savedTheme = localStorage.getItem("neuralforge_theme") || "dark";
+  const savedTheme = localStorage.getItem("theme") || "dark";
   setTheme(savedTheme);
 }
 
@@ -111,12 +111,12 @@ function setTheme(theme) {
     html.classList.add("light-theme");
     if (themeBtn)
       themeBtn.innerHTML = '<i class="fas fa-sun text-orange-400"></i>';
-    localStorage.setItem("neuralforge_theme", "light");
+    localStorage.setItem("theme", "light");
   } else {
     html.classList.remove("light-theme");
     if (themeBtn)
       themeBtn.innerHTML = '<i class="fas fa-moon text-yellow-400"></i>';
-    localStorage.setItem("neuralforge_theme", "dark");
+    localStorage.setItem("theme", "dark");
   }
 }
 
