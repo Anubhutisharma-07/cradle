@@ -15,7 +15,8 @@
     "dev": "npm run generate && npx live-server",
     "build": "npm run generate",
     "format": "prettier --write .",
-    "check-format": "prettier --check ."
+    "check-format": "prettier --check .",
+    "validate:project-order": "node scripts/validate-project-order.js"
   },
   "devDependencies": {
     "prettier": "^3.0.0"
@@ -26,5 +27,5 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "MIT"
 }

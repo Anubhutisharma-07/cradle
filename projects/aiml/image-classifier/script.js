@@ -138,20 +138,31 @@ function renderClasses() {
     card.innerHTML = `
             <div class="class-header">
                 <div class="class-title">${c.name} <span class="class-count" id="count-${c.id}">${c.count} images</span></div>
-                <button class="remove-class-btn" onclick="removeClass('${c.id}')">✕</button>
+                <button class="remove-class-btn">✕</button>
             </div>
             <div class="class-images" id="images-${c.id}">
                 <label class="add-image-btn">
                     +
-                    <input type="file" accept="image/*" hidden onchange="addImageToClass(event, '${c.id}')" multiple>
+                    <input type="file" accept="image/*" hidden multiple>
                 </label>
             </div>
         `;
+
+    card.querySelector(".remove-class-btn").addEventListener("click", () => {
+      removeClass(c.id);
+    });
+
+    card
+      .querySelector('input[type="file"]')
+      .addEventListener("change", event => {
+        addImageToClass(event, c.id);
+      });
+
     classesContainer.appendChild(card);
   });
 }
 
-window.removeClass = id => {
+function removeClass(id) {
   customClasses = customClasses.filter(c => c.id !== id);
   if (knn.getNumClasses() > 0) {
     try {
@@ -160,9 +171,9 @@ window.removeClass = id => {
   }
   renderClasses();
   updateCustomPredictState();
-};
+}
 
-window.addImageToClass = async (event, id) => {
+async function addImageToClass(event, id) {
   if (!isModelLoaded) return alert("AI Model still loading...");
   const files = event.target.files;
   if (!files.length) return;
@@ -176,7 +187,7 @@ window.addImageToClass = async (event, id) => {
     img.src = URL.createObjectURL(file);
 
     await new Promise(resolve => {
-      img.onload = () => {
+      img.addEventListener("load", () => {
         const activation = model.infer(img, true);
         knn.addExample(activation, id);
 
@@ -192,7 +203,7 @@ window.addImageToClass = async (event, id) => {
         // Add before the "+" button
         imagesContainer.insertBefore(wrapper, addBtn);
         resolve();
-      };
+      });
     });
   }
 
