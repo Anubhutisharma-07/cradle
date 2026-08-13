@@ -363,3 +363,30 @@ src/
         └── BackToHome/
             └── BackToHome.js
 ```
+
+---
+
+## Shared UI Usage Policy
+
+Mini-projects should use the shared components in `src/components/ui/` when an existing component provides the UI pattern they need. This keeps common interactions and styling consistent across projects.
+
+### When to use shared UI components
+
+- **Use an existing component** when it matches the required UI pattern, such as buttons, cards, navigation, theme toggles, or the back-to-home control.
+- **Use the shared design tokens** from `tokens.css` when styling shared UI so projects remain visually consistent.
+- **Load only the components you need** when a project does not require the full UI bundle.
+- **Prefer extending or improving a shared component** when the same UI requirement is likely to be useful across multiple projects.
+
+### When a project-specific component is appropriate
+
+A mini-project may keep its own UI implementation when:
+
+- No existing shared component matches the required behaviour or design.
+- The UI is specific to the project's functionality and is unlikely to be reused.
+- Adopting a shared component would add unnecessary complexity.
+
+When introducing a reusable UI pattern that could benefit multiple projects, consider adding it to `src/components/ui/` instead of duplicating the implementation.
+
+### Contributor guideline
+
+Before adding a new shared-style component to a mini-project, check `src/components/ui/` first. Reuse an existing component when practical, and keep project-specific UI local when there is no suitable shared component.
