@@ -103,7 +103,6 @@ function renderBoard() {
 }
 
 function initTheme() {
-  const savedTheme = localStorage.getItem("theme") || "dark";
   const savedTheme = localStorage.getItem("cradle_theme") || localStorage.getItem("neuralforge_theme") || "dark";
   setTheme(savedTheme);
 }
