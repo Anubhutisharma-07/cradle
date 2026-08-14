@@ -60,12 +60,6 @@
     "path": "projects/dev-tools/color-contrast-checker/"
   },
   {
-    "title": "Color Contrast Checker",
-    "category": "dev-tools",
-    "path": "projects/dev-tools/color-contrast-checker/",
-    "dateAdded": "2026-08-07T23:15:16+05:30"
-  },
-  {
     "title": "CPU Emulator",
     "category": "dev-tools",
     "path": "projects/dev-tools/cpu-emulator/"
@@ -214,5 +208,10 @@
     "title": "URL Parser",
     "category": "dev-tools",
     "path": "projects/dev-tools/url-parser/"
+  },
+  {
+    "title": "Violin",
+    "category": "instruments",
+    "path": "projects/instruments/violin/"
   }
 ]
