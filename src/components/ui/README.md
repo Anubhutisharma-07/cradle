@@ -31,6 +31,67 @@ Or load only what you need:
 | Utility    | File                | Global         |
 | ---------- | ------------------- | -------------- |
 | EscapeHtml | `escapeHtml.js`     | `CradleEscape` |
+| Storage    | `storage.js`        | `CradleStorage` |
+
+## Storage
+
+Shared localStorage helper for safe reads, writes, JSON parsing, and
+consistent key handling. Replaces the per-project storage code that each
+reinvented availability checks, `try/catch` blocks, and key prefixes.
+
+Features:
+
+- Safe availability detection (private mode / disabled storage) with an
+  in-memory fallback so calls never throw in Node, SSR, or restricted browsers.
+- `get` / `set` JSON round-tripping; `getRaw` / `setRaw` for plain strings.
+- `namespace(prefix)` handles + `keys(prefix)` / `clear(prefix)` for
+  consistent prefix-based key management.
+
+### Usage (HTML)
+
+```html
+<script src="/src/components/ui/storage.js"></script>
+<script>
+  CradleStorage.set("cradle_settings", { theme: "dark", lang: "en" });
+  const settings = CradleStorage.get("cradle_settings", {});
+
+  CradleStorage.setRaw("theme", "dark");
+  const theme = CradleStorage.getRaw("theme", "dark");
+
+  const store = CradleStorage.namespace("cradle_rps_");
+  store.set("stats", { wins: 1 });
+  store.get("stats", {});
+  store.clear(); // removes every "cradle_rps_*" key
+</script>
+```
+
+### Usage (barrel)
+
+```js
+CradleUI.load("storage").then(() => {
+  CradleStorage.set("key", { any: "value" });
+});
+```
+
+### Usage (Node / tests)
+
+```js
+const { set, get, namespace } = require("src/components/ui/storage.js");
+```
+
+### API
+
+| Method                          | Description                                              |
+| ------------------------------- | -------------------------------------------------------- |
+| `isAvailable()`                 | Whether a working localStorage is present.               |
+| `get(key, fallback)`            | Read + JSON.parse a value; fallback on missing/corrupt.  |
+| `getRaw(key, fallback)`         | Read a verbatim string value.                            |
+| `set(key, value)`               | JSON.serialize + write; returns success boolean.         |
+| `setRaw(key, value)`            | Write a verbatim string value.                           |
+| `remove(key)`                   | Delete one key.                                          |
+| `keys(prefix)`                  | List stored keys, optionally filtered by prefix.         |
+| `clear(prefix)`                 | Remove keys by prefix (or all); returns count removed.   |
+| `namespace(prefix)`             | Namespaced handle (`get`/`getRaw`/`set`/`setRaw`/`remove`/`keys`/`clear`). |
 
 ## EscapeHtml
 
@@ -350,6 +411,7 @@ src/
     └── ui/
         ├── tokens.css                ← Design tokens (CSS variables)
         ├── escapeHtml.js             ← Shared HTML escaping utility
+        ├── storage.js                ← Shared localStorage utility
         ├── index.js                  ← Barrel: loads all components
         ├── README.md                 ← This file
         ├── Button/
