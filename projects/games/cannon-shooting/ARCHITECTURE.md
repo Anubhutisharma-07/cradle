@@ -40,7 +40,7 @@ cannon-shooting/
 ```
 User opens index.html
         ↓
-jQuery, cannonEngine.js, cannonStorage.js, script.js load
+cannonEngine.js, cannonStorage.js, script.js loadload
         ↓
 Load stats from localStorage & update HUD banner
         ↓
@@ -84,7 +84,7 @@ Persistence system:
 
 ### `script.js`
 
-UI event bindings, HUD update controller, jQuery animation loops.
+UI event bindings, HUD update controller, vanilla-JS animation loops.
 
 ---
 
