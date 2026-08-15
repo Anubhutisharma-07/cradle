@@ -225,6 +225,13 @@ function updateChart() {
           },
         ],
       },
+      options: {
+        plugins: {
+          legend: {
+            labels: { color: "#cbd5e1" },
+          },
+        },
+      },
     });
   }
 }
