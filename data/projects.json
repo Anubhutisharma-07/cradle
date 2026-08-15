@@ -15,6 +15,11 @@
     "path": "projects/aiml/ai-circuit-builder/"
   },
   {
+    "title": "Api Response Inspector",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/api-response-inspector/"
+  },
+  {
     "title": "ASCII Camera",
     "category": "misc",
     "path": "projects/misc/ascii-camera/"
