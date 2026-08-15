@@ -95,6 +95,11 @@
     "path": "projects/dev-tools/encoding-toolkit/"
   },
   {
+    "title": "Feature Flag Playground",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/feature-flag-playground/"
+  },
+  {
     "title": "File Difference Visualizer",
     "category": "file-tools",
     "path": "projects/file-tools/file-difference-visualizer/"
