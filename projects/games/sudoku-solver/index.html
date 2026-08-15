@@ -3,145 +3,404 @@
 
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="description"
-        content="Interactive Sudoku Solver and Generator with multiple difficulty levels, hints, validation, and automatic solving.">
+    <title>Sudoku Solver</title>
 
-    <title>Sudoku Solver & Generator</title>
+    <meta name="description" content="Generate, solve, and master Sudoku puzzles.">
 
     <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet" href="../../../src/components/ui/tokens.css">
 </head>
 
 <body>
 
-    <main class="app">
+    <div class="app">
 
-        <!-- Header -->
-        <header class="header">
-            <div class="title-area">
-                <span class="icon">🧩</span>
+        <header class="topbar">
+
+            <div class="brand">
+
+                <div class="brand-icon">
+                    🧩
+                </div>
 
                 <div>
                     <h1>Sudoku Solver</h1>
-                    <p>Generate, solve, and master Sudoku puzzles.</p>
+                    <p>Generate, solve, and master Sudoku puzzles</p>
                 </div>
+
             </div>
 
-            <div class="status-badge" id="statusBadge">
-                Ready
+            <div class="header-status">
+                <span class="status-dot"></span>
+                <span id="headerStatus">Ready</span>
             </div>
+
         </header>
 
 
-        <!-- Controls -->
-        <section class="controls-card">
+        <!-- ================= MAIN LAYOUT ================= -->
 
-            <div class="control-group">
-                <label for="difficulty">Difficulty</label>
-
-                <select id="difficulty">
-                    <option value="easy">Easy</option>
-                    <option value="medium" selected>Medium</option>
-                    <option value="hard">Hard</option>
-                </select>
-            </div>
-
-            <div class="button-group">
-
-                <button class="btn primary" id="generateBtn">
-                    ✨ New Puzzle
-                </button>
-
-                <button class="btn secondary" id="solveBtn">
-                    🧠 Solve
-                </button>
-
-                <button class="btn secondary" id="hintBtn">
-                    💡 Hint
-                </button>
-
-                <button class="btn danger" id="resetBtn">
-                    ↻ Reset
-                </button>
-
-            </div>
-
-        </section>
+        <main class="game-layout">
 
 
-        <!-- Game Information -->
-        <section class="game-info">
+            <!-- ================= LEFT SIDEBAR ================= -->
 
-            <div class="info-item">
-                <span class="info-label">Difficulty</span>
-                <strong id="difficultyDisplay">Medium</strong>
-            </div>
-
-            <div class="info-item">
-                <span class="info-label">Filled</span>
-                <strong>
-                    <span id="filledCount">0</span>/81
-                </strong>
-            </div>
-
-            <div class="info-item">
-                <span class="info-label">Hints</span>
-                <strong id="hintCount">3</strong>
-            </div>
-
-        </section>
+            <aside class="sidebar left-sidebar">
 
 
-        <!-- Sudoku Board -->
-        <section class="board-wrapper">
+                <!-- Controls -->
 
-            <div id="sudokuBoard" class="sudoku-board" aria-label="Sudoku board"></div>
+                <section class="panel">
 
-        </section>
+                    <div class="panel-title">
+                        <span>CONTROLS</span>
+                    </div>
+
+                    <div class="control-group">
+
+                        <label for="difficulty">
+                            Difficulty
+                        </label>
+
+                        <select id="difficulty">
+
+                            <option value="easy">
+                                Easy
+                            </option>
+
+                            <option value="medium" selected>
+                                Medium
+                            </option>
+
+                            <option value="hard">
+                                Hard
+                            </option>
+
+                        </select>
+
+                    </div>
 
 
-        <!-- Message -->
-        <div id="message" class="message" role="status" aria-live="polite">
-            Generate a puzzle to start playing.
-        </div>
+                    <button id="newGame" class="primary-btn">
+                        ✨ New Puzzle
+                    </button>
 
 
-        <!-- Instructions -->
-        <section class="instructions">
+                    <button id="solveBtn" class="secondary-btn">
+                        🧠 Solve
+                    </button>
 
-            <h2>How to Play</h2>
 
-            <div class="instruction-grid">
+                    <button id="hintBtn" class="secondary-btn">
+                        💡 Hint
+                    </button>
 
-                <div class="instruction">
-                    <span>1</span>
-                    <p>Select a difficulty and generate a puzzle.</p>
+
+                    <button id="resetBtn" class="secondary-btn">
+                        ↻ Reset
+                    </button>
+
+                </section>
+
+
+                <!-- Number Pad -->
+
+                <section class="panel">
+
+                    <div class="panel-title">
+                        <span>NUMBER PAD</span>
+                    </div>
+
+                    <div class="number-pad">
+
+                        <button data-number="1">1</button>
+                        <button data-number="2">2</button>
+                        <button data-number="3">3</button>
+
+                        <button data-number="4">4</button>
+                        <button data-number="5">5</button>
+                        <button data-number="6">6</button>
+
+                        <button data-number="7">7</button>
+                        <button data-number="8">8</button>
+                        <button data-number="9">9</button>
+
+                        <button data-number="0" class="erase-btn">
+                            ⌫
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- Puzzle Stats -->
+
+                <section class="panel">
+
+                    <div class="panel-title">
+                        <span>PUZZLE STATS</span>
+                    </div>
+
+                    <div class="stat-row">
+
+                        <span>Difficulty</span>
+
+                        <strong id="difficultyStat">
+                            Medium
+                        </strong>
+
+                    </div>
+
+                    <div class="stat-row">
+
+                        <span>Filled</span>
+
+                        <strong>
+                            <span id="filledStat">0</span>/81
+                        </strong>
+
+                    </div>
+
+                    <div class="stat-row">
+
+                        <span>Hints</span>
+
+                        <strong id="hintStat">
+                            0
+                        </strong>
+
+                    </div>
+
+                </section>
+
+            </aside>
+
+
+            <!-- ================= CENTER BOARD ================= -->
+
+            <section class="board-panel">
+
+                <div class="board-header">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            PUZZLE
+                        </span>
+
+                        <h2>Sudoku Board</h2>
+
+                    </div>
+
+                    <div class="timer-box">
+
+                        <span>TIME</span>
+
+                        <strong id="timer">
+                            00:00
+                        </strong>
+
+                    </div>
+
                 </div>
 
-                <div class="instruction">
-                    <span>2</span>
-                    <p>Enter numbers from 1 to 9 into empty cells.</p>
+
+                <div class="sudoku-container">
+
+                    <div id="board" class="sudoku-board" aria-label="Sudoku board"></div>
+
                 </div>
 
-                <div class="instruction">
-                    <span>3</span>
-                    <p>Use hints or solve the puzzle automatically.</p>
+
+                <div class="board-footer">
+
+                    <span>
+                        Select a cell and enter a number
+                    </span>
+
+                    <span id="message">
+                        Good luck!
+                    </span>
+
                 </div>
 
-            </div>
-
-        </section>
+            </section>
 
 
-        <!-- Footer -->
-        <footer>
-            <p>
-                Sudoku Solver & Generator
-            </p>
-        </footer>
+            <!-- ================= RIGHT SIDEBAR ================= -->
 
-    </main>
+            <aside class="sidebar right-sidebar">
+
+
+                <!-- Current Puzzle -->
+
+                <section class="panel">
+
+                    <div class="panel-title">
+                        <span>PUZZLE STATUS</span>
+                    </div>
+
+                    <div class="status-card">
+
+                        <span class="status-label">
+                            CURRENT DIFFICULTY
+                        </span>
+
+                        <strong id="difficultyDisplay">
+                            Medium
+                        </strong>
+
+                    </div>
+
+
+                    <div class="status-card">
+
+                        <span class="status-label">
+                            CELLS FILLED
+                        </span>
+
+                        <strong id="filledDisplay">
+                            0 / 81
+                        </strong>
+
+                    </div>
+
+
+                    <div class="status-card">
+
+                        <span class="status-label">
+                            PUZZLE STATE
+                        </span>
+
+                        <strong id="puzzleState">
+                            In Progress
+                        </strong>
+
+                    </div>
+
+                </section>
+
+
+                <!-- Instructions -->
+
+                <section class="panel instructions">
+
+                    <div class="panel-title">
+                        <span>HOW TO PLAY</span>
+                    </div>
+
+                    <div class="instruction">
+
+                        <span class="instruction-icon">
+                            ①
+                        </span>
+
+                        <p>
+                            Select an empty cell on the board.
+                        </p>
+
+                    </div>
+
+
+                    <div class="instruction">
+
+                        <span class="instruction-icon">
+                            ②
+                        </span>
+
+                        <p>
+                            Choose a number from the number pad.
+                        </p>
+
+                    </div>
+
+
+                    <div class="instruction">
+
+                        <span class="instruction-icon">
+                            ③
+                        </span>
+
+                        <p>
+                            Each row, column and 3×3 box must contain
+                            numbers 1–9 once.
+                        </p>
+
+                    </div>
+
+
+                    <div class="instruction">
+
+                        <span class="instruction-icon">
+                            ④
+                        </span>
+
+                        <p>
+                            Use Hint when you get stuck.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- Keyboard -->
+
+                <section class="panel keyboard-help">
+
+                    <div class="panel-title">
+                        <span>KEYBOARD</span>
+                    </div>
+
+                    <div class="key-row">
+                        <kbd>1</kbd>
+                        <kbd>2</kbd>
+                        <kbd>3</kbd>
+                        <kbd>4</kbd>
+                        <kbd>5</kbd>
+                    </div>
+
+                    <div class="key-row">
+                        <kbd>6</kbd>
+                        <kbd>7</kbd>
+                        <kbd>8</kbd>
+                        <kbd>9</kbd>
+                        <kbd>⌫</kbd>
+                    </div>
+
+                    <p>
+                        Use your keyboard to enter numbers.
+                    </p>
+
+                </section>
+
+            </aside>
+
+        </main>
+
+    </div>
+
+
+    <!-- Cradle UI -->
+
+    <script src="../../../src/components/ui/Button/Button.js"></script>
+
+    <script src="../../../src/components/ui/Card/Card.js"></script>
+
+    <script src="../../../src/components/ui/BackToHome/BackToHome.js" defer></script>
+
+
+    <!-- Theme -->
+
+    <script type="module" src="../../../scripts/theme.js"></script>
+
+
+    <!-- Sudoku -->
 
     <script src="script.js"></script>
 
