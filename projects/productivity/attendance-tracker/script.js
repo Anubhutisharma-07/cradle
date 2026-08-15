@@ -11,6 +11,20 @@ function loadData() {
 
 let data = loadData();
 
+let alertTimeout;
+function showAlert(message) {
+  const banner = document.getElementById("alertBanner");
+  const msgEl = document.getElementById("alertMessage");
+  if (banner && msgEl) {
+    msgEl.textContent = message;
+    banner.style.display = "flex";
+    clearTimeout(alertTimeout);
+    alertTimeout = setTimeout(() => {
+      banner.style.display = "none";
+    }, 5000);
+  }
+}
+
 function render() {
   const body = document.getElementById("attendance-body");
   const logBox = document.getElementById("history-log");
@@ -217,7 +231,7 @@ function updateChart() {
 
 function exportCSV() {
   if (!data.subjects || data.subjects.length === 0) {
-    alert("No data to export.");
+    showAlert("No data to export.");
     return;
   }
   const csv = exportToCSV(data.subjects);
@@ -258,7 +272,7 @@ function importCSV(event) {
         render();
       }
     } else {
-      alert("No valid subject data found in CSV.");
+      showAlert("No valid subject data found in CSV.");
     }
   };
   reader.readAsText(file);
@@ -317,7 +331,7 @@ function update(i, field, val) {
   const conducted = subject.p + subject.a;
 
   if (val === 1 && conducted >= subject.total) {
-    alert("Total classes limit reached.");
+    showAlert("Total classes limit reached.");
     return;
   }
 
