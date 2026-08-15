@@ -28,6 +28,19 @@ const customClassifyBtn = document.getElementById("customClassifyBtn");
 
 let model;
 let knn;
+
+let toastTimeout;
+function showToast(message) {
+  const toast = document.getElementById("statusToast");
+  const msgEl = document.getElementById("statusToastMessage");
+  if (!toast || !msgEl) return;
+  msgEl.textContent = message;
+  toast.style.display = "flex";
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    toast.style.display = "none";
+  }, 4000);
+}
 let isModelLoaded = false;
 let isCustomMode = false;
 let customClasses = []; // { id, name, count }
@@ -114,7 +127,8 @@ addClassBtn.addEventListener("click", () => {
   const validation = validateClassName(className, customClasses);
 
   if (!validation.valid) {
-    return alert(validation.error);
+    showToast(validation.error);
+    return;
   }
 
   const classObj = {
@@ -174,7 +188,10 @@ function removeClass(id) {
 }
 
 async function addImageToClass(event, id) {
-  if (!isModelLoaded) return alert("AI Model still loading...");
+  if (!isModelLoaded) {
+    showToast("AI Model still loading...");
+    return;
+  }
   const files = event.target.files;
   if (!files.length) return;
 
@@ -214,7 +231,7 @@ async function addImageToClass(event, id) {
 // Prediction Logic
 async function performPrediction() {
   if (!isModelLoaded) {
-    alert("AI Model is still loading...");
+    showToast("AI Model is still loading...");
     return;
   }
 
@@ -226,7 +243,7 @@ async function performPrediction() {
     if (!isCustomMode) {
       // Standard Inference
       if (!preview.src || preview.src.includes("data:image/gif")) {
-        alert("Please upload an image first!");
+        showToast("Please upload an image first!");
         resetPredictions();
         return;
       }
@@ -240,7 +257,7 @@ async function performPrediction() {
     } else {
       // Custom Inference
       if (!customTestImage) {
-        alert("Please upload a test image first!");
+        showToast("Please upload a test image first!");
         resetPredictions();
         return;
       }

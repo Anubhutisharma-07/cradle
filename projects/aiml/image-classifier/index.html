@@ -20,6 +20,17 @@
     <div class="bg-blur blur2"></div>
     <div class="main-layout">
       <div class="container">
+        <!-- Status Toast / Alert Banner -->
+        <div
+          id="statusToast"
+          class="status-toast"
+          role="status"
+          aria-live="polite"
+          style="display: none;"
+        >
+          <i aria-hidden="true" class="fas fa-exclamation-circle"></i>
+          <span id="statusToastMessage" class="toast-message"></span>
+        </div>
         <div class="top-section">
           <div class="ai-badge">AI Powered</div>
           <h1>AI Image Classifier</h1>

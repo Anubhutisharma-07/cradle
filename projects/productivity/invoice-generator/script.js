@@ -274,7 +274,7 @@ function importInvoiceJson(event) {
       loadInvoice(invoice);
       setStatus("Invoice JSON imported");
     } catch (error) {
-      window.alert("Could not import this invoice JSON file.");
+      setStatus("Error: Could not import this invoice JSON file.");
     } finally {
       importJsonInput.value = "";
     }
