@@ -220,8 +220,8 @@
     "path": "projects/dev-tools/url-parser/"
   },
   {
-    "title": "Violin",
-    "category": "instruments",
-    "path": "projects/instruments/violin/"
+    "title": "Sudoku Solver",
+    "category": "games",
+    "path": "projects/games/sudoku-solver/"
   }
 ]
