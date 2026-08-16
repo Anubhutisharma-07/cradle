@@ -55,6 +55,17 @@
           </button>
         </div>
 
+        <div
+          id="alertContainer"
+          class="alert-container"
+          role="status"
+          aria-live="polite"
+          style="display: none;"
+        >
+          <span class="alert-icon">⚠️</span>
+          <span id="alertMessage"></span>
+        </div>
+
         <form id="captureForm" class="capture-form">
           <label for="thoughtInput">Brain dump</label>
           <textarea

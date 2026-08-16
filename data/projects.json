@@ -15,6 +15,11 @@
     "path": "projects/aiml/ai-circuit-builder/"
   },
   {
+    "title": "Api Response Inspector",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/api-response-inspector/"
+  },
+  {
     "title": "ASCII Camera",
     "category": "misc",
     "path": "projects/misc/ascii-camera/"
@@ -60,12 +65,6 @@
     "path": "projects/dev-tools/color-contrast-checker/"
   },
   {
-    "title": "Color Contrast Checker",
-    "category": "dev-tools",
-    "path": "projects/dev-tools/color-contrast-checker/",
-    "dateAdded": "2026-08-07T23:15:16+05:30"
-  },
-  {
     "title": "CPU Emulator",
     "category": "dev-tools",
     "path": "projects/dev-tools/cpu-emulator/"
@@ -94,6 +93,11 @@
     "title": "Encoding Toolkit",
     "category": "dev-tools",
     "path": "projects/dev-tools/encoding-toolkit/"
+  },
+  {
+    "title": "Feature Flag Playground",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/feature-flag-playground/"
   },
   {
     "title": "File Difference Visualizer",

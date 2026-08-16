@@ -115,11 +115,14 @@ function setTheme(theme) {
     html.classList.add("light-theme");
     if (themeBtn)
       themeBtn.innerHTML = '<i class="fas fa-sun text-orange-400"></i>';
+    localStorage.setItem("theme", "light");
+
     localStorage.setItem("cradle_theme", "light");
   } else {
     html.classList.remove("light-theme");
     if (themeBtn)
       themeBtn.innerHTML = '<i class="fas fa-moon text-yellow-400"></i>';
+    localStorage.setItem("theme", "dark");
     localStorage.setItem("cradle_theme", "dark");
   }
 }

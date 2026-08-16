@@ -33,6 +33,17 @@
         </div>
       </header>
 
+      <div
+        id="alertContainer"
+        class="alert-container"
+        role="status"
+        aria-live="polite"
+        style="display: none;"
+      >
+        <span class="alert-icon">⚠️</span>
+        <span id="alertMessage"></span>
+      </div>
+
       <!-- Toolbar & Stats -->
       <div class="toolbar-panel">
         <div class="toolbar-left">
@@ -293,6 +304,7 @@
     </div>
 
   <script src="plannerEngine.js"></script>
+  <script src="../../../src/components/ui/storage.js"></script>
   <script src="plannerStorage.js"></script>
   <script src="../../../src/components/ui/escapeHtml.js"></script>
   <script src="script.js"></script>
