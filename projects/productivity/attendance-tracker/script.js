@@ -226,6 +226,7 @@ function updateChart() {
         ],
       },
       options: {
+        maintainAspectRatio: false,
         plugins: {
           legend: {
             labels: { color: "#cbd5e1" },

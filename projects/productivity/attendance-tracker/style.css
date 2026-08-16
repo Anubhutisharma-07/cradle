@@ -15,19 +15,11 @@ body {
   margin: 0;
   padding: var(--cradle-space-6, 24px);
   background:
-    radial-gradient(circle at 10% 0%,
-      rgba(37, 99, 235, 0.22),
-      transparent 34rem),
-    radial-gradient(circle at 90% 0%,
-      rgba(22, 163, 74, 0.13),
-      transparent 28rem),
+    radial-gradient(circle at 10% 0%, rgba(37, 99, 235, 0.22), transparent 34rem),
+    radial-gradient(circle at 90% 0%, rgba(22, 163, 74, 0.13), transparent 28rem),
     var(--cradle-bg, #05070d);
   color: var(--cradle-text, #f3f4f6);
-  font-family: var(--cradle-font-body,
-      "Space Grotesk",
-      Inter,
-      system-ui,
-      sans-serif);
+  font-family: var(--cradle-font-body, "Space Grotesk", Inter, system-ui, sans-serif);
   line-height: 1.5;
 }
 
@@ -38,23 +30,26 @@ textarea {
   font: inherit;
 }
 
-.container {
+/* ── Shell ──────────────────────────────────────────────
+   Every section below is a normal full-width block, stacked
+   top to bottom. Nothing here relies on shared/numbered grid
+   rows — each section sizes to its own content, so no section
+   can force another one to stretch or reflow unexpectedly. */
+.shell {
   width: min(1240px, 100%);
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: 3fr 1.2fr;
-  gap: var(--cradle-space-5, 20px);
 }
 
-.header {
-  grid-column: 1 / -1;
-  grid-row: 1;
+.shell>*+* {
+  margin-top: var(--cradle-space-5, 20px);
+}
+
+.project-header {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(220px, 360px);
   gap: var(--cradle-space-6, 24px);
   align-items: end;
   padding-bottom: var(--cradle-space-5, 20px);
-  margin-bottom: var(--cradle-space-2, 8px);
   border-bottom: 1px solid var(--cradle-border, #374151);
 }
 
@@ -87,7 +82,7 @@ p {
   margin-top: 0;
 }
 
-.header h1 {
+.project-header h1 {
   max-width: 640px;
   margin-bottom: var(--cradle-space-3, 12px);
   font-size: clamp(1.8rem, 4vw, 3.2rem);
@@ -114,10 +109,8 @@ p {
   gap: var(--cradle-space-2, 8px);
 }
 
-/* Alert Banner */
+/* Alert banner */
 .alert-banner {
-  grid-column: 1 / -1;
-  grid-row: 2;
   background: var(--cradle-danger-bg, rgba(220, 38, 38, 0.12));
   border: 1px solid rgba(220, 38, 38, 0.35);
   border-radius: var(--cradle-radius-sm, 8px);
@@ -128,7 +121,6 @@ p {
   display: flex;
   align-items: center;
   gap: var(--cradle-space-2, 8px);
-  margin-bottom: var(--cradle-space-2, 8px);
   line-height: 1.4;
 }
 
@@ -138,12 +130,9 @@ p {
 
 /* Stat cards */
 .stats-dashboard {
-  grid-column: 1 / -1;
-  grid-row: 3;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: var(--cradle-space-3, 12px);
-  margin-bottom: var(--cradle-space-2, 8px);
 }
 
 .stat-card {
@@ -171,40 +160,23 @@ p {
   color: var(--cradle-text, #f3f4f6);
 }
 
-/* Cards: explicit grid placement so the table column and the
-   history/overview sidebar line up instead of relying on
-   source-order auto-placement. */
+/* Cards */
 .card {
   min-width: 0;
 }
 
+/* Recent History + Attendance Overview sit side by side on
+   desktop and stack on mobile — a small local grid, not part
+   of a page-wide one, so it can't affect the Subjects card. */
+.side-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--cradle-space-5, 20px);
+  align-items: start;
+}
+
 .table-wrap {
   overflow-x: auto;
-}
-
-#subjectsCard {
-  grid-column: 1;
-  grid-row: 4 / 6;
-  align-self: start;
-}
-
-#subjectsCard .table-wrap {
-  margin-top: 0;
-  align-self: stretch;
-}
-
-#subjectsCard table {
-  margin-top: 0;
-}
-
-#historyCard {
-  grid-column: 2;
-  grid-row: 4;
-}
-
-#overviewCard {
-  grid-column: 2;
-  grid-row: 5;
 }
 
 table {
@@ -305,10 +277,13 @@ td input[type="number"] {
   text-align: center;
 }
 
-/* Chart card */
+/* Chart card — fixed height so Chart.js has a stable box to
+   render into instead of collapsing or growing unpredictably. */
 .chart-container {
+  position: relative;
   width: 100%;
   max-width: 280px;
+  height: 280px;
   margin: 0 auto;
 }
 
@@ -384,11 +359,7 @@ td input[type="number"] {
 }
 
 @media (max-width: 1000px) {
-  .container {
-    grid-template-columns: 1fr;
-  }
-
-  .header {
+  .project-header {
     grid-template-columns: 1fr;
   }
 
@@ -396,11 +367,8 @@ td input[type="number"] {
     justify-content: flex-start;
   }
 
-  #subjectsCard,
-  #historyCard,
-  #overviewCard {
-    grid-column: 1;
-    grid-row: auto;
+  .side-grid {
+    grid-template-columns: 1fr;
   }
 }
 
