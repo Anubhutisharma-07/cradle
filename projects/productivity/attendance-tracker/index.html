@@ -1,85 +1,70 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Attendance Pro</title>
-    <meta name="description" content="Track student or team attendance percentages, absent records, and summary reports." />
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="../../../src/components/ui/tokens.css" />
-  </head>
 
-  <body>
-    <div class="container">
-      <div class="header">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attendance Pro</title>
+  <meta name="description"
+    content="Track student or team attendance percentages, absent records, and summary reports." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="../../../src/components/ui/tokens.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <main class="shell">
+    <header class="project-header">
+      <div>
+        <a href="../../../index.html" class="back-link">Back to Cradle</a>
+        <p class="eyebrow">Productivity Mini</p>
         <h1>Attendance Dashboard</h1>
-        <div class="header-actions">
-          <button
-            class="btn-export-action"
-            data-cradle-btn
-            data-variant="success"
-            data-size="sm"
-            data-left-icon="⬇"
-          >
-            Export CSV
-          </button>
-
-          <button
-            class="btn-import-action"
-            data-cradle-btn
-            data-variant="outline"
-            data-size="sm"
-            data-left-icon="⬆"
-          >
-            Import CSV
-          </button>
-          <input
-            type="file"
-            id="csvFileInput"
-            accept=".csv"
-            aria-label="Import attendance CSV file"
-            style="display: none"
-          />
-
-          <button
-            id="btn-new-subject"
-            data-cradle-btn
-            data-variant="primary"
-            data-size="sm"
-            data-left-icon="+"
-          >
-            New Subject
-          </button>
-        </div>
+        <p class="subtitle">
+          Track subject-wise attendance percentages, log present/absent
+          changes, and see how many classes you can still miss and stay
+          on target.
+        </p>
       </div>
-
-      <div
-        id="alertBanner"
-        class="alert-banner"
-        role="status"
-        aria-live="polite"
-        style="display: none;"
-      >
-        <span class="alert-icon">⚠️</span>
-        <span id="alertMessage"></span>
+      <div class="header-actions">
+        <button class="btn-export-action" data-cradle-btn data-variant="success" data-size="sm" data-left-icon="⬇">
+          Export CSV
+        </button>
+        <button class="btn-import-action" data-cradle-btn data-variant="outline" data-size="sm" data-left-icon="⬆">
+          Import CSV
+        </button>
+        <input type="file" id="csvFileInput" accept=".csv" aria-label="Import attendance CSV file"
+          style="display: none" />
+        <button id="btn-new-subject" data-cradle-btn data-variant="primary" data-size="sm" data-left-icon="+">
+          New Subject
+        </button>
       </div>
+    </header>
 
-      <div class="stats-dashboard" id="statsDashboard">
-        <div class="stat-card">
-          <span class="stat-label">Overall Attendance</span>
-          <strong class="stat-value" id="overallAttendance">0%</strong>
-        </div>
-        <div class="stat-card">
-          <span class="stat-label">Total Conducted</span>
-          <strong class="stat-value" id="totalConducted">0</strong>
-        </div>
-        <div class="stat-card">
-          <span class="stat-label">Below Target</span>
-          <strong class="stat-value" id="belowTargetCount">0</strong>
-        </div>
-      </div>
+    <div id="alertBanner" class="alert-banner" role="status" aria-live="polite" style="display: none;">
+      <span class="alert-icon">⚠️</span>
+      <span id="alertMessage"></span>
+    </div>
 
-      <div class="card" data-cradle-card data-title="Subjects">
+    <section class="stats-dashboard" id="statsDashboard" aria-label="Attendance summary">
+      <article class="stat-card">
+        <span class="stat-label">Overall Attendance</span>
+        <strong class="stat-value" id="overallAttendance">0%</strong>
+      </article>
+      <article class="stat-card">
+        <span class="stat-label">Total Conducted</span>
+        <strong class="stat-value" id="totalConducted">0</strong>
+      </article>
+      <article class="stat-card">
+        <span class="stat-label">Below Target</span>
+        <strong class="stat-value" id="belowTargetCount">0</strong>
+      </article>
+    </section>
+
+    <section id="subjectsCard" class="card" data-cradle-card data-title="Subjects">
+      <div class="table-wrap">
         <table>
           <thead>
             <tr>
@@ -95,91 +80,61 @@
           <tbody id="attendance-body"></tbody>
         </table>
       </div>
+    </section>
 
-      <div class="card" data-cradle-card data-title="Recent History">
+    <div class="side-grid">
+      <section id="historyCard" class="card" data-cradle-card data-title="Recent History">
         <div class="history-header">
-          <button
-            class="btn-clear-history-action"
-            data-cradle-btn
-            data-variant="danger"
-            data-size="sm"
-            aria-label="Clear all attendance history"
-          >
+          <button class="btn-clear-history-action" data-cradle-btn data-variant="danger" data-size="sm"
+            aria-label="Clear all attendance history">
             Clear History
           </button>
         </div>
         <div id="history-log" class="history-list"></div>
-      </div>
+      </section>
 
-      <div class="card" data-cradle-card data-title="Attendance Overview">
+      <section id="overviewCard" class="card" data-cradle-card data-title="Attendance Overview">
         <div class="chart-container">
           <canvas id="attendanceChart"></canvas>
         </div>
-      </div>
+      </section>
     </div>
+  </main>
 
-    <div id="addModal" class="modal-overlay">
-      <div class="modal-box">
-        <div class="modal-header">
-          <h2>Add New Subject</h2>
-          <button class="close-btn" aria-label="Close">
-            &times;
-          </button>
-        </div>
-        <form id="newSubjectForm">
-          <div class="form-group">
-            <label for="subName">Subject Name</label>
-            <input
-              type="text"
-              id="subName"
-              placeholder="enter subject name"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="subTotal">Estimated Total Classes</label>
-            <input
-              type="number"
-              id="subTotal"
-              value="45"
-              min="1"
-              placeholder="e.g., 45"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="subTarget">Target Percentage (%)</label>
-            <input
-              type="number"
-              id="subTarget"
-              value="75"
-              min="1"
-              max="100"
-              placeholder="e.g., 75"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            data-cradle-btn
-            data-variant="primary"
-            data-size="md"
-            data-full-width="true"
-            style="margin-top: 10px"
-          >
-            Add Subject
-          </button>
-        </form>
+  <div id="addModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>Add New Subject</h2>
+        <button class="close-btn" aria-label="Close">
+          &times;
+        </button>
       </div>
+      <form id="newSubjectForm">
+        <div class="form-group">
+          <label for="subName">Subject Name</label>
+          <input type="text" id="subName" placeholder="enter subject name" required />
+        </div>
+        <div class="form-group">
+          <label for="subTotal">Estimated Total Classes</label>
+          <input type="number" id="subTotal" value="45" min="1" placeholder="e.g., 45" required />
+        </div>
+        <div class="form-group">
+          <label for="subTarget">Target Percentage (%)</label>
+          <input type="number" id="subTarget" value="75" min="1" max="100" placeholder="e.g., 75" required />
+        </div>
+        <button type="submit" data-cradle-btn data-variant="primary" data-size="md" data-full-width="true"
+          style="margin-top: 10px">
+          Add Subject
+        </button>
+      </form>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="../../../src/components/ui/Button/Button.js"></script>
-    <script src="../../../src/components/ui/Card/Card.js"></script>
-    <script
-      src="../../../src/components/ui/BackToHome/BackToHome.js"
-      defer
-    ></script>
-    <script src="data-handler.js"></script>
-    <script src="script.js"></script>
-  </body>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="../../../src/components/ui/Button/Button.js"></script>
+  <script src="../../../src/components/ui/Card/Card.js"></script>
+  <script src="../../../src/components/ui/BackToHome/BackToHome.js" defer></script>
+  <script src="data-handler.js"></script>
+  <script src="script.js"></script>
+</body>
+
 </html>
