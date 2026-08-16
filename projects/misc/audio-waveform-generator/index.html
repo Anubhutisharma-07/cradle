@@ -31,103 +31,105 @@
       </header>
 
       <!-- Controls -->
-      <section class="controls-panel">
-        <!-- Wave Type Selector -->
-        <div class="control-row">
-          <label class="control-label">Wave Type</label>
-          <div
-            class="wave-toggles"
-            role="radiogroup"
-            aria-label="Waveform type"
-          >
-            <button
-              class="wave-btn active"
-              data-wave="sine"
-              aria-pressed="true"
+      <main>
+        <section class="controls-panel">
+          <!-- Wave Type Selector -->
+          <div class="control-row">
+            <label class="control-label">Wave Type</label>
+            <div
+              class="wave-toggles"
+              role="radiogroup"
+              aria-label="Waveform type"
             >
-              Sine
-            </button>
-            <button class="wave-btn" data-wave="square" aria-pressed="false">
-              Square
-            </button>
-            <button class="wave-btn" data-wave="sawtooth" aria-pressed="false">
-              Sawtooth
-            </button>
-            <button class="wave-btn" data-wave="triangle" aria-pressed="false">
-              Triangle
-            </button>
+              <button
+                class="wave-btn active"
+                data-wave="sine"
+                aria-pressed="true"
+              >
+                Sine
+              </button>
+              <button class="wave-btn" data-wave="square" aria-pressed="false">
+                Square
+              </button>
+              <button class="wave-btn" data-wave="sawtooth" aria-pressed="false">
+                Sawtooth
+              </button>
+              <button class="wave-btn" data-wave="triangle" aria-pressed="false">
+                Triangle
+              </button>
+            </div>
           </div>
-        </div>
 
-        <!-- Frequency Slider -->
-        <div class="control-row">
-          <label class="control-label" for="freqSlider">Frequency</label>
-          <div class="slider-group">
-            <input
-              type="range"
-              id="freqSlider"
-              min="20"
-              max="2000"
-              step="1"
-              value="440"
-              aria-label="Frequency in Hertz"
-            />
-            <span class="range-value mono" id="freqDisplay">440 Hz</span>
+          <!-- Frequency Slider -->
+          <div class="control-row">
+            <label class="control-label" for="freqSlider">Frequency</label>
+            <div class="slider-group">
+              <input
+                type="range"
+                id="freqSlider"
+                min="20"
+                max="2000"
+                step="1"
+                value="440"
+                aria-label="Frequency in Hertz"
+              />
+              <span class="range-value mono" id="freqDisplay">440 Hz</span>
+            </div>
           </div>
-        </div>
 
-        <!-- Volume Slider -->
-        <div class="control-row">
-          <label class="control-label" for="volSlider">Volume</label>
-          <div class="slider-group">
-            <input
-              type="range"
-              id="volSlider"
-              min="0"
-              max="100"
-              step="1"
-              value="60"
-              aria-label="Volume percentage"
-            />
-            <span class="range-value mono" id="volDisplay">60%</span>
+          <!-- Volume Slider -->
+          <div class="control-row">
+            <label class="control-label" for="volSlider">Volume</label>
+            <div class="slider-group">
+              <input
+                type="range"
+                id="volSlider"
+                min="0"
+                max="100"
+                step="1"
+                value="60"
+                aria-label="Volume percentage"
+              />
+              <span class="range-value mono" id="volDisplay">60%</span>
+            </div>
           </div>
-        </div>
 
-        <!-- Play Button -->
-        <div class="control-row">
-          <div class="play-row">
-            <button class="btn btn-play" id="playBtn">▶ Play</button>
-            <span class="status-text mono" id="statusText">Stopped</span>
+          <!-- Play Button -->
+          <div class="control-row">
+            <div class="play-row">
+              <button class="btn btn-play" id="playBtn">▶ Play</button>
+              <span class="status-text mono" id="statusText">Stopped</span>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- Waveform Canvas -->
-      <section class="canvas-section">
-        <div class="canvas-header">
-          <h2 class="section-title">📉 Waveform Oscilloscope</h2>
-          <span class="canvas-meta mono" id="canvasMeta">—</span>
-        </div>
-        <div class="canvas-wrap">
-          <canvas
-            id="waveform"
-            aria-label="Real-time waveform visualization"
-          ></canvas>
-        </div>
-      </section>
+        <!-- Waveform Canvas -->
+        <section class="canvas-section">
+          <div class="canvas-header">
+            <h2 class="section-title">📉 Waveform Oscilloscope</h2>
+            <span class="canvas-meta mono" id="canvasMeta">—</span>
+          </div>
+          <div class="canvas-wrap">
+            <canvas
+              id="waveform"
+              aria-label="Real-time waveform visualization"
+            ></canvas>
+          </div>
+        </section>
 
-      <!-- Piano Keyboard -->
-      <section class="piano-section">
-        <h2 class="section-title">
-          🎹 Piano Keyboard <span class="piano-range">C4 – B4</span>
-        </h2>
-        <div class="piano-container" id="piano">
-          <!-- Keys are rendered by script.js -->
-        </div>
-        <p class="piano-hint">
-          Click a key to play — frequency and slider update automatically.
-        </p>
-      </section>
+        <!-- Piano Keyboard -->
+        <section class="piano-section">
+          <h2 class="section-title">
+            🎹 Piano Keyboard <span class="piano-range">C4 – B4</span>
+          </h2>
+          <div class="piano-container" id="piano">
+            <!-- Keys are rendered by script.js -->
+          </div>
+          <p class="piano-hint">
+            Click a key to play — frequency and slider update automatically.
+          </p>
+        </section>
+      </main>
     </div>
 
     <script src="waveformEngine.js"></script>
