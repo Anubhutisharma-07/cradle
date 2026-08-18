@@ -132,14 +132,14 @@
     return getStoredTheme() || getSystemTheme();
   }
 
-  function applyTheme(theme) {
+  function applyTheme(theme, { persist = true } = {}) {
     const html = document.documentElement;
     if (theme === "light") {
       html.classList.add(LIGHT_CLASS);
     } else {
       html.classList.remove(LIGHT_CLASS);
     }
-    storeTheme(theme);
+    if (persist) storeTheme(theme);
 
     /* Notify all registered toggle instances */
     html.dispatchEvent(
@@ -191,7 +191,7 @@
       .addEventListener("change", e => {
         /* Only follow OS change if user hasn't set a manual preference */
         if (!getStoredTheme()) {
-          applyTheme(e.matches ? "light" : "dark");
+          applyTheme(e.matches ? "light" : "dark", { persist: false });
         }
       });
   }
@@ -204,7 +204,8 @@
      * to avoid flash of wrong theme.
      */
     init() {
-      applyTheme(resolveTheme());
+      const storedTheme = getStoredTheme();
+      applyTheme(storedTheme || getSystemTheme(), { persist: Boolean(storedTheme) });
     },
 
     /**
