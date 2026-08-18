@@ -321,6 +321,20 @@ function generateProjects() {
         seenTitles.add(title);
       }
 
+      // Generate this project's card thumbnail if it doesn't have one yet.
+      // Only when missing, so committed thumbnails are never rewritten; wrapped
+      // so one bad project can't abort the whole build. (#471 — the thumbnail half)
+      const thumbnailPath = path.join(fullProjectPath, "thumbnail.svg");
+      if (fs.existsSync(fullProjectPath) && !fs.existsSync(thumbnailPath)) {
+        try {
+          generateSvgThumbnail(title, categoryName, fullProjectPath);
+        } catch (err) {
+          console.warn(
+            `⚠️  Could not generate thumbnail for ${projectPathStr}: ${err.message}`
+          );
+        }
+      }
+
       projects.push({
         title: title,
         category: categoryName,
