@@ -148,3 +148,25 @@ test("detectUnusedProjectAssets treats repo-level references as usage", () => {
 
   assert.deepEqual(unusedAssets, []);
 });
+
+test("bare filename in repo-wide reference text does not mask an orphan (#566)", () => {
+  // Asset lives in a subdir, so its relativePath ("helpers/logic.js") is NOT a
+  // bare name — only the fileName clause ("logic.js") could match it.
+  const projectDir = createProjectFixture({
+    "index.html": "<html><body>no asset references here</body></html>",
+    "helpers/logic.js": "console.log('orphan');",
+  });
+
+  // Another project elsewhere in the repo merely mentions the same bare filename.
+  // The orphan must still be flagged unused — matching a bare basename against
+  // whole-repo text is a false negative.
+  const unusedAssets = detectUnusedAssetsInProject(
+    projectDir,
+    "some other project also ships a logic.js helper"
+  ).map(filePath => path.basename(filePath));
+
+  assert.ok(
+    unusedAssets.includes("logic.js"),
+    "orphaned helpers/logic.js should be flagged unused despite the bare name appearing in repo-wide text"
+  );
+});
