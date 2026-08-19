@@ -128,7 +128,14 @@ function readRepositoryText(repoRoot = REPO_ROOT) {
   return readTextFiles(getFiles(repoRoot));
 }
 
-function isReferencedAsset(projectText, reference) {
+// `ownText` is the asset's own project text; it defaults to `projectText` for
+// backward compatibility. The path-scoped clauses match against `projectText`
+// (which may include repo-wide reference text, so cross-project references by
+// PATH still count), but the bare-basename clause is matched only against
+// `ownText`. Matching a bare filename against the whole repo produced false
+// negatives: an orphaned asset named e.g. `logic.js` was deemed "used" merely
+// because some other project also has a `logic.js`.
+function isReferencedAsset(projectText, reference, ownText = projectText) {
   return (
     projectText.includes(reference.relativePath) ||
     projectText.includes(`./${reference.relativePath}`) ||
@@ -138,20 +145,21 @@ function isReferencedAsset(projectText, reference) {
     projectText.includes(`./${reference.repoRelativePath}`) ||
     projectText.includes(reference.repoRelativePathWithoutExtension) ||
     projectText.includes(`./${reference.repoRelativePathWithoutExtension}`) ||
-    projectText.includes(reference.fileName)
+    ownText.includes(reference.fileName)
   );
 }
 
 function detectUnusedAssetsInProject(projectDir, referenceText = "") {
   const projectFiles = getFiles(projectDir);
-  const projectText = `${readProjectText(projectFiles)}\n${referenceText}`;
+  const ownText = readProjectText(projectFiles);
+  const projectText = `${ownText}\n${referenceText}`;
 
   return projectFiles
     .filter(isAssetFile)
     .filter(filePath => !isImplicitlyUsedAsset(projectDir, filePath))
     .filter(filePath => {
       const reference = normalizeAssetReference(projectDir, filePath);
-      return !isReferencedAsset(projectText, reference);
+      return !isReferencedAsset(projectText, reference, ownText);
     });
 }
 
