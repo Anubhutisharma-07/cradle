@@ -97,6 +97,25 @@ index.html --> apiEngine.js (pure logic) --> script.js (DOM + fetch) --> rendere
 Open `index.html` directly in a browser, or run the repo's dev server
 (`npm run dev`). No build step is required for this project itself.
 
+## File Responsibilities
+
+See the Component Breakdown table above for details.
+
+## Dependencies
+
+No external libraries. Uses Cradle shared design tokens and utilities.
+
+## Future Improvements
+
+- Support for GraphQL queries
+- Request/response history
+- Saved request collections
+
+## References
+
+- MDN Fetch API documentation
+- HTTP/1.1 Status Code definitions
+
 ## License
 
 MIT, consistent with the rest of the repository. No third-party assets used.

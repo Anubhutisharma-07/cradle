@@ -152,3 +152,7 @@ required.
 - Modeled on the structure of the other `projects/dev-tools/` mini
   projects in this repository (e.g. Browser Storage Inspector) for UI
   and file conventions.
+
+## License & Attribution
+
+MIT, consistent with the rest of the repository.

@@ -1,6 +1,6 @@
 # Wordle Clone Architecture
 
-## Purpose & Goals
+## Overview
 
 The Wordle Clone is a browser-based word guessing game inspired by the popular Wordle gameplay. The goal is to provide an interactive and responsive game where users guess a hidden five-letter word within a limited number of attempts.
 
