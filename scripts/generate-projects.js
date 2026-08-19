@@ -338,7 +338,8 @@ function generateProjects() {
       projects.push({
         title: title,
         category: categoryName,
-        path: projectPathStr
+        path: projectPathStr,
+        dateAdded: getDateAdded(fullProjectPath)
       });
     }
   }
