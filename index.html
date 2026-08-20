@@ -142,7 +142,19 @@
       <div class="section-header">
         <h2>Projects</h2>
 
-        <span id="project-count"> 0 projects </span>
+        <div class="section-controls">
+          <label for="sort-projects" class="sr-only">Sort projects</label>
+          <select id="sort-projects">
+            <option value="default">Default</option>
+            <option value="name-asc">Name: A–Z</option>
+            <option value="name-desc">Name: Z–A</option>
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+            <option value="category">Category</option>
+          </select>
+
+          <span id="project-count">0 projects</span>
+        </div>
       </div>
 
       <div id="projects-grid" class="projects-grid" aria-live="polite" aria-atomic="true"></div>
