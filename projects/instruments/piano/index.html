@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A playable virtual piano with keyboard, mouse, and touch interaction.">
+  <title>Virtual Piano | Cradle Mini</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="thumbnail.svg" type="image/svg+xml">
+</head>
+<body>
+  <main class="piano-app">
+    <header class="piano-header">
+      <div class="header-content">
+        <p class="eyebrow">CRADLE MINI</p>
+        <h1>Virtual Piano</h1>
+        <p>Play piano notes with your keyboard, mouse, or touch.</p>
+      </div>
+      <div class="status" id="status" aria-live="polite">Ready</div>
+    </header>
+
+    <section class="piano-card" aria-label="Virtual piano">
+      <div class="piano" role="group" aria-label="Playable piano keyboard">
+        <div class="white-keys">
+          <button class="key white-key" type="button" data-note="C4" data-key="a" aria-label="C4" aria-pressed="false">
+            <span class="note">C4</span>
+            <kbd>A</kbd>
+          </button>
+          <button class="key white-key" type="button" data-note="D4" data-key="s" aria-label="D4" aria-pressed="false">
+            <span class="note">D4</span>
+            <kbd>S</kbd>
+          </button>
+          <button class="key white-key" type="button" data-note="E4" data-key="d" aria-label="E4" aria-pressed="false">
+            <span class="note">E4</span>
+            <kbd>D</kbd>
+          </button>
+          <button class="key white-key" type="button" data-note="F4" data-key="f" aria-label="F4" aria-pressed="false">
+            <span class="note">F4</span>
+            <kbd>F</kbd>
+          </button>
+          <button class="key white-key" type="button" data-note="G4" data-key="g" aria-label="G4" aria-pressed="false">
+            <span class="note">G4</span>
+            <kbd>G</kbd>
+          </button>
+          <button class="key white-key" type="button" data-note="A4" data-key="h" aria-label="A4" aria-pressed="false">
+            <span class="note">A4</span>
+            <kbd>H</kbd>
+          </button>
+          <button class="key white-key" type="button" data-note="B4" data-key="j" aria-label="B4" aria-pressed="false">
+            <span class="note">B4</span>
+            <kbd>J</kbd>
+          </button>
+          <button class="key white-key" type="button" data-note="C5" data-key="k" aria-label="C5" aria-pressed="false">
+            <span class="note">C5</span>
+            <kbd>K</kbd>
+          </button>
+        </div>
+
+        <div class="black-keys">
+          <button class="key black-key" type="button" data-note="C#4" data-key="w" aria-label="C sharp 4" aria-pressed="false">
+            <span class="note">C♯4</span>
+            <kbd>W</kbd>
+          </button>
+          <button class="key black-key" type="button" data-note="D#4" data-key="e" aria-label="D sharp 4" aria-pressed="false">
+            <span class="note">D♯4</span>
+            <kbd>E</kbd>
+          </button>
+          <button class="key black-key" type="button" data-note="F#4" data-key="t" aria-label="F sharp 4" aria-pressed="false">
+            <span class="note">F♯4</span>
+            <kbd>T</kbd>
+          </button>
+          <button class="key black-key" type="button" data-note="G#4" data-key="y" aria-label="G sharp 4" aria-pressed="false">
+            <span class="note">G♯4</span>
+            <kbd>Y</kbd>
+          </button>
+          <button class="key black-key" type="button" data-note="A#4" data-key="u" aria-label="A sharp 4" aria-pressed="false">
+            <span class="note">A♯4</span>
+            <kbd>U</kbd>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="instructions" aria-label="How to play">
+      <div class="instruction">
+        <strong>⌨ Keyboard</strong>
+        <span>Press A–K and W–U</span>
+      </div>
+      <div class="instruction">
+        <strong>🖱 Mouse</strong>
+        <span>Click and hold any key</span>
+      </div>
+      <div class="instruction">
+        <strong>☝ Touch</strong>
+        <span>Tap or hold any key</span>
+      </div>
+    </section>
+  </main>
+
+  <script src="pianoEngine.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

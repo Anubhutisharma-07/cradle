@@ -1,0 +1,516 @@
+:root {
+  --bg: #f3ede5;
+  --bg-deep: #e8dfd5;
+
+  --surface: #faf6f1;
+  --surface-light: #fffaf5;
+  --panel: #f5eee7;
+  --border: #d8c9bb;
+
+  --text: #302820;
+  --muted: #75685d;
+
+  --accent: #c87535;
+  --accent-light: #dc8d4d;
+  --accent-dark: #a45725;
+
+  --white-key: #f8f3ec;
+  --white-key-light: #fffdf9;
+  --white-key-shadow: #b9afa5;
+
+  --black-key: #29221d;
+  --black-key-light: #51463d;
+  --black-active: #c86d32;
+
+  --shadow: 0 24px 60px rgba(80, 55, 35, 0.18);
+
+  --radius: 22px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  min-height: 100%;
+  background: var(--bg-deep);
+}
+
+body {
+  min-height: 100vh;
+  padding: 32px 20px;
+  color: var(--text);
+
+  background:
+    radial-gradient(
+      circle at 50% -10%,
+      rgba(216, 138, 74, 0.12),
+      transparent 38%
+    ),
+    linear-gradient(
+      180deg,
+      #faf6f1 0%,
+      #e9e0d6 100%
+    );
+
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+button {
+  font: inherit;
+}
+
+.piano-app {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+.piano-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.header-content {
+  min-width: 0;
+}
+
+.eyebrow {
+  margin-bottom: 8px;
+  color: var(--accent-light);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.piano-header h1 {
+  margin-bottom: 8px;
+  color: #5f3808;
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.piano-header p:not(.eyebrow) {
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.status {
+  flex-shrink: 0;
+  min-width: 120px;
+  padding: 11px 18px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #181411;
+  color: var(--accent-light);
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-align: center;
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.04),
+    0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.piano-card {
+  padding: clamp(14px, 3vw, 28px);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(145deg, #29221d, #171310);
+  box-shadow: var(--shadow);
+}
+
+.piano {
+  position: relative;
+  width: 100%;
+  min-height: 360px;
+  padding: 16px;
+  overflow: hidden;
+  border: 2px solid #0a0807;
+  border-radius: 16px;
+  background:
+    linear-gradient(145deg, #3b3028, #15110f 55%, #080706);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -10px 20px rgba(0, 0, 0, 0.55),
+    0 15px 35px rgba(0, 0, 0, 0.5);
+}
+
+.white-keys {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  width: 100%;
+  height: 328px;
+}
+
+.key {
+  position: relative;
+  border: 0;
+  outline: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+  cursor: pointer;
+}
+
+.white-key {
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 328px;
+  padding: 18px 6px;
+  border-right: 1px solid #aaa096;
+  border-bottom: 7px solid var(--white-key-shadow);
+  border-radius: 0 0 10px 10px;
+  background:
+    linear-gradient(
+      90deg,
+      #ddd5ca 0%,
+      var(--white-key-light) 12%,
+      #fffdf8 50%,
+      #e3dbd0 100%
+    );
+  color: #5f554d;
+  box-shadow:
+    inset 2px 0 rgba(255, 255, 255, 0.9),
+    inset -2px 0 rgba(0, 0, 0, 0.08);
+  transition:
+    transform 70ms ease,
+    background 70ms ease,
+    box-shadow 70ms ease,
+    border-color 70ms ease;
+}
+
+.white-key:last-child {
+  border-right: 0;
+}
+
+.white-key:hover {
+  background:
+    linear-gradient(
+      90deg,
+      #e6ded4,
+      #fffdf9 45%,
+      #ebe4db
+    );
+}
+
+.white-key.active,
+.white-key:active {
+  transform: translateY(8px);
+  border-bottom-width: 2px;
+  background:
+    linear-gradient(
+      180deg,
+      #ffe8d0 0%,
+      #e4a26f 55%,
+      #bd6935 100%
+    );
+  color: #3c2114;
+  box-shadow:
+    inset 0 4px 8px rgba(92, 43, 17, 0.2),
+    inset 0 -2px rgba(255, 255, 255, 0.25);
+}
+
+.black-keys {
+  position: absolute;
+  z-index: 5;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  height: 205px;
+  pointer-events: none;
+}
+
+.black-key {
+  position: absolute;
+  top: 0;
+  width: 8.5%;
+  height: 205px;
+  border: 1px solid #050403;
+  border-radius: 0 0 9px 9px;
+  background:
+    linear-gradient(
+      90deg,
+      #050403 0%,
+      var(--black-key-light) 42%,
+      #090807 100%
+    );
+  box-shadow:
+    inset 2px 0 rgba(255, 255, 255, 0.06),
+    inset -4px 0 rgba(0, 0, 0, 0.65),
+    0 9px 13px rgba(0, 0, 0, 0.55);
+  color: #bdb0a4;
+  pointer-events: auto;
+  transition:
+    transform 70ms ease,
+    background 70ms ease,
+    box-shadow 70ms ease;
+}
+
+.black-key:nth-child(1) {
+  left: 6.25%;
+}
+
+.black-key:nth-child(2) {
+  left: 18.75%;
+}
+
+.black-key:nth-child(3) {
+  left: 43.75%;
+}
+
+.black-key:nth-child(4) {
+  left: 56.25%;
+}
+
+.black-key:nth-child(5) {
+  left: 68.75%;
+}
+
+.black-key:hover {
+  background:
+    linear-gradient(
+      90deg,
+      #0c0a09,
+      #443a33 45%,
+      #100e0c
+    );
+}
+
+.black-key.active,
+.black-key:active {
+  transform: translateY(8px);
+  background:
+    linear-gradient(
+      90deg,
+      #743c20,
+      var(--black-active) 48%,
+      #7e411f
+    );
+  color: #fff2e6;
+  box-shadow:
+    inset 0 2px 5px rgba(255, 205, 160, 0.2),
+    0 4px 7px rgba(0, 0, 0, 0.45);
+}
+
+.note {
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.white-key kbd {
+  min-width: 32px;
+  margin-top: 7px;
+  padding: 5px 8px;
+  border: 1px solid #c7bdb1;
+  border-radius: 7px;
+  background: #e8e0d6;
+  color: #514840;
+  font-size: 0.72rem;
+  font-weight: 900;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.12);
+}
+
+.white-key.active kbd {
+  border-color: rgba(96, 48, 23, 0.4);
+  background: rgba(255, 239, 220, 0.65);
+  color: #542b19;
+}
+
+.black-key .note {
+  font-size: 0.68rem;
+}
+
+.black-key kbd {
+  margin-top: 5px;
+  padding: 3px 7px;
+  border: 1px solid #4d423a;
+  border-radius: 5px;
+  background: #151210;
+  color: #bfb2a6;
+  font-size: 0.64rem;
+  font-weight: 900;
+}
+
+.black-key.active kbd {
+  border-color: rgba(255, 220, 190, 0.4);
+  background: rgba(70, 30, 16, 0.7);
+  color: #fff0e4;
+}
+
+.instructions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.instruction {
+  padding: 17px 18px;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background:
+    linear-gradient(145deg, #251f1b, #191512);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.035),
+    0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.instruction strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #f4e9dc;
+  font-size: 0.88rem;
+}
+
+.instruction span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.key:focus-visible {
+  z-index: 10;
+  box-shadow:
+    0 0 0 3px var(--accent-light),
+    0 0 0 6px rgba(216, 138, 74, 0.25);
+}
+
+@media (max-width: 760px) {
+  body {
+    padding: 20px 12px;
+  }
+
+  .piano-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .status {
+    min-width: 0;
+  }
+
+  .piano-card {
+    padding: 10px;
+  }
+
+  .piano {
+    min-height: 250px;
+    padding: 9px;
+  }
+
+  .white-keys {
+    height: 230px;
+  }
+
+  .white-key {
+    height: 230px;
+    padding: 12px 3px;
+  }
+
+  .black-keys {
+    top: 9px;
+    left: 9px;
+    right: 9px;
+    height: 145px;
+  }
+
+  .black-key {
+    height: 145px;
+  }
+
+  .note {
+    font-size: 0.68rem;
+  }
+
+  .white-key kbd {
+    min-width: 24px;
+    padding: 3px 5px;
+    font-size: 0.62rem;
+  }
+
+  .black-key .note {
+    font-size: 0.55rem;
+  }
+
+  .black-key kbd {
+    padding: 2px 4px;
+    font-size: 0.55rem;
+  }
+
+  .instructions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 14px 8px;
+  }
+
+  .piano-header h1 {
+    font-size: 2rem;
+  }
+
+  .piano-header p:not(.eyebrow) {
+    font-size: 0.88rem;
+  }
+
+  .piano {
+    padding: 6px;
+  }
+
+  .white-keys {
+    height: 190px;
+  }
+
+  .white-key {
+    height: 190px;
+    padding-bottom: 9px;
+  }
+
+  .black-keys {
+    top: 6px;
+    left: 6px;
+    right: 6px;
+    height: 120px;
+  }
+
+  .black-key {
+    height: 120px;
+  }
+
+  .white-key .note,
+  .black-key .note {
+    display: none;
+  }
+
+  .white-key kbd {
+    min-width: 22px;
+    padding: 2px 4px;
+    font-size: 0.58rem;
+  }
+
+  .black-key kbd {
+    padding: 2px 4px;
+    font-size: 0.52rem;
+  }
+
+  .instructions {
+    gap: 9px;
+  }
+
+  .instruction {
+    padding: 13px 15px;
+  }
+}
