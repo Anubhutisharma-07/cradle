@@ -45,6 +45,8 @@ let isModelLoaded = false;
 let isCustomMode = false;
 let customClasses = []; // { id, name, count }
 let customTestImage = null; // img element
+let previewObjectURL = null;
+let customTestImageURL = null;
 let Engine = null;
 
 async function loadModel() {
@@ -94,7 +96,11 @@ customModeBtn.addEventListener("click", () => {
 imageUpload.addEventListener("change", event => {
   const file = event.target.files[0];
   if (file) {
-    preview.src = URL.createObjectURL(file);
+    if (previewObjectURL) {
+      URL.revokeObjectURL(previewObjectURL);
+    }
+    previewObjectURL = URL.createObjectURL(file);
+    preview.src = previewObjectURL;
     preview.style.display = "block";
     uploadContent.style.display = "none";
   }
@@ -104,9 +110,12 @@ imageUpload.addEventListener("change", event => {
 customImageUpload.addEventListener("change", event => {
   const file = event.target.files[0];
   if (file) {
-    const url = URL.createObjectURL(file);
+    if (customTestImageURL) {
+      URL.revokeObjectURL(customTestImageURL);
+    }
+    customTestImageURL = URL.createObjectURL(file);
     customTestImage = new Image();
-    customTestImage.src = url;
+    customTestImage.src = customTestImageURL;
     // Check if we can enable predict button
     updateCustomPredictState();
   }
@@ -135,6 +144,7 @@ addClassBtn.addEventListener("click", () => {
     id: Date.now().toString(),
     name: className.trim(),
     count: 0,
+    urls: [],
   };
 
   customClasses.push(classObj);
@@ -177,11 +187,15 @@ function renderClasses() {
 }
 
 function removeClass(id) {
+  const classObj = customClasses.find(c => c.id === id);
+  if (classObj) {
+    classObj.urls.forEach(url => URL.revokeObjectURL(url));
+  }
   customClasses = customClasses.filter(c => c.id !== id);
   if (knn.getNumClasses() > 0) {
     try {
       knn.clearClass(id);
-    } catch (e) {}
+    } catch (e) { }
   }
   renderClasses();
   updateCustomPredictState();
@@ -201,7 +215,9 @@ async function addImageToClass(event, id) {
 
   for (let file of files) {
     const img = new Image();
-    img.src = URL.createObjectURL(file);
+    const objectUrl = URL.createObjectURL(file);
+    img.src = objectUrl;
+    classObj.urls.push(objectUrl);
 
     await new Promise(resolve => {
       img.addEventListener("load", () => {
@@ -215,7 +231,7 @@ async function addImageToClass(event, id) {
         const wrapper = document.createElement("div");
         wrapper.className = "thumb-wrapper";
         wrapper.innerHTML = `
-                    <img src="${img.src}">
+                    <img src="${objectUrl}">
                 `;
         // Add before the "+" button
         imagesContainer.insertBefore(wrapper, addBtn);
@@ -266,9 +282,9 @@ async function performPrediction() {
 
       // Format for rendering
       const formatted = formatCustomPredictions(
-  result.confidences,
-  customClasses
-);
+        result.confidences,
+        customClasses
+      );
 
 
       renderPredictions(formatted);
@@ -287,7 +303,7 @@ function renderPredictions(predictions) {
   predictions.forEach((prediction, index) => {
     if (prediction.probability === 0) return; // Hide 0% in custom mode
 
-   const confidence = formatConfidence(prediction.probability);
+    const confidence = formatConfidence(prediction.probability);
     const predictionCard = document.createElement("div");
     predictionCard.className = "prediction";
     predictionCard.style.animationDelay = `${index * 0.08}s`;

@@ -45,15 +45,19 @@ const copyStatus = document.getElementById("copy-status");
 const RECENT_PROJECTS_KEY = "cradle:recent-projects";
 const RECENT_PROJECTS_COLLAPSED_KEY = "cradle:recent-projects-collapsed";
 const RECENT_PROJECTS_LIMIT = 5;
+const sortProjects = document.getElementById("sort-projects");
 
+if (sortProjects) {
+  sortProjects.addEventListener("change", applyFilters);
+}
 let filterWorker;
 
 if (window.Worker) {
   filterWorker = new Worker("./scripts/worker.js");
 
   filterWorker.onmessage = function (e) {
-    renderProjects(e.data);
-  };
+  renderProjects(sortProjectList(e.data));
+};
 }
 
 function openDB() {
@@ -76,6 +80,70 @@ function openDB() {
   });
 }
 
+function sortProjectList(projects) {
+  const sorted = [...projects];
+
+  switch (sortProjects?.value) {
+    case "name-asc":
+      return sorted.sort((a, b) =>
+        a.title.localeCompare(b.title)
+      );
+
+    case "name-desc":
+      return sorted.sort((a, b) =>
+        b.title.localeCompare(a.title)
+      );
+
+    case "category":
+      return sorted.sort((a, b) =>
+        a.category.localeCompare(b.category) ||
+        a.title.localeCompare(b.title)
+      );
+
+    case "newest":
+      return sorted.sort((a, b) => {
+        const dateA = a.dateAdded
+          ? new Date(a.dateAdded).getTime()
+          : NaN;
+        const dateB = b.dateAdded
+          ? new Date(b.dateAdded).getTime()
+          : NaN;
+
+        if (Number.isNaN(dateA) && Number.isNaN(dateB)) {
+          return a.title.localeCompare(b.title);
+        }
+
+        if (Number.isNaN(dateA)) return 1;
+        if (Number.isNaN(dateB)) return -1;
+
+        return dateB - dateA || a.title.localeCompare(b.title);
+      });
+
+    case "oldest":
+      return sorted.sort((a, b) => {
+        const dateA = a.dateAdded
+          ? new Date(a.dateAdded).getTime()
+          : NaN;
+        const dateB = b.dateAdded
+          ? new Date(b.dateAdded).getTime()
+          : NaN;
+
+        if (Number.isNaN(dateA) && Number.isNaN(dateB)) {
+          return a.title.localeCompare(b.title);
+        }
+
+        if (Number.isNaN(dateA)) return 1;
+        if (Number.isNaN(dateB)) return -1;
+
+        return dateA - dateB || a.title.localeCompare(b.title);
+      });
+
+    default:
+      return sorted.sort((a, b) =>
+        a.title.localeCompare(b.title)
+      );
+  }
+}
 function getCachedProjects(db) {
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(["projectsStore"], "readonly");
@@ -636,23 +704,14 @@ async function copyProjectUrl(project, button) {
 function applyFilters() {
   const query = searchInput.value.toLowerCase().trim();
 
-  if (filterWorker) {
-    filterWorker.postMessage({
-      allProjects,
-      selectedCategory,
-      query,
-    });
-  } else {
-    const filtered = allProjects.filter(
-      project =>
-        (selectedCategory === "all" || project.category === selectedCategory) &&
-        (project.title.toLowerCase().includes(query) ||
-          getSearchableCategory(project.category).includes(query))
-    );
+  const filtered = allProjects.filter(
+    project =>
+      (selectedCategory === "all" || project.category === selectedCategory) &&
+      (project.title.toLowerCase().includes(query) ||
+        getSearchableCategory(project.category).includes(query))
+  );
 
-    renderProjects(filtered);
-  }
-
+  renderProjects(sortProjectList(filtered));
   updateClearButtonVisibility(query);
 }
 
