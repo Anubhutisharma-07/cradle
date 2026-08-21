@@ -10,6 +10,19 @@
   "use strict";
 
   const NOTE_FREQUENCIES = Object.freeze({
+    C3: 130.81,
+    "C#3": 138.59,
+    D3: 146.83,
+    "D#3": 155.56,
+    E3: 164.81,
+    F3: 174.61,
+    "F#3": 185.0,
+    G3: 196.0,
+    "G#3": 207.65,
+    A3: 220.0,
+    "A#3": 233.08,
+    B3: 246.94,
+
     C4: 261.63,
     "C#4": 277.18,
     D4: 293.66,
@@ -17,33 +30,89 @@
     E4: 329.63,
     F4: 349.23,
     "F#4": 369.99,
-    G4: 392,
+    G4: 392.0,
     "G#4": 415.3,
-    A4: 440,
+    A4: 440.0,
     "A#4": 466.16,
     B4: 493.88,
-    C5: 523.25
+
+    C5: 523.25,
+    "C#5": 554.37,
+    D5: 587.33,
+    "D#5": 622.25,
+    E5: 659.25,
+    F5: 698.46,
+    "F#5": 739.99,
+    G5: 783.99,
+    "G#5": 830.61,
+    A5: 880.0,
+    "A#5": 932.33,
+    B5: 987.77,
+
+    C6: 1046.5,
+    "C#6": 1108.73,
+    D6: 1174.66,
+    "D#6": 1244.51,
+    E6: 1318.51
   });
 
+
   const KEY_TO_NOTE = Object.freeze({
+    // C3 → B3
+    z: "C3",
+    s: "C#3",
+    x: "D3",
+    d: "D#3",
+    c: "E3",
+    v: "F3",
+    g: "F#3",
+    b: "G3",
+    h: "G#3",
+    n: "A3",
+    j: "A#3",
+    m: "B3",
+
+    // C4 → B4
     a: "C4",
     w: "C#4",
-    s: "D4",
+    q: "D4",
     e: "D#4",
-    d: "E4",
-    f: "F4",
-    t: "F#4",
-    g: "G4",
-    y: "G#4",
-    h: "A4",
-    u: "A#4",
-    j: "B4",
-    k: "C5"
+    r: "E4",
+    t: "F4",
+    y: "F#4",
+    u: "G4",
+    i: "G#4",
+    o: "A4",
+    p: "A#4",
+    "[": "B4",
+
+    // C5 → B5
+    k: "C5",
+    "1": "C#5",
+    l: "D5",
+    "2": "D#5",
+    ";": "E5",
+    "'": "F5",
+    "3": "F#5",
+    ",": "G5",
+    "4": "G#5",
+    ".": "A5",
+    "5": "A#5",
+    "/": "B5",
+
+    // C6 → E6
+    "6": "C6",
+    "7": "C#6",
+    "8": "D6",
+    "9": "D#6",
+    "0": "E6"
   });
 
   const NOTE_TO_KEY = Object.freeze(
     Object.fromEntries(
-      Object.entries(KEY_TO_NOTE).map(([key, note]) => [note, key])
+      Object.entries(KEY_TO_NOTE).map(
+        ([key, note]) => [note, key]
+      )
     )
   );
 
@@ -57,7 +126,8 @@
     }
 
     const AudioContext =
-      window.AudioContext || window.webkitAudioContext;
+      window.AudioContext ||
+      window.webkitAudioContext;
 
     if (!AudioContext) {
       return null;
@@ -89,7 +159,10 @@
 
     for (let i = 0; i < length; i++) {
       const progress = i / length;
-      const decay = Math.pow(1 - progress, 2.5);
+      const decay = Math.pow(
+        1 - progress,
+        2.5
+      );
 
       data[i] =
         (Math.random() * 2 - 1) *
@@ -105,20 +178,29 @@
     frequency,
     time
   ) {
-    const source = context.createBufferSource();
-    const filter = context.createBiquadFilter();
-    const gain = context.createGain();
+    const source =
+      context.createBufferSource();
 
-    source.buffer = createNoiseBuffer(
-      context,
-      0.035
-    );
+    const filter =
+      context.createBiquadFilter();
+
+    const gain =
+      context.createGain();
+
+    source.buffer =
+      createNoiseBuffer(
+        context,
+        0.035
+      );
 
     filter.type = "bandpass";
 
     filter.frequency.setValueAtTime(
       Math.min(
-        Math.max(frequency * 5, 1800),
+        Math.max(
+          frequency * 5,
+          1800
+        ),
         6500
       ),
       time
@@ -158,9 +240,14 @@
     frequency,
     time
   ) {
-    const oscillator = context.createOscillator();
-    const gain = context.createGain();
-    const filter = context.createBiquadFilter();
+    const oscillator =
+      context.createOscillator();
+
+    const gain =
+      context.createGain();
+
+    const filter =
+      context.createBiquadFilter();
 
     oscillator.type = "sawtooth";
 
@@ -172,7 +259,10 @@
     filter.type = "highpass";
 
     filter.frequency.setValueAtTime(
-      Math.min(frequency * 1.5, 3000),
+      Math.min(
+        frequency * 1.5,
+        3000
+      ),
       time
     );
 
@@ -204,8 +294,11 @@
     frequency,
     time
   ) {
-    const output = context.createGain();
-    const brightness = context.createBiquadFilter();
+    const output =
+      context.createGain();
+
+    const brightness =
+      context.createBiquadFilter();
 
     brightness.type = "lowpass";
 
@@ -310,7 +403,8 @@
       return true;
     }
 
-    const context = getAudioContext();
+    const context =
+      getAudioContext();
 
     if (!context) {
       return false;
@@ -322,11 +416,12 @@
     const frequency =
       NOTE_FREQUENCIES[note];
 
-    const voice = createVoice(
-      context,
-      frequency,
-      time
-    );
+    const voice =
+      createVoice(
+        context,
+        frequency,
+        time
+      );
 
     createHammerAttack(
       context,
@@ -468,11 +563,11 @@
   }
 
   function stopAllNotes() {
-    [
-      ...activeVoices.keys()
-    ].forEach(note => {
-      stopNote(note);
-    });
+    [...activeVoices.keys()].forEach(
+      note => {
+        stopNote(note);
+      }
+    );
   }
 
   function playNoteFromKey(key) {
