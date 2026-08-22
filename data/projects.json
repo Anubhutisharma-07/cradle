@@ -138,6 +138,12 @@
     "dateAdded": "2026-07-26T11:42:53+05:30"
   },
   {
+    "title": "Guzheng",
+    "category": "instruments",
+    "path": "projects/instruments/guzheng/",
+    "dateAdded": null
+  },
+  {
     "title": "Image Classifier",
     "category": "aiml",
     "path": "projects/aiml/image-classifier/",
@@ -213,7 +219,7 @@
     "title": "Percussion",
     "category": "instruments",
     "path": "projects/instruments/percussion/",
-    "dateAdded": null
+    "dateAdded": "2026-08-22T10:04:50+05:30"
   },
   {
     "title": "Periodic Table",
