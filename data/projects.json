@@ -210,6 +210,12 @@
     "dateAdded": "2026-06-18T16:52:15+05:30"
   },
   {
+    "title": "Percussion",
+    "category": "instruments",
+    "path": "projects/instruments/percussion/",
+    "dateAdded": null
+  },
+  {
     "title": "Periodic Table",
     "category": "misc",
     "path": "projects/misc/periodic-table/",
