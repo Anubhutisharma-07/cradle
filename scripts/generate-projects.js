@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { execSync } = require("child_process");
+const { execFileSync } = require("child_process");
 
 const REPO_ROOT = path.join(__dirname, "..");
 
@@ -12,7 +12,7 @@ const REPO_ROOT = path.join(__dirname, "..");
 function getDateAdded(absPath) {
   try {
     const rel = path.relative(REPO_ROOT, absPath);
-    const out = execSync(`git log --reverse --format=%aI -- "${rel}"`, {
+    const out = execFileSync("git", ["log", "--reverse", "--format=%aI", "--", rel], {
       cwd: REPO_ROOT,
       stdio: ["ignore", "pipe", "ignore"],
     })
@@ -285,7 +285,7 @@ function generateProjects() {
   const seenTitles = new Set();
 
   for (const category of categories) {
-    const categoryName = category.name;
+    const categoryName = path.basename(category.name);
     const categoryPath = path.join(PROJECTS_DIR, categoryName);
 
     const projectFolders = fs
@@ -295,7 +295,7 @@ function generateProjects() {
       .filter(dirent => dirent.isDirectory());
 
     for (const project of projectFolders) {
-      const projectName = project.name;
+      const projectName = path.basename(project.name);
       const title = titleCase(projectName);
       const projectPathStr = `projects/${categoryName}/${projectName}/`;
       const fullProjectPath = path.join(__dirname, "..", projectPathStr);
