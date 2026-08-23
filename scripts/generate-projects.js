@@ -24,6 +24,51 @@ function getDateAdded(absPath) {
   }
 }
 
+// If we're in a shallow clone (e.g. actions/checkout's default fetch-depth: 1),
+// `git log -- <path>` can't see the commit that introduced most project
+// folders, so dateAdded silently comes back null for almost everything. Try
+// to deepen the clone once, up front, so getDateAdded() above has real
+// history to read. Safe to skip if there's no remote/network (e.g. local
+// dev, offline CI) — the existing-dates fallback below covers that case.
+function ensureFullHistory() {
+  try {
+    const isShallow = execFileSync("git", ["rev-parse", "--is-shallow-repository"], {
+      cwd: REPO_ROOT,
+      stdio: ["ignore", "pipe", "ignore"],
+    })
+      .toString()
+      .trim();
+    if (isShallow === "true") {
+      execFileSync("git", ["fetch", "--unshallow"], {
+        cwd: REPO_ROOT,
+        stdio: ["ignore", "ignore", "ignore"],
+      });
+    }
+  } catch {
+    // Not a git repo, no remote configured, offline, etc. — fine, we fall
+    // back to the previously recorded dateAdded for each project below.
+  }
+}
+
+// Preserve previously-generated dateAdded values across regenerations. Used
+// as a fallback whenever git history for a project can't be read (shallow
+// clone, no .git directory, etc.) so a bad environment can't erase a date
+// that was already correctly recorded.
+function loadExistingDates() {
+  const dates = new Map();
+  try {
+    const existing = JSON.parse(fs.readFileSync(OUTPUT_FILE, "utf8"));
+    for (const project of existing) {
+      if (project.path && project.dateAdded) {
+        dates.set(project.path, project.dateAdded);
+      }
+    }
+  } catch {
+    // No existing data/projects.json yet, or it's malformed — start fresh.
+  }
+  return dates;
+}
+
 const PROJECTS_DIR = path.join(__dirname, "..", "projects");
 const OUTPUT_FILE = path.join(
   __dirname,
@@ -190,7 +235,7 @@ function generateSvgThumbnail(title, categoryName, projectAbsPath) {
   }
 
   const style = CATEGORY_STYLES[categoryName] || defaultStyle;
-  
+
   // Word wrap for title
   const lines = wrapText(title, 20);
   let textY = 280;
@@ -277,6 +322,9 @@ function generateProjects() {
     process.exit(1);
   }
 
+  ensureFullHistory();
+  const existingDates = loadExistingDates();
+
   const categories = fs
     .readdirSync(PROJECTS_DIR, { withFileTypes: true })
     .filter(dirent => dirent.isDirectory());
@@ -335,11 +383,27 @@ function generateProjects() {
         }
       }
 
+      let dateAdded = getDateAdded(fullProjectPath);
+      if (!dateAdded && existingDates.has(projectPathStr)) {
+        // git history wasn't available (shallow clone, no .git, etc.) —
+        // keep the last known-good date instead of losing it.
+        dateAdded = existingDates.get(projectPathStr);
+      }
+      if (!dateAdded && fs.existsSync(fullProjectPath)) {
+        // Last resort so a brand-new project (with no git history yet and
+        // no prior recorded date) still gets a usable dateAdded.
+        try {
+          dateAdded = fs.statSync(fullProjectPath).birthtime.toISOString();
+        } catch {
+          dateAdded = null;
+        }
+      }
+
       projects.push({
         title: title,
         category: categoryName,
         path: projectPathStr,
-        dateAdded: getDateAdded(fullProjectPath)
+        dateAdded: dateAdded
       });
     }
   }
