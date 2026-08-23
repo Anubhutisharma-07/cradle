@@ -31,6 +31,7 @@ cradle/
 │
 ├── scripts/
 │   ├── generate-projects.js      # Scans projects/ and (re)writes data/projects.json
+│   ├── validate-projects-sync.js # Validates data/projects.json synchronization against projects/ and generator output
 │   ├── theme.js                  # Light/dark theme init + toggle, persisted to localStorage
 │   └── worker.js                 # Web Worker offloading search/category filtering from the main thread
 │
@@ -248,7 +249,7 @@ None at runtime. The site uses only native browser APIs (DOM, `fetch`, IndexedDB
 
 ## Future Improvements
 
-- Add a CI check that fails if `data/projects.json` is out of date with the `projects/` folder tree
+- ~~Add a CI check that fails if `data/projects.json` is out of date with the `projects/` folder tree~~ **Fixed** — enforced via `npm run validate:projects-sync` in CI (`healthcheck.yml` and `test.yml`)
 - Add automated verification that every project folder contains both `README.md` and `ARCHITECTURE.md`
 - Derive category display labels from a shared enum instead of formatting folder names directly
 
@@ -256,7 +257,6 @@ None at runtime. The site uses only native browser APIs (DOM, `fetch`, IndexedDB
 
 ## Known Limitations
 
-- `data/projects.json` can drift from the actual `projects/` folder tree if `npm run generate` is not re-run after adding/removing a project
 - Category display names are derived mechanically from folder names (e.g. `dev-tools` → "DEV TOOLS"), which can look inconsistent for multi-word categories
 - ~~`resolveBase()` in `src/components/ui/index.js` relied on path heuristics (looking for a `projects/` segment) to locate itself; unusual hosting setups could break it~~ **Fixed** — now uses `<meta name="cradle-ui-base">` tag (Strategy 1), script-src scanning (Strategy 2), `document.currentScript` (Strategy 3), with a clean fallback to the repo root
 
