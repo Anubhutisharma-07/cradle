@@ -10,6 +10,7 @@ const {
   parseHtmlAssetLinks,
   validateStandardProjectFiles,
   validateProjectIndexEntries,
+  validateProjectNavigation,
   validateMiniProjects,
 } = require("../scripts/validate-mini-projects");
 
@@ -139,6 +140,42 @@ test("validateProjectIndexEntries passes when every mini folder is indexed", () 
     validateProjectIndexEntries(diskProjects, projectsJsonData),
     []
   );
+});
+
+test("validateProjectNavigation reports mini projects missing shared navigation", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "cradle-mini-nav-"));
+  const miniWithNav = path.join(root, "with-nav");
+  const miniWithoutNav = path.join(root, "without-nav");
+
+  fs.mkdirSync(miniWithNav, { recursive: true });
+  fs.mkdirSync(miniWithoutNav, { recursive: true });
+
+  fs.writeFileSync(
+    path.join(miniWithNav, "index.html"),
+    '<!doctype html><html><body><script src="../../../src/components/ui/BackToHome/BackToHome.js" defer></script></body></html>'
+  );
+  fs.writeFileSync(
+    path.join(miniWithoutNav, "index.html"),
+    "<!doctype html><html><body><h1>No Nav</h1></body></html>"
+  );
+
+  const diskProjects = [
+    {
+      name: "with-nav",
+      relPath: "projects/test/with-nav/",
+      absPath: miniWithNav,
+    },
+    {
+      name: "without-nav",
+      relPath: "projects/test/without-nav/",
+      absPath: miniWithoutNav,
+    },
+  ];
+
+  const issues = validateProjectNavigation(diskProjects);
+  assert.equal(issues.length, 1);
+  assert.equal(issues[0].type, "MISSING_NAVIGATION");
+  assert.equal(issues[0].project, "without-nav");
 });
 
 test("validateMiniProjects verifies all mini projects open without load failures or missing pages", () => {
