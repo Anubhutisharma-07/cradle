@@ -144,6 +144,12 @@
     "dateAdded": null
   },
   {
+    "title": "Guzheng",
+    "category": "instruments",
+    "path": "projects/instruments/guzheng/",
+    "dateAdded": "2026-08-22T10:19:11+05:30"
+  },
+  {
     "title": "Image Classifier",
     "category": "aiml",
     "path": "projects/aiml/image-classifier/",
@@ -216,6 +222,12 @@
     "dateAdded": "2026-06-18T16:52:15+05:30"
   },
   {
+    "title": "Percussion",
+    "category": "instruments",
+    "path": "projects/instruments/percussion/",
+    "dateAdded": "2026-08-22T10:04:50+05:30"
+  },
+  {
     "title": "Periodic Table",
     "category": "misc",
     "path": "projects/misc/periodic-table/",
@@ -285,12 +297,6 @@
     "title": "Violin",
     "category": "instruments",
     "path": "projects/instruments/violin/",
-    "dateAdded": "2026-08-14T19:20:08+01:00"
-  },
-  {
-    "title": "Guitar",
-    "category": "instruments",
-    "path": "projects/instruments/guitar/",
     "dateAdded": "2026-08-14T19:20:08+01:00"
   },
   {

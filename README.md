@@ -74,8 +74,28 @@ Then visit
 http://localhost:8000
 ```
 
-1. For Individual projects
-   - Open their `index.html` directly on browser
+### Run Individual Projects
+
+Projects that do not use browser-restricted features can be opened directly from their `index.html`.
+
+Projects that use JavaScript modules, Web Workers, or other browser features restricted under `file://` should be run through a local HTTP server.
+
+```bash
+python -m http.server 8000
+```
+
+Then visit:
+
+```text
+http://localhost:8000/projects/<category>/<project>/
+```
+
+For example:
+
+```text
+http://localhost:8000/projects/aiml/image-classifier/
+```
+
 
 ## ⌨️ Keyboard Shortcuts
 
