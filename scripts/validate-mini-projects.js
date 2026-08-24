@@ -113,6 +113,34 @@ function validateProjectIndexEntries(diskProjects, projectsJsonData) {
     }));
 }
 
+function validateProjectNavigation(diskProjects) {
+  const issues = [];
+
+  for (const project of diskProjects) {
+    const htmlPath = path.join(project.absPath, "index.html");
+    if (!fs.existsSync(htmlPath)) continue;
+
+    const htmlContent = fs.readFileSync(htmlPath, "utf-8");
+    const hasBackToHomeScript = /src=["'][^"']*BackToHome\.js["']/i.test(
+      htmlContent
+    );
+    const hasUIBundle = /src=["'][^"']*components\/ui\/index\.js["']/i.test(
+      htmlContent
+    );
+    const hasDataAttr = /data-cradle-back-to-home/i.test(htmlContent);
+
+    if (!hasBackToHomeScript && !hasUIBundle && !hasDataAttr) {
+      issues.push({
+        type: "MISSING_NAVIGATION",
+        project: project.name,
+        message: `Project "${project.relPath}" does not include the shared BackToHome navigation component.`,
+      });
+    }
+  }
+
+  return issues;
+}
+
 /**
  * Validates that every mini project opens successfully without missing pages or load failures.
  */
@@ -140,6 +168,7 @@ function validateMiniProjects() {
   const diskProjects = getDiskProjects();
   issues.push(...validateStandardProjectFiles(diskProjects));
   issues.push(...validateProjectIndexEntries(diskProjects, projectsJsonData));
+  issues.push(...validateProjectNavigation(diskProjects));
 
   // 3. Validate each registered project entry in projects.json
   for (const project of projectsJsonData) {
@@ -256,5 +285,6 @@ module.exports = {
   parseHtmlAssetLinks,
   validateStandardProjectFiles,
   validateProjectIndexEntries,
+  validateProjectNavigation,
   validateMiniProjects,
 };

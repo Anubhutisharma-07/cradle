@@ -55,7 +55,7 @@
         class="alert-container"
         role="status"
         aria-live="polite"
-        style="display: none;"
+        style="display: none"
       >
         <span class="alert-icon">⚠️</span>
         <span id="alertMessage"></span>
@@ -232,7 +232,9 @@
                 </div>
                 <div class="speed-item">
                   <span class="speed-label">Longest Streak</span>
-                  <span class="speed-value mono" id="longest-streak">0 days</span>
+                  <span class="speed-value mono" id="longest-streak"
+                    >0 days</span
+                  >
                 </div>
                 <div class="speed-item">
                   <span class="speed-label">Completion Rate</span>
@@ -487,5 +489,9 @@
     <script src="tracker-logic.js"></script>
     <script src="../../../src/components/ui/escapeHtml.js"></script>
     <script src="script.js"></script>
+    <script
+      src="../../../src/components/ui/BackToHome/BackToHome.js"
+      defer
+    ></script>
   </body>
 </html>
