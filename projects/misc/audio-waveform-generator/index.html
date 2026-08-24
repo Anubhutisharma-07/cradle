@@ -51,10 +51,18 @@
               <button class="wave-btn" data-wave="square" aria-pressed="false">
                 Square
               </button>
-              <button class="wave-btn" data-wave="sawtooth" aria-pressed="false">
+              <button
+                class="wave-btn"
+                data-wave="sawtooth"
+                aria-pressed="false"
+              >
                 Sawtooth
               </button>
-              <button class="wave-btn" data-wave="triangle" aria-pressed="false">
+              <button
+                class="wave-btn"
+                data-wave="triangle"
+                aria-pressed="false"
+              >
                 Triangle
               </button>
             </div>
@@ -98,7 +106,13 @@
           <div class="control-row">
             <div class="play-row">
               <button class="btn btn-play" id="playBtn">▶ Play</button>
-              <span class="status-text mono" id="statusText">Stopped</span>
+              <span
+                class="status-text mono"
+                id="statusText"
+                role="status"
+                aria-live="polite"
+                >Stopped</span
+              >
             </div>
           </div>
         </section>

@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>File Difference Visualizer</title>
-    <meta name="description" content="Visual file comparison tool for inspecting text differences, diff statistics, and line edits." />
+    <meta
+      name="description"
+      content="Visual file comparison tool for inspecting text differences, diff statistics, and line edits."
+    />
     <link rel="stylesheet" href="style.css" />
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -46,7 +49,9 @@
           </div>
 
           <div class="actions">
-            <button id="exportPatchBtn" class="btn btn-secondary">Export Patch</button>
+            <button id="exportPatchBtn" class="btn btn-secondary">
+              Export Patch
+            </button>
             <button id="clearBtn" class="btn btn-secondary">Clear</button>
             <button id="demoBtn" class="btn btn-accent">Load Demo</button>
           </div>
@@ -96,7 +101,11 @@
         <!-- Visualizer Section -->
         <section class="diff-viewer card">
           <div class="diff-header">
-            <span class="diff-status" id="diffStatus"
+            <span
+              class="diff-status"
+              id="diffStatus"
+              role="status"
+              aria-live="polite"
               >Paste or load files to see differences</span
             >
           </div>
