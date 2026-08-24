@@ -138,6 +138,12 @@
     "dateAdded": "2026-07-26T11:42:53+05:30"
   },
   {
+    "title": "Guitar",
+    "category": "instruments",
+    "path": "projects/instruments/guitar/",
+    "dateAdded": null
+  },
+  {
     "title": "Guzheng",
     "category": "instruments",
     "path": "projects/instruments/guzheng/",
