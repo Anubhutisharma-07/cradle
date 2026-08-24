@@ -3,12 +3,11 @@
  */
 
 export function formatCategoryLabel(category) {
-    if (!category) return 'All';
-    // Standardize category formatting to prevent drift
-    return category.trim().charAt(0).toUpperCase() + category.trim().slice(1).toLowerCase();
+  if (!category || typeof category !== "string") return "";
+  return category.toUpperCase().replace(/-/g, " ");
 }
 
 export function getSearchableCategory(category) {
-    if (!category) return '';
-    return category.trim().toLowerCase();
+  if (!category || typeof category !== "string") return "";
+  return `${category} ${formatCategoryLabel(category)}`.toLowerCase();
 }

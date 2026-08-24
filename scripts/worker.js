@@ -1,13 +1,10 @@
+import {
+  formatCategoryLabel,
+  getSearchableCategory,
+} from "../src/components/ui/utils/categoryFilter.js";
+
 self.onmessage = function (e) {
   const { allProjects, selectedCategory, query } = e.data;
-
-  function formatCategoryLabel(category) {
-    return category.toUpperCase().replace("-", " ");
-  }
-
-  function getSearchableCategory(category) {
-    return `${category} ${formatCategoryLabel(category)}`.toLowerCase();
-  }
 
   const filtered = allProjects.filter(
     project =>

@@ -1,3 +1,8 @@
+import {
+  formatCategoryLabel,
+  getSearchableCategory,
+} from "./src/components/ui/utils/categoryFilter.js";
+
 const projectsGrid = document.getElementById("projects-grid");
 const searchInput = document.getElementById("search");
 const categoriesContainer = document.getElementById("categories");
@@ -53,11 +58,19 @@ if (sortProjects) {
 let filterWorker;
 
 if (window.Worker) {
-  filterWorker = new Worker("./scripts/worker.js");
-
-  filterWorker.onmessage = function (e) {
-  renderProjects(sortProjectList(e.data));
-};
+  try {
+    filterWorker = new Worker("./scripts/worker.js", { type: "module" });
+    filterWorker.onmessage = function (e) {
+      renderProjects(sortProjectList(e.data));
+    };
+    filterWorker.onerror = function (e) {
+      console.warn("Worker error, falling back to main thread:", e);
+      filterWorker = null;
+    };
+  } catch (e) {
+    console.warn("Could not initialize worker:", e);
+    filterWorker = null;
+  }
 }
 
 function openDB() {
@@ -85,29 +98,21 @@ function sortProjectList(projects) {
 
   switch (sortProjects?.value) {
     case "name-asc":
-      return sorted.sort((a, b) =>
-        a.title.localeCompare(b.title)
-      );
+      return sorted.sort((a, b) => a.title.localeCompare(b.title));
 
     case "name-desc":
-      return sorted.sort((a, b) =>
-        b.title.localeCompare(a.title)
-      );
+      return sorted.sort((a, b) => b.title.localeCompare(a.title));
 
     case "category":
-      return sorted.sort((a, b) =>
-        a.category.localeCompare(b.category) ||
-        a.title.localeCompare(b.title)
+      return sorted.sort(
+        (a, b) =>
+          a.category.localeCompare(b.category) || a.title.localeCompare(b.title)
       );
 
     case "newest":
       return sorted.sort((a, b) => {
-        const dateA = a.dateAdded
-          ? new Date(a.dateAdded).getTime()
-          : NaN;
-        const dateB = b.dateAdded
-          ? new Date(b.dateAdded).getTime()
-          : NaN;
+        const dateA = a.dateAdded ? new Date(a.dateAdded).getTime() : NaN;
+        const dateB = b.dateAdded ? new Date(b.dateAdded).getTime() : NaN;
 
         if (Number.isNaN(dateA) && Number.isNaN(dateB)) {
           return a.title.localeCompare(b.title);
@@ -121,12 +126,8 @@ function sortProjectList(projects) {
 
     case "oldest":
       return sorted.sort((a, b) => {
-        const dateA = a.dateAdded
-          ? new Date(a.dateAdded).getTime()
-          : NaN;
-        const dateB = b.dateAdded
-          ? new Date(b.dateAdded).getTime()
-          : NaN;
+        const dateA = a.dateAdded ? new Date(a.dateAdded).getTime() : NaN;
+        const dateB = b.dateAdded ? new Date(b.dateAdded).getTime() : NaN;
 
         if (Number.isNaN(dateA) && Number.isNaN(dateB)) {
           return a.title.localeCompare(b.title);
@@ -139,9 +140,7 @@ function sortProjectList(projects) {
       });
 
     default:
-      return sorted.sort((a, b) =>
-        a.title.localeCompare(b.title)
-      );
+      return sorted.sort((a, b) => a.title.localeCompare(b.title));
   }
 }
 function getCachedProjects(db) {
@@ -228,11 +227,12 @@ function renderCategories() {
 
   categories.forEach(category => {
     const isActive = category === selectedCategory;
+    const label = formatCategoryLabel(category);
     const btn = CradleButton.create({
       variant: isActive ? "primary" : "ghost",
       size: "sm",
-      children: category.toUpperCase().replace("-", " "),
-      ariaLabel: `${category.toUpperCase().replace("-", " ")} projects`,
+      children: label,
+      ariaLabel: `${label} projects`,
       onClick: () => {
         selectedCategory = category;
         applyFilters();
@@ -245,10 +245,6 @@ function renderCategories() {
 
     categoriesContainer.appendChild(btn);
   });
-}
-
-function formatCategoryLabel(category) {
-  return category.toUpperCase().replace("-", " ");
 }
 
 function isNewProject(dateAdded) {
@@ -501,10 +497,6 @@ projectsGrid.addEventListener("keydown", event => {
   }
 });
 
-function getSearchableCategory(category) {
-  return `${category} ${formatCategoryLabel(category)}`.toLowerCase();
-}
-
 function getSearchSuggestions(query) {
   const normalizedQuery = query.toLowerCase().trim();
   if (!normalizedQuery) return [];
@@ -703,6 +695,16 @@ async function copyProjectUrl(project, button) {
 
 function applyFilters() {
   const query = searchInput.value.toLowerCase().trim();
+
+  if (filterWorker) {
+    filterWorker.postMessage({
+      allProjects,
+      selectedCategory,
+      query,
+    });
+    updateClearButtonVisibility(query);
+    return;
+  }
 
   const filtered = allProjects.filter(
     project =>
