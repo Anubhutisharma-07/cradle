@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "A personal collection of small ideas, experiments, and geeky projects.",
   "main": "script.js",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=9.0.0"
+  },
   "scripts": {
     "generate": "node scripts/generate-projects.js",
     "validate:architecture": "node scripts/validate-architecture-docs.js",
