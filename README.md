@@ -47,6 +47,14 @@ Cradle/
 
 ## Getting started
 
+### Prerequisites
+
+- **Node.js**: `v20.0.0` or higher (CI and recommended runtime is `v24.x` / see [.nvmrc](.nvmrc))
+- **npm**: `v9.0.0` or higher
+- **Python**: `3.x` (optional, for local HTTP static file serving)
+
+### Setup
+
 1. Clone the repo after forking
 
 ```bash
@@ -95,7 +103,6 @@ For example:
 ```text
 http://localhost:8000/projects/aiml/image-classifier/
 ```
-
 
 ## ⌨️ Keyboard Shortcuts
 

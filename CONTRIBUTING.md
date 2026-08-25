@@ -43,6 +43,7 @@ Every contribution, no matter how small, is valuable.
 
 Before working on an issue:
 
+- Ensure you are running a supported Node.js version (`>=20.0.0`, `v24.x` recommended / declared in `.nvmrc` and `package.json`).
 - Search existing issues to avoid duplicate work.
 - Read the project documentation before starting.
 - Wait until an issue has been assigned to you (if required by the maintainers).
