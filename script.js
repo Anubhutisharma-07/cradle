@@ -51,6 +51,11 @@ const RECENT_PROJECTS_KEY = "cradle:recent-projects";
 const RECENT_PROJECTS_COLLAPSED_KEY = "cradle:recent-projects-collapsed";
 const RECENT_PROJECTS_LIMIT = 5;
 const sortProjects = document.getElementById("sort-projects");
+const shortcutHint = document.querySelector('.keyboard-hint');
+
+if (shortcutHint) {
+  shortcutHint.textContent = '/ or Ctrl + K';
+}
 
 if (sortProjects) {
   sortProjects.addEventListener("change", applyFilters);
@@ -912,4 +917,21 @@ document.addEventListener("keydown", e => {
 document.addEventListener("DOMContentLoaded", () => {
   renderRecentProjects();
   loadProjects();
+});
+
+document.addEventListener('keydown', (event) => {
+  // "/" shortcut
+  if (
+    event.key === '/' &&
+    !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)
+  ) {
+    event.preventDefault();
+    // Open/focus search
+  }
+
+  // Ctrl + K
+  if (event.ctrlKey && event.key.toLowerCase() === 'k') {
+    event.preventDefault();
+    // Open/focus search
+  }
 });
