@@ -26,7 +26,20 @@
     "type": "git",
     "url": "git+https://github.com/Facelessism/cradle.git"
   },
-  "keywords": [],
-  "author": "",
+  "homepage": "https://github.com/Facelessism/cradle#readme",
+  "bugs": {
+    "url": "https://github.com/Facelessism/cradle/issues"
+  },
+  "keywords": [
+    "cradle",
+    "experiments",
+    "prototypes",
+    "demos",
+    "web-tools",
+    "games",
+    "developer-tools",
+    "javascript"
+  ],
+  "author": "Facelessism (https://github.com/Facelessism)",
   "license": "MIT"
 }
