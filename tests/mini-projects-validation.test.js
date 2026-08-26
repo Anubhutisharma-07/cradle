@@ -11,6 +11,7 @@ const {
   validateStandardProjectFiles,
   validateProjectIndexEntries,
   validateProjectNavigation,
+  validateProjectFavicons,
   validateMiniProjects,
 } = require("../scripts/validate-mini-projects");
 
@@ -178,6 +179,49 @@ test("validateProjectNavigation reports mini projects missing shared navigation"
   assert.equal(issues[0].project, "without-nav");
 });
 
+test("validateProjectFavicons reports missing or broken favicon references in mini projects", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "cradle-mini-fav-"));
+  const miniMissing = path.join(root, "missing-fav");
+  const miniBroken = path.join(root, "broken-fav");
+  const miniEmpty = path.join(root, "empty-fav");
+  const miniValid = path.join(root, "valid-fav");
+
+  fs.mkdirSync(miniMissing, { recursive: true });
+  fs.mkdirSync(miniBroken, { recursive: true });
+  fs.mkdirSync(miniEmpty, { recursive: true });
+  fs.mkdirSync(miniValid, { recursive: true });
+
+  fs.writeFileSync(path.join(miniMissing, "index.html"), "<!doctype html><html><head></head></html>");
+  fs.writeFileSync(
+    path.join(miniBroken, "index.html"),
+    '<!doctype html><html><head><link rel="icon" href="nonexistent.svg" /></head></html>'
+  );
+  fs.writeFileSync(
+    path.join(miniEmpty, "index.html"),
+    '<!doctype html><html><head><link rel="icon" href="data:," /></head></html>'
+  );
+
+  const sharedIcon = path.join(root, "favicon.svg");
+  fs.writeFileSync(sharedIcon, "<svg></svg>");
+  fs.writeFileSync(
+    path.join(miniValid, "index.html"),
+    '<!doctype html><html><head><link rel="icon" type="image/svg+xml" href="../favicon.svg" /></head></html>'
+  );
+
+  const diskProjects = [
+    { name: "missing-fav", relPath: "projects/test/missing-fav/", absPath: miniMissing },
+    { name: "broken-fav", relPath: "projects/test/broken-fav/", absPath: miniBroken },
+    { name: "empty-fav", relPath: "projects/test/empty-fav/", absPath: miniEmpty },
+    { name: "valid-fav", relPath: "projects/test/valid-fav/", absPath: miniValid },
+  ];
+
+  const issues = validateProjectFavicons(diskProjects);
+  assert.equal(issues.length, 3);
+  assert.equal(issues.some(i => i.type === "MISSING_FAVICON" && i.project === "missing-fav"), true);
+  assert.equal(issues.some(i => i.type === "BROKEN_FAVICON" && i.project === "broken-fav"), true);
+  assert.equal(issues.some(i => i.type === "INVALID_FAVICON" && i.project === "empty-fav"), true);
+});
+
 test("validateMiniProjects verifies all mini projects open without load failures or missing pages", () => {
   const issues = validateMiniProjects();
   assert.deepEqual(
@@ -187,3 +231,4 @@ test("validateMiniProjects verifies all mini projects open without load failures
       issues.map(i => `  [${i.type}] ${i.message}`).join("\n")
   );
 });
+
