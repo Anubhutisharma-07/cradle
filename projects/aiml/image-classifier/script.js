@@ -323,3 +323,25 @@ function renderPredictions(predictions) {
 
 classifyBtn.addEventListener("click", performPrediction);
 customClassifyBtn.addEventListener("click", performPrediction);
+
+function cleanupObjectUrls() {
+  if (previewObjectURL) {
+    URL.revokeObjectURL(previewObjectURL);
+    previewObjectURL = null;
+  }
+  if (customTestImageURL) {
+    URL.revokeObjectURL(customTestImageURL);
+    customTestImageURL = null;
+  }
+  if (customClasses) {
+    customClasses.forEach(c => {
+      if (c.urls) {
+        c.urls.forEach(url => URL.revokeObjectURL(url));
+        c.urls = [];
+      }
+    });
+  }
+}
+
+window.addEventListener("beforeunload", cleanupObjectUrls);
+
