@@ -115,6 +115,7 @@ No external libraries. Uses Cradle shared design tokens and utilities.
 - MDN Fetch API documentation
 - HTTP/1.1 Status Code definitions
 
-## License
+## License & Attribution
 
-MIT, consistent with the rest of the repository. No third-party assets used.
+- **Project License:** MIT
+- **Third-Party Assets:** None — no third-party assets used.
