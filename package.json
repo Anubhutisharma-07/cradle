@@ -17,13 +17,14 @@
     "healthcheck": "npm run validate:projects-sync && npm run validate:mini-projects && npm run validate:architecture && npm run validate:a11y-labels && npm run check:links && npm run detect:duplicates -- --fail-on-dup && npm test",
     "validate:a11y-labels": "node scripts/validate-accessible-labels.js",
     "test": "node --test",
-    "dev": "npm run generate && npx live-server",
+    "dev": "npm run generate && live-server",
     "build": "npm run generate",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "validate:project-order": "node scripts/validate-project-order.js"
   },
   "devDependencies": {
+    "live-server": "^1.2.2",
     "prettier": "^3.0.0"
   },
   "repository": {
