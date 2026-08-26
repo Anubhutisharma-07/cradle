@@ -15,8 +15,7 @@ projects/instruments/
 ├── index.html          # Accessible page shell and instrument markup
 ├── style.css           # Mini-specific layout, violin illustration and responsive styles
 ├── script.js           # Audio engine, interaction controller and UI state
-├── ARCHITECTURE.md     # Project architecture and design decisions
-└── README.md           # Run instructions and feature overview
+└── ARCHITECTURE.md     # Project architecture and design decisions
 ```
 
 ## Application Flow

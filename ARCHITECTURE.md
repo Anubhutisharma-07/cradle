@@ -60,7 +60,6 @@ cradle/
 │           ├── index.html        #   own entry point
 │           ├── script.js/logic.js
 │           ├── style.css
-│           ├── README.md         #   project-specific readme
 │           └── ARCHITECTURE.md   #   project-specific architecture doc
 │
 ├── tests/                        # Root-level tests over individual projects' pure logic modules
@@ -117,7 +116,7 @@ graph TD
 | `scripts/theme.js`             | Light/dark theme state, `localStorage` persistence, toggle button wiring                                         |
 | `scripts/worker.js`            | Web Worker that filters the project list by category and search query off the main thread                        |
 | `src/components/ui/*`          | Shared UI primitives (Button, Card, ThemeToggle, Navbar, BackToHome), the shared HTML escaping utility (`escapeHtml.js`), and design tokens                           |
-| `projects/<category>/<name>/`  | One self-contained experiment with its own HTML/CSS/JS, README, and ARCHITECTURE.md                              |
+| `projects/<category>/<name>/`  | One self-contained experiment with its own HTML/CSS/JS and ARCHITECTURE.md                                       |
 | `tests/*.test.js`              | Node's built-in test runner exercising pure logic exported by individual projects                                |
 
 ---
@@ -250,7 +249,7 @@ None at runtime. The site uses only native browser APIs (DOM, `fetch`, IndexedDB
 ## Future Improvements
 
 - ~~Add a CI check that fails if `data/projects.json` is out of date with the `projects/` folder tree~~ **Fixed** — enforced via `npm run validate:projects-sync` in CI (`healthcheck.yml` and `test.yml`)
-- Add automated verification that every project folder contains both `README.md` and `ARCHITECTURE.md`
+- Add automated verification that every project folder contains `ARCHITECTURE.md`
 - Derive category display labels from a shared enum instead of formatting folder names directly
 
 ---
