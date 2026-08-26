@@ -11,6 +11,7 @@
   </head>
 
   <body>
+    <h1 class="sr-only" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">Core8 - 8-Bit Virtual Machine CPU Emulator</h1>
     <div class="emulator-container">
       <!-- SVG Layer for Data Flow Animations -->
       <svg id="animation-layer"></svg>
@@ -135,7 +136,7 @@
 
       <aside class="hardware-panel">
         <section class="hardware-section">
-          <h3>Instruction Pipeline</h3>
+          <h2>Instruction Pipeline</h2>
           <div class="pipeline-grid">
             <div class="pipeline-stage" id="stage-if">
               <span class="stage-label">IF (Fetch)</span>
@@ -161,7 +162,7 @@
         </section>
 
         <section class="hardware-section">
-          <h3>CPU Registers</h3>
+          <h2>CPU Registers</h2>
           <div class="registers-grid">
             <div class="register-card">
               <span class="reg-label">Reg A (Accumulator)</span
@@ -191,7 +192,7 @@
         </section>
 
         <section class="hardware-section">
-          <h3>Virtual System RAM Array</h3>
+          <h2>Virtual System RAM Array</h2>
           <div class="ram-grid" id="ram-matrix"></div>
         </section>
       </aside>
