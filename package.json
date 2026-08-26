@@ -14,7 +14,7 @@
     "validate:projects-sync": "node scripts/validate-projects-sync.js",
     "check:links": "node scripts/check-broken-links.js",
     "detect:duplicates": "node scripts/detect-duplicate-js.js",
-    "healthcheck": "npm run validate:projects-sync && npm run validate:mini-projects && npm run validate:architecture && npm run validate:a11y-labels && npm run check:links && npm run detect:duplicates -- --fail-on-dup && npm test",
+    "healthcheck": "npm run check-format && npm run validate:projects-sync && npm run validate:mini-projects && npm run validate:architecture && npm run validate:a11y-labels && npm run check:links && npm run detect:duplicates -- --fail-on-dup && npm test",
     "validate:a11y-labels": "node scripts/validate-accessible-labels.js",
     "test": "node --test",
     "dev": "npm run generate && npx live-server",
