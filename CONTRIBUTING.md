@@ -84,7 +84,7 @@ project-name/
 ├── index.html
 ├── style.css
 ├── script.js
-├── README.md
+├── ARCHITECTURE.md
 ├── preview.png
 └── assets/
     ├── images/
@@ -97,7 +97,7 @@ Use this as a guideline rather than a strict requirement:
 - `index.html` — the entry point for browser-based projects (should include the shared `<script src="../../../src/components/ui/BackToHome/BackToHome.js" defer></script>` component for standardized navigation).
 - `style.css` — project-specific styling where applicable.
 - `script.js` — project behavior and logic where applicable.
-- `README.md` — short documentation covering what the project does, how to use it, and any relevant controls or credits.
+- `ARCHITECTURE.md` — project architecture documentation covering what the project does, its structure, and how to use or run it.
 - `preview.png` — a preview image when it helps the project feel complete and easier to recognize.
 - `assets/` — project-specific images, icons, fonts, or other supporting resources.
 
@@ -111,15 +111,16 @@ Keep the project self-contained whenever possible. Avoid adding unrelated global
 
 ### Documentation requirements
 
-Every new project should include a `README.md` inside its own folder.
+Every new project should include an `ARCHITECTURE.md` inside its own folder based on `ARCHITECTURE_TEMPLATE.md`.
 
-A useful README usually includes:
+A useful architecture document usually includes:
 
-- A short description of the project
+- A short overview and purpose of the project
 - Key features or gameplay
+- Folder structure and component breakdown
 - How to open or run it locally
 - Controls or interaction details if relevant
-- Attribution for external assets/libraries
+- Licensing details and attribution for external assets/libraries
 
 ### Licensing and Asset Attribution
 
@@ -137,7 +138,6 @@ Before opening a Pull Request, review the following checklist:
 - [ ] Assets are stored in an appropriate location.
 - [ ] `index.html` includes the shared `BackToHome.js` navigation component.
 - [ ] The project explicitly specifies its licensing and includes attribution for any third-party assets.
-- [ ] `README.md` has been added inside the project folder.
 - [ ] `ARCHITECTURE.md` has been added following the [standardized template](ARCHITECTURE_TEMPLATE.md).
 - [ ] The project works correctly locally.
 - [ ] Existing projects and unrelated files were not unnecessarily modified.

@@ -10,7 +10,7 @@ Cradle is a repository for my small ideas, experiments and lightweight prototype
 
 ## Each project folder includes
 
-- a short `README.md` describing the goal and how to run or test it,
+- an `ARCHITECTURE.md` describing the goal, architecture, and how to run or test it,
 - minimal dependency manifest (`requirements.txt`, `package.json` etc.)
 - example usage or quick demo scripts if possible.
 
