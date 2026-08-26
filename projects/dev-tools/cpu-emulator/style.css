@@ -156,7 +156,7 @@ body {
   overflow-y: auto;
 }
 
-.hardware-section h3 {
+.hardware-section h2 {
   font-size: 0.9rem;
   color: var(--text-bright);
   margin-bottom: 12px;

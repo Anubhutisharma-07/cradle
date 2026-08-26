@@ -599,7 +599,7 @@ body {
   text-align: center;
 }
 
-.bohr-model-container h4 {
+.bohr-model-container h3 {
   font-size: 0.85rem;
   color: var(--text-muted);
   margin-bottom: 0.5rem;

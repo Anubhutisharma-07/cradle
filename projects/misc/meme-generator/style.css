@@ -35,7 +35,7 @@ body {
   text-align: center;
 }
 
-.studio-header h2 {
+.studio-header h1 {
   font-size: 1.8rem;
   color: var(--accent);
 }
@@ -66,9 +66,9 @@ body {
   padding: 20px;
 }
 
-.controls-card h3,
-.preview-card h3,
-.presets-section h3 {
+.controls-card h2,
+.preview-card h2,
+.presets-section h2 {
   font-size: 1.1rem;
   margin-bottom: 16px;
   color: var(--accent);
