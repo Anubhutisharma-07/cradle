@@ -4,7 +4,12 @@ const path = require("path");
 const REPO_ROOT = path.resolve(__dirname, "..");
 const PROJECTS_DIR = path.join(REPO_ROOT, "projects");
 const PROJECTS_JSON = path.join(REPO_ROOT, "data", "projects.json");
-const REQUIRED_STANDARD_FILES = ["index.html", "script.js", "style.css"];
+const REQUIRED_STANDARD_FILES = [
+  "index.html",
+  "script.js",
+  "style.css",
+  "thumbnail.svg",
+];
 
 const EXTERNAL_PREFIXES = [
   "http://",
