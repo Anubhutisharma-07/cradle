@@ -35,11 +35,15 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="src/components/ui/tokens.css" />
 
+  <!-- Safe storage helper must load before the anti-flash theme bootstrap. -->
+  <script src="src/components/ui/storage.js"></script>
+
   <!-- Prevent flash of wrong theme before CSS loads -->
   <script>
     (function () {
+      var storedTheme = window.CradleStorage.getRaw("theme");
       var t =
-        localStorage.getItem("theme") ||
+        storedTheme ||
         (window.matchMedia("(prefers-color-scheme: light)").matches
           ? "light"
           : "dark");
