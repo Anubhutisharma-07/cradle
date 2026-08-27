@@ -2,6 +2,8 @@ import {
   formatCategoryLabel,
   getSearchableCategory,
 } from "./src/components/ui/utils/categoryFilter.js";
+import { filterProjects } from "./src/utils/projectSearch.js";
+import { createFilterWorker } from "./src/utils/filterWorker.js";
 
 const projectsGrid = document.getElementById("projects-grid");
 const searchInput = document.getElementById("search");
@@ -59,23 +61,31 @@ if (shortcutHint) {
 if (sortProjects) {
   sortProjects.addEventListener("change", applyFilters);
 }
-let filterWorker;
+let filterWorker = null;
+let filterWorkerFailed = false;
 
-if (window.Worker) {
-  try {
-    filterWorker = new Worker("./scripts/worker.js", { type: "module" });
-    filterWorker.onmessage = function (e) {
-      renderProjects(sortProjectList(e.data));
-    };
-    filterWorker.onerror = function (e) {
-      console.warn("Worker error, falling back to main thread:", e);
-      filterWorker = null;
-    };
-  } catch (e) {
-    console.warn("Could not initialize worker:", e);
-    filterWorker = null;
-  }
+function handleFilterWorkerFailure(error, reason = "Worker error") {
+  console.warn(`${reason}, falling back to main thread:`, error);
+  filterWorkerFailed = true;
+  filterWorker = null;
+  applyFilters();
 }
+
+function initializeFilterWorker() {
+  if (!window.Worker || filterWorkerFailed) return;
+
+  filterWorker = createFilterWorker({
+    WorkerCtor: window.Worker,
+    onResult: projects => {
+      renderProjects(sortProjectList(projects));
+    },
+    onFailure: error => {
+      handleFilterWorkerFailure(error, "Worker execution failed");
+    },
+  });
+}
+
+initializeFilterWorker();
 
 function openDB() {
   return new Promise((resolve, reject) => {
@@ -629,21 +639,13 @@ function applyFilters() {
   const query = searchInput.value.toLowerCase().trim();
 
   if (filterWorker) {
-    filterWorker.postMessage({
-      allProjects,
-      selectedCategory,
-      query,
-    });
-    updateClearButtonVisibility(query);
-    return;
+    if (filterWorker.postMessage({ allProjects, selectedCategory, query })) {
+      updateClearButtonVisibility(query);
+      return;
+    }
   }
 
-  const filtered = allProjects.filter(
-    project =>
-      (selectedCategory === "all" || project.category === selectedCategory) &&
-      (project.title.toLowerCase().includes(query) ||
-        getSearchableCategory(project.category).includes(query))
-  );
+  const filtered = filterProjects(allProjects, selectedCategory, query);
 
   renderProjects(sortProjectList(filtered));
   updateClearButtonVisibility(query);
