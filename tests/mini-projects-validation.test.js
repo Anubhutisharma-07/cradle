@@ -232,3 +232,143 @@ test("validateMiniProjects verifies all mini projects open without load failures
   );
 });
 
+// ---------------------------------------------------------------------------
+// Broken script, icon, and asset reference fixtures
+// ---------------------------------------------------------------------------
+
+test("parseHtmlAssetLinks extracts broken script src references from index.html", () => {
+  const html = [
+    "<!doctype html>",
+    "<html>",
+    "  <head>",
+    "    <link rel=\"stylesheet\" href=\"style.css\" />",
+    "  </head>",
+    "  <body>",
+    "    <script src=\"script.js\"></script>",
+    "    <script src=\"missing-lib.js\"></script>",
+    "  </body>",
+    "</html>",
+  ].join("\n");
+
+  const links = parseHtmlAssetLinks(html);
+
+  assert.ok(links.includes("style.css"), "should include stylesheet href");
+  assert.ok(links.includes("script.js"), "should include primary script src");
+  assert.ok(links.includes("missing-lib.js"), "should include broken script src");
+});
+
+test("parseHtmlAssetLinks extracts broken img src and link icon references", () => {
+  const html = [
+    "<!doctype html>",
+    "<html>",
+    "  <head>",
+    "    <link rel=\"icon\" type=\"image/svg+xml\" href=\"nonexistent-icon.svg\" />",
+    "  </head>",
+    "  <body>",
+    "    <img src=\"assets/ghost-image.png\" alt=\"missing\" />",
+    "  </body>",
+    "</html>",
+  ].join("\n");
+
+  const links = parseHtmlAssetLinks(html);
+
+  assert.ok(links.includes("nonexistent-icon.svg"),
+    "should extract broken favicon icon href");
+  assert.ok(links.includes("assets/ghost-image.png"),
+    "should extract broken img src");
+});
+
+test("isExternal returns false for local script and asset paths that should be disk-checked", () => {
+  // These paths would come from parseHtmlAssetLinks and must reach the fs.existsSync check.
+  assert.equal(isExternal("script.js"), false);
+  assert.equal(isExternal("missing-lib.js"), false);
+  assert.equal(isExternal("assets/icon.svg"), false);
+  assert.equal(isExternal("../../../src/components/ui/Button.js"), false);
+  assert.equal(isExternal("/src/components/ui/index.js"), false);
+
+  // These must be skipped (treated as external / non-local).
+  assert.equal(isExternal("https://cdn.jsdelivr.net/npm/chart.js"), true);
+  assert.equal(isExternal("//unpkg.com/react"), true);
+  assert.equal(isExternal("data:image/svg+xml;base64,PHN2"), true);
+  assert.equal(isExternal("#section-id"), true);
+});
+
+test("validateProjectFavicons raises BROKEN_FAVICON when favicon file is referenced but absent", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "cradle-broken-icon-"));
+  const miniDir = path.join(root, "icon-missing");
+  fs.mkdirSync(miniDir, { recursive: true });
+
+  // index.html points to a favicon that was never created.
+  fs.writeFileSync(
+    path.join(miniDir, "index.html"),
+    '<!doctype html><html><head><link rel="icon" href="favicon.svg" /></head></html>'
+  );
+
+  const diskProjects = [
+    { name: "icon-missing", relPath: "projects/test/icon-missing/", absPath: miniDir },
+  ];
+
+  const issues = validateProjectFavicons(diskProjects);
+
+  assert.equal(issues.length, 1);
+  assert.equal(issues[0].type, "BROKEN_FAVICON");
+  assert.equal(issues[0].project, "icon-missing");
+  assert.match(issues[0].message, /favicon\.svg/);
+});
+
+test("validateProjectFavicons raises BROKEN_FAVICON for a missing script-adjacent icon asset", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "cradle-broken-icon2-"));
+  const miniDir = path.join(root, "icon-missing2");
+  fs.mkdirSync(miniDir, { recursive: true });
+
+  // The favicon resolves via a relative path that goes up to a shared assets folder,
+  // but that folder / file does not exist in the temp fixture.
+  fs.writeFileSync(
+    path.join(miniDir, "index.html"),
+    '<!doctype html><html><head><link rel="icon" type="image/svg+xml" href="../../../assets/favicon.svg" /></head></html>'
+  );
+
+  const diskProjects = [
+    { name: "icon-missing2", relPath: "projects/test/icon-missing2/", absPath: miniDir },
+  ];
+
+  const issues = validateProjectFavicons(diskProjects);
+
+  assert.equal(issues.length, 1);
+  assert.equal(issues[0].type, "BROKEN_FAVICON");
+  assert.match(issues[0].message, /favicon\.svg/);
+});
+
+test("broken local asset reference is detected by the isExternal + sanitizePath + fs.existsSync chain", () => {
+  // Validates the logical pipeline used inside validateMiniProjects for BROKEN_ASSET detection.
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "cradle-asset-chain-"));
+  const miniDir = path.join(root, "asset-check");
+  fs.mkdirSync(miniDir, { recursive: true });
+
+  const html = [
+    "<!doctype html><html><head>",
+    '  <link rel="stylesheet" href="style.css" />',        // exists
+    '  <script src="script.js"></script>',                 // exists
+    '  <script src="helpers/missing-helper.js"></script>', // missing
+    "</head><body></body></html>",
+  ].join("\n");
+
+  fs.writeFileSync(path.join(miniDir, "index.html"), html);
+  fs.writeFileSync(path.join(miniDir, "style.css"), "body {}");
+  fs.writeFileSync(path.join(miniDir, "script.js"), "");
+  // helpers/missing-helper.js is deliberately absent.
+
+  const links = parseHtmlAssetLinks(html);
+  const brokenAssets = links.filter(rawLink => {
+    if (isExternal(rawLink)) return false;
+    const cleanLink = sanitizePath(rawLink);
+    if (!cleanLink) return false;
+    const resolvedPath = path.resolve(miniDir, cleanLink);
+    return !fs.existsSync(resolvedPath);
+  });
+
+  assert.deepEqual(brokenAssets, ["helpers/missing-helper.js"]);
+});
+
+
+
