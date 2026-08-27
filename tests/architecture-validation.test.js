@@ -368,3 +368,38 @@ test("Issue #305: no mini project has both a README.md and an ARCHITECTURE.md", 
       offenders.join("\n  ")
   );
 });
+
+// ---------------------------------------------------------------------------
+// File Reference Validation Tests
+// ---------------------------------------------------------------------------
+
+test("validateArchitectureStructure flags nonexistent file references", () => {
+  const root = fs.mkdtempSync(
+    path.join(os.tmpdir(), "cradle-arch-file-refs-")
+  );
+  const projectDir = path.join(root, "broken-refs-mini");
+  fs.mkdirSync(projectDir, { recursive: true });
+
+  const requiredSections = ["## Overview"];
+  const content = [
+    "# Project Architecture",
+    "",
+    "## Overview",
+    "We use [index.html](index.html) and [missing.js](missing.js).",
+    "Check <a href=\"nonexistent.css\">style</a>.",
+    "Ignore [Google](https://google.com) and [Anchor](#overview).",
+  ].join("\n");
+
+  fs.writeFileSync(path.join(projectDir, "index.html"), "<html></html>");
+  fs.writeFileSync(path.join(projectDir, "ARCHITECTURE.md"), content);
+
+  const issues = validateArchitectureStructure([projectDir], requiredSections);
+
+  assert.equal(issues.length, 1);
+  assert.equal(issues[0].projectDir, projectDir);
+  assert.equal(issues[0].brokenReferences.length, 2);
+  assert.equal(issues[0].brokenReferences[0].target, "missing.js");
+  assert.equal(issues[0].brokenReferences[0].lineNumber, 4);
+  assert.equal(issues[0].brokenReferences[1].target, "nonexistent.css");
+  assert.equal(issues[0].brokenReferences[1].lineNumber, 5);
+});
