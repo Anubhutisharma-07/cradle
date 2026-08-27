@@ -110,3 +110,14 @@ test("validateClassName rejects duplicate class names", () => {
     error: "Class name already exists.",
   });
 });
+
+test("custom class rendering does not interpolate user input into innerHTML", () => {
+  const source = require("fs").readFileSync(
+    require.resolve("../projects/aiml/image-classifier/script.js"),
+    "utf8"
+  );
+
+  assert.doesNotMatch(source, /innerHTML\\s*=.*\\$\\{c\\.name\\}/);
+  assert.doesNotMatch(source, /innerHTML\\s*=.*\\$\\{prediction\\.className\\}/);
+  assert.match(source, /textContent = text/);
+});
