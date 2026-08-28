@@ -48,6 +48,16 @@ const RECENT_PROJECTS_LIMIT = 5;
 
 let filterWorker;
 
+const FILTER_DEBOUNCE_DELAY = 250;
+let filterDebounceTimer;
+function debouncedApplyFilters() {
+  window.clearTimeout(filterDebounceTimer);
+
+  filterDebounceTimer = window.setTimeout(() => {
+    applyFilters();
+  }, FILTER_DEBOUNCE_DELAY);
+}
+
 if (window.Worker) {
   filterWorker = new Worker("./scripts/worker.js");
 
@@ -167,7 +177,7 @@ function renderCategories() {
       ariaLabel: `${category.toUpperCase().replace("-", " ")} projects`,
       onClick: () => {
         selectedCategory = category;
-        applyFilters();
+        debouncedApplyFilters();
         renderCategories();
         searchInput.focus();
       },
@@ -675,7 +685,7 @@ function clearFilters() {
 }
 
 searchInput.addEventListener("input", () => {
-  applyFilters();
+  debouncedApplyFilters();
   renderSearchSuggestions();
 });
 
