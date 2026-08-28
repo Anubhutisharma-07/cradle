@@ -18,7 +18,7 @@
     "dateAdded": "2026-06-18T12:02:12+05:30"
   },
   {
-    "title": "Api Response Inspector",
+    "title": "API Response Inspector",
     "category": "dev-tools",
     "path": "projects/dev-tools/api-response-inspector/",
     "dateAdded": "2026-08-15T15:04:05+05:30"
@@ -138,6 +138,18 @@
     "dateAdded": "2026-07-26T11:42:53+05:30"
   },
   {
+    "title": "Guitar",
+    "category": "instruments",
+    "path": "projects/instruments/guitar/",
+    "dateAdded": "2026-08-24T10:53:44+05:30"
+  },
+  {
+    "title": "Guzheng",
+    "category": "instruments",
+    "path": "projects/instruments/guzheng/",
+    "dateAdded": "2026-08-22T10:19:11+05:30"
+  },
+  {
     "title": "Image Classifier",
     "category": "aiml",
     "path": "projects/aiml/image-classifier/",
@@ -210,10 +222,22 @@
     "dateAdded": "2026-06-18T16:52:15+05:30"
   },
   {
+    "title": "Percussion",
+    "category": "instruments",
+    "path": "projects/instruments/percussion/",
+    "dateAdded": "2026-08-22T10:04:50+05:30"
+  },
+  {
     "title": "Periodic Table",
     "category": "misc",
     "path": "projects/misc/periodic-table/",
     "dateAdded": "2026-07-21T11:57:58+05:30"
+  },
+  {
+    "title": "Piano",
+    "category": "instruments",
+    "path": "projects/instruments/piano/",
+    "dateAdded": "2026-08-21T17:35:45+05:30"
   },
   {
     "title": "Reading Progress Tracker",
