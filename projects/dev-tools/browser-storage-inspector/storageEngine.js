@@ -16,7 +16,10 @@
     if (val === "true" || val === "false") return "boolean";
     if (!isNaN(val) && val !== "") return "number";
 
-    if ((val.startsWith("{") && val.endsWith("}")) || (val.startsWith("[") && val.endsWith("]"))) {
+    if (
+      (val.startsWith("{") && val.endsWith("}")) ||
+      (val.startsWith("[") && val.endsWith("]"))
+    ) {
       try {
         JSON.parse(val);
         return "json";
@@ -25,11 +28,16 @@
       }
     }
 
-    if (/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/.test(val)) {
+    if (/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(val)) {
       return "jwt";
     }
 
-    if (/^data:image\/[a-z]+;base64,/.test(val) || (val.length % 4 === 0 && /^[A-Za-z0-9+/=]+$/.test(val) && val.length > 30)) {
+    if (
+      /^data:image\/[a-z]+;base64,/.test(val) ||
+      (val.length % 4 === 0 &&
+        /^[A-Za-z0-9+/=]+$/.test(val) &&
+        val.length > 30)
+    ) {
       return "base64";
     }
 
@@ -50,7 +58,11 @@
    */
   function formatBytes(bytes) {
     if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)} KB`;
+
+    if (bytes < 1024 * 1024) {
+      return `${(bytes / 1024).toFixed(2)} KB`;
+    }
+
     return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
   }
 
@@ -59,11 +71,16 @@
    */
   function filterItems(items, query = "", typeFilter = "all") {
     if (!Array.isArray(items)) return [];
+
     const q = query.toLowerCase().trim();
 
     return items.filter(item => {
       const matchType = typeFilter === "all" || item.type === typeFilter;
-      const matchQuery = !q || item.key.toLowerCase().includes(q) || String(item.value).toLowerCase().includes(q);
+      const matchQuery =
+        !q ||
+        item.key.toLowerCase().includes(q) ||
+        String(item.value).toLowerCase().includes(q);
+
       return matchType && matchQuery;
     });
   }
@@ -72,17 +89,28 @@
    * Read all key-value entries from LocalStorage or SessionStorage store.
    */
   function readWebStorage(storeType = "localStorage") {
-    const store = storeType === "sessionStorage" ? window.sessionStorage : window.localStorage;
+    const store =
+      storeType === "sessionStorage"
+        ? window.sessionStorage
+        : window.localStorage;
+
     const items = [];
     let totalBytes = 0;
 
-    if (!store) return { items, totalBytes, formattedTotal: "0 B" };
+    if (!store) {
+      return {
+        items,
+        totalBytes,
+        formattedTotal: "0 B"
+      };
+    }
 
     for (let i = 0; i < store.length; i++) {
       const key = store.key(i);
       const value = store.getItem(key);
       const bytes = calculateByteSize(key, value);
       const type = detectDataType(value);
+
       totalBytes += bytes;
 
       items.push({
@@ -110,16 +138,22 @@
     const raw = document.cookie || "";
 
     if (!raw.trim()) {
-      return { items, totalBytes, formattedTotal: "0 B" };
+      return {
+        items,
+        totalBytes,
+        formattedTotal: "0 B"
+      };
     }
 
     const pairs = raw.split(";");
+
     pairs.forEach(pair => {
       const parts = pair.split("=");
       const key = parts[0].trim();
       const value = parts.slice(1).join("=").trim();
       const bytes = calculateByteSize(key, value);
       const type = detectDataType(value);
+
       totalBytes += bytes;
 
       items.push({
@@ -144,4 +178,7 @@
   exports.filterItems = filterItems;
   exports.readWebStorage = readWebStorage;
   exports.readCookies = readCookies;
-})(typeof exports === "undefined" ? (window.StorageEngine = {}) : exports);
+
+})(typeof module !== "undefined" && module.exports
+  ? module.exports
+  : (window.StorageEngine = {}));
