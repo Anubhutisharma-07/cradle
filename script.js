@@ -58,11 +58,27 @@ if (shortcutHint) {
   shortcutHint.textContent = '/ or Ctrl + K';
 }
 
+const FILTER_DEBOUNCE_DELAY = 250;
+let filterDebounceTimer;
+
 if (sortProjects) {
   sortProjects.addEventListener("change", applyFilters);
 }
+
 let filterWorker = null;
 let filterWorkerFailed = false;
+
+function debouncedApplyFilters() {
+  window.clearTimeout(filterDebounceTimer);
+
+  filterDebounceTimer = window.setTimeout(() => {
+    applyFilters();
+  }, FILTER_DEBOUNCE_DELAY);
+}
+
+if (window.Worker) {
+  filterWorker = new Worker("./scripts/worker.js");
+}
 
 function handleFilterWorkerFailure(error, reason = "Worker error") {
   console.warn(`${reason}, falling back to main thread:`, error);
@@ -249,7 +265,7 @@ function renderCategories() {
       ariaLabel: `${label} projects`,
       onClick: () => {
         selectedCategory = category;
-        applyFilters();
+        debouncedApplyFilters();
         renderCategories();
         searchInput.focus();
       },
@@ -670,7 +686,7 @@ function clearFilters() {
 }
 
 searchInput.addEventListener("input", () => {
-  applyFilters();
+  debouncedApplyFilters();
   renderSearchSuggestions();
 });
 
