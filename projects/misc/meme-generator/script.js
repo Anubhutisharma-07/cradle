@@ -158,13 +158,17 @@ function showError(msg) {
 if (downloadBtn) {
   downloadBtn.addEventListener("click", () => {
     try {
+      const dataUrl = exportMemeCanvas(canvas);
       const link = document.createElement("a");
+
       link.download = `meme-${Date.now()}.png`;
-      link.href = canvas.toDataURL("image/png");
+      link.href = dataUrl;
       link.click();
     } catch (e) {
+      console.error("Meme export failed:", e);
       showError(
-        "To download cross-origin images, upload a local image or host on same origin."
+        e.message ||
+          "To download cross-origin images, upload a local image or host on same origin."
       );
     }
   });
@@ -173,3 +177,4 @@ if (downloadBtn) {
 // Initial Kickoff
 loadMemeFromUrl(currentImgUrl);
 renderPresetsUI();
+
