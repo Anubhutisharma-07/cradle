@@ -310,5 +310,23 @@
     "category": "math",
     "path": "projects/math/unit-circle-explorer/",
     "dateAdded": "2026-08-29T13:36:43.111Z"
+    "title": "Cyberpunk Pixel Art Generator",
+    "category": "misc",
+    "path": "projects/misc/cyberpunk-pixel-art-generator/",
+    "dateAdded": "2026-08-29T13:24:56.323Z"
+  },
+  {
+    "title": "JSON Tree Viewer",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/json-tree-viewer/",
+    "dateAdded": "2026-08-29T14:00:00.000Z"
+    "title": "Pomodoro Infinity Timer",
+    "category": "productivity",
+    "path": "projects/productivity/pomodoro-infinity-timer/",
+    "dateAdded": "2026-08-29T13:30:00.000Z"
+    "title": "Typing Speed Racer",
+    "category": "games",
+    "path": "projects/games/typing-speed-racer/",
+    "dateAdded": "2026-08-29T13:16:45.402Z"
   }
 ]
