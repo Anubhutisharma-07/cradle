@@ -669,3 +669,48 @@ button:disabled,
     transform: translate(-50%, 0);
   }
 }
+
+/* Accessibility: Respect user's reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .main-layout,
+  .prediction-panel,
+  .prediction,
+  .upload-area,
+  .upload-btn,
+  button,
+  .add-image-btn {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+
+  .prediction-panel.active {
+    transform: none !important;
+  }
+
+  .prediction:hover,
+  .upload-area:hover,
+  .upload-btn:hover,
+  button:hover,
+  .add-image-btn:hover,
+  .remove-class-btn:hover {
+    transform: none !important;
+  }
+
+  .fill {
+    animation: none !important;
+  }
+
+  .status-toast {
+    animation: none !important;
+  }
+}

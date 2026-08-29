@@ -524,3 +524,40 @@ footer {
   font-weight: 700;
   color: var(--cradle-accent);
 }
+
+/* Accessibility: Respect user's reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Disable purely decorative confetti fall */
+  .confetti-piece {
+    animation: none !important;
+    display: none !important;
+  }
+
+  /* Disable choice button hover lift */
+  .choice-btn:hover {
+    transform: none !important;
+  }
+
+  /* Disable fighter emoji hover scale */
+  .fighter {
+    transition: none !important;
+  }
+
+  /* Modal box scale transitions */
+  .modal-box {
+    transition: none !important;
+  }
+
+  .modal-overlay {
+    transition: none !important;
+  }
+}
