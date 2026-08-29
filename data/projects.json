@@ -304,5 +304,11 @@
     "category": "games",
     "path": "projects/games/wordle-clone/",
     "dateAdded": "2026-08-19T20:45:50+05:30"
+  },
+  {
+    "title": "Cyberpunk Pixel Art Generator",
+    "category": "misc",
+    "path": "projects/misc/cyberpunk-pixel-art-generator/",
+    "dateAdded": "2026-08-29T13:24:56.323Z"
   }
 ]
