@@ -304,5 +304,11 @@
     "category": "games",
     "path": "projects/games/wordle-clone/",
     "dateAdded": "2026-08-19T20:45:50+05:30"
+  },
+  {
+    "title": "Typing Speed Racer",
+    "category": "games",
+    "path": "projects/games/typing-speed-racer/",
+    "dateAdded": "2026-08-29T13:16:45.402Z"
   }
 ]
