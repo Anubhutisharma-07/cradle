@@ -306,9 +306,15 @@
     "dateAdded": "2026-08-19T20:45:50+05:30"
   },
   {
+    "title": "Cyberpunk Pixel Art Generator",
+    "category": "misc",
+    "path": "projects/misc/cyberpunk-pixel-art-generator/",
+    "dateAdded": "2026-08-29T13:24:56.323Z"
+  },
+  {
     "title": "JSON Tree Viewer",
     "category": "dev-tools",
     "path": "projects/dev-tools/json-tree-viewer/",
-    "dateAdded": "2026-08-29T13:33:20.096Z"
+    "dateAdded": "2026-08-29T14:00:00.000Z"
   }
 ]
