@@ -669,3 +669,25 @@ body {
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
+
+/* Accessibility: Respect user's reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Disable modal entry animation — modal still appears */
+  .modal-card {
+    animation: none !important;
+  }
+
+  /* Disable close button hover transition */
+  .modal-close {
+    transition: none !important;
+  }
+}
