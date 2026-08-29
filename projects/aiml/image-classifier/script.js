@@ -153,34 +153,70 @@ addClassBtn.addEventListener("click", () => {
   updateCustomPredictState();
 });
 
+function createElementWithText(tagName, className, text) {
+  const element = document.createElement(tagName);
+  if (className) {
+    element.className = className;
+  }
+  element.textContent = text;
+  return element;
+}
+
 function renderClasses() {
   classesContainer.innerHTML = "";
+
   customClasses.forEach(c => {
     const card = document.createElement("div");
     card.className = "class-card";
 
-    card.innerHTML = `
-            <div class="class-header">
-                <div class="class-title">${c.name} <span class="class-count" id="count-${c.id}">${c.count} images</span></div>
-                <button class="remove-class-btn">✕</button>
-            </div>
-            <div class="class-images" id="images-${c.id}">
-                <label class="add-image-btn">
-                    +
-                    <input type="file" accept="image/*" hidden multiple>
-                </label>
-            </div>
-        `;
+    const header = document.createElement("div");
+    header.className = "class-header";
 
-    card.querySelector(".remove-class-btn").addEventListener("click", () => {
+    const title = document.createElement("div");
+    title.className = "class-title";
+    title.appendChild(document.createTextNode(`${c.name} `));
+
+    const count = createElementWithText(
+      "span",
+      "class-count",
+      `${c.count} images`
+    );
+    count.id = `count-${c.id}`;
+    title.appendChild(count);
+
+    const removeButton = createElementWithText(
+      "button",
+      "remove-class-btn",
+      "✕"
+    );
+    removeButton.type = "button";
+
+    header.appendChild(title);
+    header.appendChild(removeButton);
+
+    const imagesContainer = document.createElement("div");
+    imagesContainer.className = "class-images";
+    imagesContainer.id = `images-${c.id}`;
+
+    const addImageLabel = createElementWithText("label", "add-image-btn", "+");
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.multiple = true;
+    input.hidden = true;
+    addImageLabel.appendChild(input);
+    imagesContainer.appendChild(addImageLabel);
+
+    card.appendChild(header);
+    card.appendChild(imagesContainer);
+
+    removeButton.addEventListener("click", () => {
       removeClass(c.id);
     });
 
-    card
-      .querySelector('input[type="file"]')
-      .addEventListener("change", event => {
-        addImageToClass(event, c.id);
-      });
+    input.addEventListener("change", event => {
+      addImageToClass(event, c.id);
+    });
 
     classesContainer.appendChild(card);
   });
@@ -230,10 +266,13 @@ async function addImageToClass(event, id) {
 
         const wrapper = document.createElement("div");
         wrapper.className = "thumb-wrapper";
-        wrapper.innerHTML = `
-                    <img src="${objectUrl}">
-                `;
-        // Add before the "+" button
+
+        const thumbnail = document.createElement("img");
+        thumbnail.src = objectUrl;
+        thumbnail.alt = `Training image for ${classObj.name}`;
+        wrapper.appendChild(thumbnail);
+
+        // Add before the "+" button.
         imagesContainer.insertBefore(wrapper, addBtn);
         resolve();
       });
@@ -297,9 +336,17 @@ async function performPrediction() {
 
 function renderPredictions(predictions) {
   resultDiv.innerHTML = "";
-  if (predictions[0].probability < 0.1) {
-    resultDiv.innerHTML = `<p class="loading">Low confidence prediction. Try providing more training data or a clearer image.</p>`;
+
+  if (predictions.length > 0 && predictions[0].probability < 0.1) {
+    resultDiv.appendChild(
+      createElementWithText(
+        "p",
+        "loading",
+        "Low confidence prediction. Try providing more training data or a clearer image."
+      )
+    );
   }
+
   predictions.forEach((prediction, index) => {
     if (prediction.probability === 0) return; // Hide 0% in custom mode
 
@@ -308,18 +355,50 @@ function renderPredictions(predictions) {
     predictionCard.className = "prediction";
     predictionCard.style.animationDelay = `${index * 0.08}s`;
 
-    predictionCard.innerHTML = `
-            <div class="prediction-top">
-                <div class="class-name">${prediction.className}</div>
-                <div class="confidence">${confidence}%</div>
-            </div>
-            <div class="bar">
-                <div class="fill" style="width: ${confidence}%"></div>
-            </div>
-        `;
+    const predictionTop = document.createElement("div");
+    predictionTop.className = "prediction-top";
+    predictionTop.appendChild(
+      createElementWithText("div", "class-name", prediction.className)
+    );
+    predictionTop.appendChild(
+      createElementWithText("div", "confidence", `${confidence}%`)
+    );
+
+    const bar = document.createElement("div");
+    bar.className = "bar";
+
+    const fill = document.createElement("div");
+    fill.className = "fill";
+    fill.style.width = `${confidence}%`;
+    bar.appendChild(fill);
+
+    predictionCard.appendChild(predictionTop);
+    predictionCard.appendChild(bar);
     resultDiv.appendChild(predictionCard);
   });
 }
 
 classifyBtn.addEventListener("click", performPrediction);
 customClassifyBtn.addEventListener("click", performPrediction);
+
+function cleanupObjectUrls() {
+  if (previewObjectURL) {
+    URL.revokeObjectURL(previewObjectURL);
+    previewObjectURL = null;
+  }
+  if (customTestImageURL) {
+    URL.revokeObjectURL(customTestImageURL);
+    customTestImageURL = null;
+  }
+  if (customClasses) {
+    customClasses.forEach(c => {
+      if (c.urls) {
+        c.urls.forEach(url => URL.revokeObjectURL(url));
+        c.urls = [];
+      }
+    });
+  }
+}
+
+window.addEventListener("beforeunload", cleanupObjectUrls);
+

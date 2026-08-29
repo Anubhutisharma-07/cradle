@@ -178,6 +178,7 @@ function titleCase(str) {
 
   const acronyms = {
     "Ai": "AI",
+    "Api": "API",
     "Ascii": "ASCII",
     "Cpu": "CPU",
     "Qr": "QR",
@@ -188,7 +189,7 @@ function titleCase(str) {
     "Csv": "CSV"
   };
 
-  return title.replace(/\b(Ai|Ascii|Cpu|Qr|Css|Json|Url|Html|Csv)\b/g, match => acronyms[match]);
+  return title.replace(/\b(Ai|Api|Ascii|Cpu|Qr|Css|Json|Url|Html|Csv)\b/g, match => acronyms[match]);
 }
 
 function wrapText(text, maxChars = 20) {
@@ -330,7 +331,8 @@ function buildProjectsRegistry({
 
   const categories = fs
     .readdirSync(projectsDir, { withFileTypes: true })
-    .filter(dirent => dirent.isDirectory());
+    .filter(dirent => dirent.isDirectory())
+    .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 
   const seenPaths = new Set();
   const seenTitles = new Set();
@@ -343,7 +345,8 @@ function buildProjectsRegistry({
       .readdirSync(categoryPath, {
         withFileTypes: true
       })
-      .filter(dirent => dirent.isDirectory());
+      .filter(dirent => dirent.isDirectory())
+      .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 
     for (const project of projectFolders) {
       const projectName = path.basename(project.name);
@@ -411,9 +414,11 @@ function buildProjectsRegistry({
     }
   }
 
-  projects.sort((a, b) =>
-    a.title.localeCompare(b.title)
-  );
+  projects.sort((a, b) => {
+    const comp = a.title.localeCompare(b.title, "en", { sensitivity: "base" });
+    if (comp !== 0) return comp;
+    return a.path < b.path ? -1 : a.path > b.path ? 1 : 0;
+  });
 
   return { projects, errors };
 }

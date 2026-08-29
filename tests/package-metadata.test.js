@@ -35,3 +35,33 @@ test(".nvmrc and .node-version files declare supported Node version", () => {
     ".node-version must specify Node.js version 24"
   );
 });
+
+test("package.json provides check-format script and includes it in healthcheck", () => {
+  const pkg = JSON.parse(fs.readFileSync(PACKAGE_JSON_PATH, "utf8"));
+  assert.ok(pkg.scripts, "package.json must contain scripts");
+  assert.equal(
+    pkg.scripts["check-format"],
+    "prettier --check .",
+    "check-format script must run prettier check"
+  );
+  assert.ok(
+    pkg.scripts.healthcheck.includes("npm run check-format"),
+    "healthcheck script must include check-format"
+  );
+});
+
+test("CI workflows include Prettier format verification", () => {
+  const testWorkflowPath = path.join(
+    ROOT_DIR,
+    ".github",
+    "workflows",
+    "test.yml"
+  );
+  assert.ok(fs.existsSync(testWorkflowPath), "test.yml workflow must exist");
+  const testWorkflowContent = fs.readFileSync(testWorkflowPath, "utf8");
+  assert.match(
+    testWorkflowContent,
+    /npm run check-format/,
+    "test.yml workflow must run Prettier verification"
+  );
+});

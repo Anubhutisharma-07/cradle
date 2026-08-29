@@ -233,7 +233,8 @@ function readValue(
   type,
   count,
   valueFieldOffset,
-  littleEndian
+  littleEndian,
+  tiffStart = 0
 ) {
   const size = TYPE_SIZES[type];
 
@@ -255,7 +256,7 @@ function readValue(
       return null;
     }
 
-    valueOffset = view.getUint32(
+    valueOffset = tiffStart + view.getUint32(
       valueFieldOffset,
       littleEndian
     );
@@ -410,7 +411,8 @@ function readIFD(
   view,
   offset,
   littleEndian,
-  tagMap
+  tagMap,
+  tiffStart = 0
 ) {
   const metadata = {};
 
@@ -465,7 +467,8 @@ function readIFD(
       type,
       count,
       entryOffset + 8,
-      littleEndian
+      littleEndian,
+      tiffStart
     );
 
     if (value !== null) {
@@ -618,7 +621,8 @@ function parseTIFF(view, tiffStart) {
     view,
     ifdOffset,
     littleEndian,
-    TAGS
+    TAGS,
+    tiffStart
   );
 
   if (metadata.exifOffset) {
@@ -628,7 +632,8 @@ function parseTIFF(view, tiffStart) {
         tiffStart +
         metadata.exifOffset,
         littleEndian,
-        TAGS
+        TAGS,
+        tiffStart
       );
 
     Object.assign(
@@ -644,7 +649,8 @@ function parseTIFF(view, tiffStart) {
         tiffStart +
         metadata.gpsOffset,
         littleEndian,
-        GPS_TAGS
+        GPS_TAGS,
+        tiffStart
       );
 
     Object.assign(

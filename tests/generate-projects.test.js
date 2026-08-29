@@ -243,3 +243,73 @@ test("validateProjectsSync verifies the live repository data/projects.json is sy
     `Live repository metadata is out of sync:\n` + result.issues.join("\n")
   );
 });
+
+test("buildProjectsRegistry produces identical output on repeated runs (reproducibility)", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "cradle-repro-test-"));
+  const projectsDir = path.join(root, "projects");
+  fs.mkdirSync(path.join(projectsDir, "games", "game-a"), { recursive: true });
+  fs.mkdirSync(path.join(projectsDir, "productivity", "tool-b"), { recursive: true });
+
+  const run1 = buildProjectsRegistry({
+    projectsDir,
+    repoRoot: root,
+    generateThumbnails: false,
+  });
+
+  const run2 = buildProjectsRegistry({
+    projectsDir,
+    repoRoot: root,
+    generateThumbnails: false,
+  });
+
+  assert.deepEqual(run1, run2);
+});
+
+test("buildProjectsRegistry is independent of filesystem traversal order", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "cradle-order-test-"));
+  const projectsDir = path.join(root, "projects");
+  
+  const dirsToCreate = [
+    path.join(projectsDir, "games", "zebra-game"),
+    path.join(projectsDir, "games", "alpha-game"),
+    path.join(projectsDir, "productivity", "omega-tool"),
+    path.join(projectsDir, "productivity", "beta-tool"),
+  ];
+  for (const dir of dirsToCreate) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+
+  const originalReaddirSync = fs.readdirSync;
+  
+  try {
+    // Mock readdirSync returning reversed directory order to simulate different traversal
+    fs.readdirSync = (dirPath, options) => {
+      const result = originalReaddirSync(dirPath, options);
+      return result.reverse();
+    };
+    
+    const { projects: projects1 } = buildProjectsRegistry({
+      projectsDir,
+      repoRoot: root,
+      generateThumbnails: false,
+    });
+
+    // Reset readdirSync to normal behavior
+    fs.readdirSync = originalReaddirSync;
+    
+    const { projects: projects2 } = buildProjectsRegistry({
+      projectsDir,
+      repoRoot: root,
+      generateThumbnails: false,
+    });
+
+    // Result must be identical and correctly sorted alphabetically by title
+    assert.deepEqual(projects1, projects2);
+    assert.equal(projects1[0].title, "Alpha Game");
+    assert.equal(projects1[1].title, "Beta Tool");
+    assert.equal(projects1[2].title, "Omega Tool");
+    assert.equal(projects1[3].title, "Zebra Game");
+  } finally {
+    fs.readdirSync = originalReaddirSync;
+  }
+});
