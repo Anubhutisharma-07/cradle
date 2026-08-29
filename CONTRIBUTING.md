@@ -43,6 +43,7 @@ Every contribution, no matter how small, is valuable.
 
 Before working on an issue:
 
+- Ensure you are running a supported Node.js version (`>=20.0.0`, `v24.x` recommended / declared in `.nvmrc` and `package.json`).
 - Search existing issues to avoid duplicate work.
 - Read the project documentation before starting.
 - Wait until an issue has been assigned to you (if required by the maintainers).
@@ -93,7 +94,7 @@ project-name/
 
 Use this as a guideline rather than a strict requirement:
 
-- `index.html` — the entry point for browser-based projects.
+- `index.html` — the entry point for browser-based projects (should include the shared `<script src="../../../src/components/ui/BackToHome/BackToHome.js" defer></script>` component for standardized navigation).
 - `style.css` — project-specific styling where applicable.
 - `script.js` — project behavior and logic where applicable.
 - `README.md` — short documentation covering what the project does, how to use it, and any relevant controls or credits.
@@ -118,25 +119,9 @@ A useful README usually includes:
 - Key features or gameplay
 - How to open or run it locally
 - Controls or interaction details if relevant
-- Any credits or dependencies used
+- Attribution for external assets/libraries
 
-Every new project should also include an `ARCHITECTURE.md` inside its own folder, following the standardized template. See [Architecture Documentation](#architecture-documentation) for full instructions.
-
-### Assets and static files
-
-- Store project-specific assets inside the project's own folder.
-- Keep the asset layout simple and predictable.
-- Avoid referencing remote assets unless they are already used elsewhere in the repository and are appropriate for the project.
-
-### Code organization
-
-- Keep the project-specific code isolated within its own folder.
-- Use clear and descriptive file names.
-- Keep the implementation readable and maintainable.
-- Avoid unnecessary global styles or scripts that affect other projects.
-- Add comments for non-obvious logic when helpful.
-
-### Licensing and Third-Party Assets
+### Licensing and Asset Attribution
 
 - Every project must clearly specify its licensing (e.g., MIT) inside its `ARCHITECTURE.md` file.
 - If you use any third-party assets (images, icons, fonts, audio, code snippets), you must provide explicit attribution in the same section, including links to the source and stating the asset's license.
@@ -150,6 +135,7 @@ Before opening a Pull Request, review the following checklist:
 - [ ] The project folder has a clear and descriptive name.
 - [ ] Project-specific files are organized within the project folder.
 - [ ] Assets are stored in an appropriate location.
+- [ ] `index.html` includes the shared `BackToHome.js` navigation component.
 - [ ] The project explicitly specifies its licensing and includes attribution for any third-party assets.
 - [ ] `README.md` has been added inside the project folder.
 - [ ] `ARCHITECTURE.md` has been added following the [standardized template](ARCHITECTURE_TEMPLATE.md).

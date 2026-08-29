@@ -1,3 +1,8 @@
+import {
+  formatCategoryLabel,
+  getSearchableCategory,
+} from "./src/components/ui/utils/categoryFilter.js";
+
 const projectsGrid = document.getElementById("projects-grid");
 const searchInput = document.getElementById("search");
 const categoriesContainer = document.getElementById("categories");
@@ -38,22 +43,38 @@ updateClearSearchButton();
 
 let allProjects = [];
 let selectedCategory = "all";
-let activeProjectIndex = 0;
 let activeSuggestionIndex = -1;
 let currentSuggestions = [];
 const copyStatus = document.getElementById("copy-status");
 const RECENT_PROJECTS_KEY = "cradle:recent-projects";
 const RECENT_PROJECTS_COLLAPSED_KEY = "cradle:recent-projects-collapsed";
 const RECENT_PROJECTS_LIMIT = 5;
+const sortProjects = document.getElementById("sort-projects");
+const shortcutHint = document.querySelector('.keyboard-hint');
 
+if (shortcutHint) {
+  shortcutHint.textContent = '/ or Ctrl + K';
+}
+
+if (sortProjects) {
+  sortProjects.addEventListener("change", applyFilters);
+}
 let filterWorker;
 
 if (window.Worker) {
-  filterWorker = new Worker("./scripts/worker.js");
-
-  filterWorker.onmessage = function (e) {
-    renderProjects(e.data);
-  };
+  try {
+    filterWorker = new Worker("./scripts/worker.js", { type: "module" });
+    filterWorker.onmessage = function (e) {
+      renderProjects(sortProjectList(e.data));
+    };
+    filterWorker.onerror = function (e) {
+      console.warn("Worker error, falling back to main thread:", e);
+      filterWorker = null;
+    };
+  } catch (e) {
+    console.warn("Could not initialize worker:", e);
+    filterWorker = null;
+  }
 }
 
 function openDB() {
@@ -76,6 +97,56 @@ function openDB() {
   });
 }
 
+function sortProjectList(projects) {
+  const sorted = [...projects];
+
+  switch (sortProjects?.value) {
+    case "name-asc":
+      return sorted.sort((a, b) => a.title.localeCompare(b.title));
+
+    case "name-desc":
+      return sorted.sort((a, b) => b.title.localeCompare(a.title));
+
+    case "category":
+      return sorted.sort(
+        (a, b) =>
+          a.category.localeCompare(b.category) || a.title.localeCompare(b.title)
+      );
+
+    case "newest":
+      return sorted.sort((a, b) => {
+        const dateA = a.dateAdded ? new Date(a.dateAdded).getTime() : NaN;
+        const dateB = b.dateAdded ? new Date(b.dateAdded).getTime() : NaN;
+
+        if (Number.isNaN(dateA) && Number.isNaN(dateB)) {
+          return a.title.localeCompare(b.title);
+        }
+
+        if (Number.isNaN(dateA)) return 1;
+        if (Number.isNaN(dateB)) return -1;
+
+        return dateB - dateA || a.title.localeCompare(b.title);
+      });
+
+    case "oldest":
+      return sorted.sort((a, b) => {
+        const dateA = a.dateAdded ? new Date(a.dateAdded).getTime() : NaN;
+        const dateB = b.dateAdded ? new Date(b.dateAdded).getTime() : NaN;
+
+        if (Number.isNaN(dateA) && Number.isNaN(dateB)) {
+          return a.title.localeCompare(b.title);
+        }
+
+        if (Number.isNaN(dateA)) return 1;
+        if (Number.isNaN(dateB)) return -1;
+
+        return dateA - dateB || a.title.localeCompare(b.title);
+      });
+
+    default:
+      return sorted.sort((a, b) => a.title.localeCompare(b.title));
+  }
+}
 function getCachedProjects(db) {
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(["projectsStore"], "readonly");
@@ -160,11 +231,12 @@ function renderCategories() {
 
   categories.forEach(category => {
     const isActive = category === selectedCategory;
+    const label = formatCategoryLabel(category);
     const btn = CradleButton.create({
       variant: isActive ? "primary" : "ghost",
       size: "sm",
-      children: category.toUpperCase().replace("-", " "),
-      ariaLabel: `${category.toUpperCase().replace("-", " ")} projects`,
+      children: label,
+      ariaLabel: `${label} projects`,
       onClick: () => {
         selectedCategory = category;
         applyFilters();
@@ -177,10 +249,6 @@ function renderCategories() {
 
     categoriesContainer.appendChild(btn);
   });
-}
-
-function formatCategoryLabel(category) {
-  return category.toUpperCase().replace("-", " ");
 }
 
 function isNewProject(dateAdded) {
@@ -288,7 +356,7 @@ function clearRecentProjects() {
 }
 
 function createProjectCard(project, options = {}) {
-  const { onOpen = null, recent = false, index = null } = options;
+  const { onOpen = null, recent = false } = options;
 
   const openButton = CradleButton.create({
     variant: "outline",
@@ -298,6 +366,7 @@ function createProjectCard(project, options = {}) {
     href: project.path,
     target: "_self",
     rel: "noopener noreferrer",
+    ariaLabel: `Open ${project.title}`,
   });
 
   openButton.addEventListener("click", () => {
@@ -322,12 +391,6 @@ function createProjectCard(project, options = {}) {
     footerAlign: "left",
     className: recent ? "recent-project-card" : "",
   });
-
-  // Wire keyboard/role affordances for the main catalog grid (index provided).
-  // Recent-projects cards are a small secondary list and keep the default flow.
-  if (index !== null) {
-    prepareProjectCard(card, project, index);
-  }
 
   return card;
 }
@@ -368,73 +431,13 @@ function renderProjects(projects) {
 
   projectsGrid.innerHTML = "";
 
-  activeProjectIndex = 0;
-  projects.forEach((project, index) => {
+  projects.forEach(project => {
     projectsGrid.appendChild(
       createProjectCard(project, {
         onOpen: recordRecentlyOpenedProject,
-        index,
       })
     );
   });
-}
-
-// Roving-tabindex keyboard navigation for the catalog grid. prepareProjectCard
-// gives each card role="link", a roving tabindex, and an "Press Enter to open"
-// label; this makes those affordances actually work.
-function focusCatalogCard(index) {
-  const cards = projectsGrid.querySelectorAll(".project-grid-card");
-  if (!cards.length) return;
-  const clamped = Math.max(0, Math.min(index, cards.length - 1));
-  activeProjectIndex = clamped;
-  cards.forEach((card, i) => {
-    card.setAttribute("tabindex", i === clamped ? "0" : "-1");
-  });
-  cards[clamped].focus();
-}
-
-projectsGrid.addEventListener("keydown", event => {
-  const card = event.target;
-  if (!card.classList || !card.classList.contains("project-grid-card")) return;
-
-  const cards = Array.from(projectsGrid.querySelectorAll(".project-grid-card"));
-  const current = cards.indexOf(card);
-
-  switch (event.key) {
-    case "Enter":
-    case " ": {
-      event.preventDefault();
-      // Reuse the card's own "Open Project" link so recent-project tracking and
-      // navigation behave exactly as a mouse click would.
-      const openLink = card.querySelector("a[href]");
-      if (openLink) openLink.click();
-      break;
-    }
-    case "ArrowRight":
-    case "ArrowDown":
-      event.preventDefault();
-      focusCatalogCard(current + 1);
-      break;
-    case "ArrowLeft":
-    case "ArrowUp":
-      event.preventDefault();
-      focusCatalogCard(current - 1);
-      break;
-    case "Home":
-      event.preventDefault();
-      focusCatalogCard(0);
-      break;
-    case "End":
-      event.preventDefault();
-      focusCatalogCard(cards.length - 1);
-      break;
-    default:
-      break;
-  }
-});
-
-function getSearchableCategory(category) {
-  return `${category} ${formatCategoryLabel(category)}`.toLowerCase();
 }
 
 function getSearchSuggestions(query) {
@@ -564,17 +567,6 @@ function selectSearchSuggestion(index) {
   searchInput.focus();
 }
 
-function prepareProjectCard(card, project, index) {
-  const label = `${project.title}, ${project.category} project`;
-
-  card.classList.add("project-grid-card");
-  card.dataset.projectIndex = String(index);
-  card.dataset.projectPath = project.path;
-  card.setAttribute("role", "link");
-  card.setAttribute("tabindex", index === activeProjectIndex ? "0" : "-1");
-  card.setAttribute("aria-label", `${label}. Press Enter to open.`);
-}
-
 function getProjectUrl(projectPath) {
   return new URL(projectPath, window.location.href).href;
 }
@@ -642,17 +634,18 @@ function applyFilters() {
       selectedCategory,
       query,
     });
-  } else {
-    const filtered = allProjects.filter(
-      project =>
-        (selectedCategory === "all" || project.category === selectedCategory) &&
-        (project.title.toLowerCase().includes(query) ||
-          getSearchableCategory(project.category).includes(query))
-    );
-
-    renderProjects(filtered);
+    updateClearButtonVisibility(query);
+    return;
   }
 
+  const filtered = allProjects.filter(
+    project =>
+      (selectedCategory === "all" || project.category === selectedCategory) &&
+      (project.title.toLowerCase().includes(query) ||
+        getSearchableCategory(project.category).includes(query))
+  );
+
+  renderProjects(sortProjectList(filtered));
   updateClearButtonVisibility(query);
 }
 
@@ -851,4 +844,21 @@ document.addEventListener("keydown", e => {
 document.addEventListener("DOMContentLoaded", () => {
   renderRecentProjects();
   loadProjects();
+});
+
+document.addEventListener('keydown', (event) => {
+  // "/" shortcut
+  if (
+    event.key === '/' &&
+    !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)
+  ) {
+    event.preventDefault();
+    // Open/focus search
+  }
+
+  // Ctrl + K
+  if (event.ctrlKey && event.key.toLowerCase() === 'k') {
+    event.preventDefault();
+    // Open/focus search
+  }
 });
