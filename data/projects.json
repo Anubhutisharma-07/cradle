@@ -312,6 +312,10 @@
     "dateAdded": "2026-08-29T13:24:56.323Z"
   },
   {
+    "title": "JSON Tree Viewer",
+    "category": "dev-tools",
+    "path": "projects/dev-tools/json-tree-viewer/",
+    "dateAdded": "2026-08-29T14:00:00.000Z"
     "title": "Pomodoro Infinity Timer",
     "category": "productivity",
     "path": "projects/productivity/pomodoro-infinity-timer/",
